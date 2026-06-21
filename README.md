@@ -41,83 +41,87 @@ It records a small manifest per target and **auto-removes stale files** left by 
 
 ## Skills
 
-### WriteReport — Editorial Reports
+| Skill | Command | What it does |
+|-------|---------|--------------|
+| **WriteReport** | `/writereport` | Turn any doc or data into a polished editorial report (self-contained HTML / PDF) |
+| **Xray** | `/xray` | Live debug-UI panel to tweak any element's parameters in real time |
+| **Drill** | `/drill` | Interview that reviews your plan and fills the gaps before you code |
+| **Reality Check** | `/realitycheck` | First-principles PMF hypotheses + Likert questionnaires |
+| **Lore** | `/lore` | Maintain a `PRODUCT.md` of journeys, target users, and anti-goals |
+| **Grid** | `/grid` | Toggleable Müller-Brockmann layout grid overlay + tuning panel |
 
-Turn any doc, data file, or notes into a polished, well-organized **editorial report** and export it as a self-contained HTML and/or PDF.
+### WriteReport — `/writereport`
 
-- Reflows content into a magazine-style layout — cover, lead, sections, styled tables, pull quotes
-- **Charts chosen by the data's shape** (ranking, Likert, part-to-whole, trend…), static SVG with optional, print-safe interactivity — not one chart type repeated
-- **Dual-language** output (default EN + 简体中文) with an in-page toggle; PDF exports one file per language
-- **Light / dark** themes; a bundled editorial design system (ships as `DESIGN.md`) — its name never appears in the output
-- A single **Satoshi** superfamily (bundled, embedded and subset) on a full role-based scale (display→overline) with three weight tiers — Black 900 display, Bold 700 headings, Medium 500 body; fully self-contained HTML; PDF via the agent's browser print-to-PDF
-- Built-in **anti-slop pass**: after the first render it audits the output against a catalogue of AI-design tells and redesigns what it trips
-- `/writereport demo` renders a bundled sample; output defaults to EN + 简体中文 (no config file needed) and only persists `docs/.writereport.json` when you pick a different pair
+`[TARGET=<file-or-path> | demo | setup]`
+
+Turn any doc, data file, or notes into a polished **editorial report**, exported as a self-contained HTML and/or PDF.
+
+- Magazine-style reflow — cover, lead, sections, styled tables, pull quotes
+- **Charts chosen by the data's shape** (ranking, Likert, part-to-whole, trend…) — static SVG with print-safe interactivity, never one chart repeated
+- **Dual-language** output (default EN + 简体中文) with an in-page toggle; **light / dark** themes
+- Bundled **Satoshi** superfamily (embedded + subset) and a built-in **anti-slop pass** that audits and redesigns AI-design tells
+- `/writereport demo` renders a bundled sample; persists `docs/.writereport.json` only when you pick a non-default language pair
 
 **Files:** `SKILL.md`, `DESIGN.md`, `DEMO.md`
 
-### Xray — Live Debug UI
+### Xray — `/xray`
 
-Generate a temporary debug panel for any UI element. Point it at a component (by name, file path, or browser selection), and get a floating control panel to tweak visual and behavioral parameters in real time.
+`[TARGET=<component-name-or-file>]`
 
-- Automatically extracts tweakable values (sizes, colors, opacities, animation speeds, text content)
-- Maps parameters to appropriate controls (sliders, steppers, color pickers, text inputs, toggles)
-- Portal-based overlay that never disrupts page layout
-- Copy Config button exports your tweaks as JSON
-- Run `/xray` with no target to clean up — your tweaked values get baked back into the source
+Generate a temporary debug panel for any UI element — point it at a component (by name, file path, or browser selection) and tweak visual/behavioral parameters in real time.
+
+- Auto-extracts tweakable values (sizes, colors, opacities, speeds, text) and maps them to the right controls (sliders, steppers, pickers, toggles)
+- Portal-based overlay that never disrupts layout; **Copy Config** exports your tweaks as JSON
+- Run `/xray` with no target to clean up — tweaked values get baked back into the source
 
 **File:** `XRAY.md`
 
-### Drill — Plan Review & Refinement
+### Drill — `/drill`
 
-Interview-style skill that reviews your implementation plan, identifies gaps, and asks targeted questions to flesh out details before you start coding.
+`[PLAN=<path-or-description>]`
 
-- Scans the codebase and browser context to ask informed, project-specific questions
-- Labels plan items by confidence (GREEN / YELLOW / RED)
-- Structured question rounds with concrete multiple-choice options
-- Works in plan mode (updates plan file in-place) and agent mode (summary in chat)
-- Short-circuits when the plan is fully specified — no forced questions
+Interview-style review of your implementation plan that surfaces gaps and unmade decisions before you start coding.
+
+- Scans codebase + browser context to ask informed, project-specific questions
+- Labels plan items **GREEN / YELLOW / RED** by confidence, with structured multiple-choice rounds
+- Works in plan mode (edits the plan in-place) and agent mode (summary in chat); short-circuits when the plan is already complete
 
 **File:** `DRILL.md`
 
-### Reality Check — User Testing Questionnaire Generator
+### Reality Check — `/realitycheck`
 
-Review a project, form brutally honest hypotheses about product-market fit, and generate Likert-scale questionnaires to validate or falsify them. Think Steve Jobs — first principles, zero confirmation bias.
+`[FOCUS=<area-or-hypothesis>]`
 
-- Silently scans README, routes, dependencies, and UX patterns to understand the product
-- Interviews the developer to fill gaps code can't answer (target user, problem severity, competition)
-- Generates 3–8 impact-ranked hypotheses that challenge assumptions, not confirm them
-- Names specific blind spots with codebase evidence ("You assume X, but the pricing page has no comparison table")
-- Produces 15–20 Likert-scale questions ordered by emotional weight, with reverse-coded items
-- Outputs to Notion (markdown fallback) with scoring guide and decision framework
+Form brutally honest, first-principles hypotheses about product-market fit, then generate Likert-scale questionnaires to validate or falsify them — zero confirmation bias.
+
+- Silently scans README, routes, dependencies, and UX, then interviews you for what code can't answer
+- 3–8 impact-ranked hypotheses that **challenge** assumptions, naming blind spots with codebase evidence
+- 15–20 Likert questions ordered by emotional weight (with reverse-coded items); outputs to Notion (markdown fallback) with a scoring guide
 
 **File:** `REALITYCHECK.md`
 
-### Lore — Product Codex
+### Lore — `/lore`
 
-Generate, iterate, and maintain a `PRODUCT.md` at the project root: a living document of what the product is, who it's for, what it deliberately does NOT do, and the user journeys that make it real.
+`[FOCUS=<journey-or-area>]`
 
-- Auto-detects mode from `PRODUCT.md` presence — baseline draft on first run, diff-and-confirm against the existing codex on later runs
-- Silently scans README, routes, dependencies, and the live dev server (screenshots key pages) before asking anything
-- Job-story journeys (`When X, I want Y, so I can Z`) backed by concrete steps and source-file citations — so future runs can detect change automatically
-- Templates for web apps, CLI tools, libraries, and backend APIs — not just sign-up flows
-- Monorepo-aware — asks which app the codex should describe before scanning
-- `FOCUS=<area>` argument narrows the run (`/lore FOCUS=checkout` only touches journeys matching `checkout`)
-- Adaptive interview — one round by default, a second only when discovery surfaces real ambiguity
-- Feeds into `/drill` so plan reviews can reference real journeys instead of re-deriving them
+Generate and maintain a `PRODUCT.md` at the project root — a living codex of what the product is, who it's for, what it deliberately does **not** do, and the journeys that make it real.
+
+- Auto-detects mode from `PRODUCT.md` presence — baseline draft first, diff-and-confirm on later runs
+- Job-story journeys (`When X, I want Y, so I can Z`) backed by concrete steps and source-file citations
+- Monorepo-aware; `FOCUS=<area>` narrows the run; feeds `/drill` so plan reviews reference real journeys
 
 **File:** `LORE.md`
 
-### Grid — Müller-Brockmann Grid Debug UI
+### Grid — `/grid`
 
-Build a live, toggleable layout grid into a website or webapp — a visual overlay plus a floating control panel for tuning the grid against real content, following Josef Müller-Brockmann's construction method (type area → columns → fields → baseline) adapted for screens.
+`[preset | key=value …]`
 
-- A toggleable **overlay** with four layers — page margins, columns + gutters, baseline rhythm, and the `columns × rows` field matrix
-- A floating **debug panel** that rewrites the product's grid custom properties live, so dragging a slider reflows the real layout — presets, copy-to-CSS / copy-to-JSON, localStorage persistence
-- Derives the starting grid from the project's real type and tokens (`baseline` = body line-height, fields are integer baseline rows), not defaults
-- Ships `grid.css` (the grid variables + `.grid` template + span/field utilities) so the real layout sits on the same grid the overlay draws
-- Hotkeys: `shift+G` panel · `g` overlay · `m` cycle layers · `[` `]` nudge baseline. Tune against real content, then `copy css` and paste the `:root` block back in
-- `/grid editorial`, `/grid columns=4 rows=8`, or `/grid` to derive from the project; a bookmarklet form for sites you don't control
-- Reference docs (`references/method.md`, `references/overlay-api.md`) and a React overlay component (`assets/GridOverlay.jsx`) included
+Build a live, toggleable **Müller-Brockmann** layout grid into a site or webapp — a visual overlay plus a floating panel for tuning the grid against real content.
+
+- Overlay with four layers — page margins, columns + gutters, baseline rhythm, and the `columns × rows` field matrix
+- Debug panel rewrites the product's grid custom properties live — presets, copy-to-CSS / JSON, localStorage persistence
+- Derives the starting grid from the project's real type and tokens, and ships `grid.css` so the real layout sits on the overlay's grid
+- Hotkeys: `shift+G` panel · `g` overlay · `m` cycle layers · `[` `]` nudge baseline · invoke as `/grid editorial`, `/grid columns=4 rows=8`, or bare `/grid`
 
 **Files:** `SKILL.md`, `references/`, `assets/`
 
