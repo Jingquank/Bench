@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.DS_Store
+.mastermind/
+
+# Playground pages (local dev only)
+src/components/Nexus.jsx
+src/components/Nexus.css
+src/components/Playground.jsx
+src/components/Playground.css

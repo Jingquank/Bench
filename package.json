@@ -1,0 +1,65 @@
+{
+  "name": "bench",
+  "version": "1.10.0",
+  "description": "Editorial reports, live debug panels, plan drilling, reality checks, product lore, and Müller-Brockmann layout grids — a skill pack for Cursor, Claude Code, and Codex.",
+  "bin": {
+    "bench": "bin/install.js"
+  },
+  "files": [
+    "bin/install.js",
+    "WRITEREPORT.md",
+    "docs/DESIGN.md",
+    "reference/demo.md",
+    "fonts/",
+    "XRAY.md",
+    "DRILL.md",
+    "REALITYCHECK.md",
+    "LORE.md",
+    "GRID.md",
+    "grid/"
+  ],
+  "keywords": [
+    "cursor",
+    "claude-code",
+    "skill",
+    "skills",
+    "bench",
+    "writereport",
+    "editorial-report",
+    "pdf",
+    "xray",
+    "drill",
+    "plan-review",
+    "realitycheck",
+    "lore",
+    "grid",
+    "grid-system",
+    "muller-brockmann"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jingquank/Bench.git"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.5.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.6.0",
+    "vite": "^8.0.0"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.1",
+    "three": "^0.180.0"
+  }
+}

@@ -1,0 +1,16 @@
+---
+description: Before pushing to GitHub, confirm the skill version number with the user
+alwaysApply: true
+---
+
+# Version Check Before Push
+
+Before running `git push` (or any command that pushes commits to a remote), you MUST:
+
+1. Read the current version from the `SKILL.md` frontmatter (`version:` field).
+2. Ask the user to confirm the version is correct using the AskQuestion tool:
+   - Show the current version (e.g. "The current skill version is **1.0.2**.")
+   - Offer options: "Looks good — push", "I want to change the version first"
+3. Only proceed with the push if the user confirms.
+
+If the user wants to change the version, update it in both `SKILL.md` frontmatter and `package.json` before pushing.
