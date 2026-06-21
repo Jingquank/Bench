@@ -9,6 +9,8 @@
 
 A skill pack for [Cursor](https://cursor.com), [Claude Code](https://claude.ai/code), and [Codex](https://developers.openai.com/codex) — editorial reports, live debug panels, plan drilling, reality checks, product lore, and layout grids.
 
+**Live site:** [bench-skills.vercel.app](https://bench-skills.vercel.app/)
+
 ## Install
 
 ```sh

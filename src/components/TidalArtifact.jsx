@@ -211,10 +211,10 @@ export default function TidalArtifact({ mousePos = { x: 0.5, y: 0.5 } }) {
 
         <div style={styles.ticker} aria-hidden="true">
           <span style={tickerStyle}>
-           BENCH, XRAY, DRILL. DESIGNED BY BENCH DESIGN TEAM.&nbsp;
+           WRITEREPORT, XRAY, DRILL, REALITYCHECK, LORE, GRID.&nbsp;
           </span>
           <span style={tickerStyle}>
-           BENCH, XRAY, DRILL. DESIGNED BY BENCH DESIGN TEAM.&nbsp;
+           WRITEREPORT, XRAY, DRILL, REALITYCHECK, LORE, GRID.&nbsp;
           </span>
         </div>
       </div>
