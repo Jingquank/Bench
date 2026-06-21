@@ -1,7 +1,13 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import NoiseCanvas from './NoiseCanvas'
+import BenchModelCanvas, { XRAY_DEFAULTS } from './BenchModelCanvas'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import asciiVideo from '../media/ascii-art(1).mp4'
+
+// Debug panel — local dev only (gitignored, same optional-load pattern as Nexus
+// in App.jsx). Absent in the published build, where the canvas uses XRAY_DEFAULTS.
+const xrayPanelModule = import.meta.glob('./XrayPanel.jsx', { eager: true })
+const xray = xrayPanelModule['./XrayPanel.jsx'] || null
+const XrayPanel = xray ? xray.default : null
 
 const INSTALL_CMD = 'npx github:Jingquank/Bench'
 const MAX_TILT = 7
@@ -12,7 +18,6 @@ const SKILL_LAST_UPDATED = new Date(__SKILL_MTIME__).toLocaleDateString('en-US',
 const SKILL_VERSION = `v${__SKILL_VERSION__}`
 
 export default function TidalArtifact({ mousePos = { x: 0.5, y: 0.5 } }) {
-  const topVideoSrc = asciiVideo
   const [timestamp, setTimestamp] = useState(() =>
     new Date().toLocaleTimeString('en-US', { hour12: false })
   )
@@ -23,6 +28,14 @@ export default function TidalArtifact({ mousePos = { x: 0.5, y: 0.5 } }) {
   const containerRef = useRef(null)
   const widgetRef = useRef(null)
   const reducedMotion = useReducedMotion()
+
+  // @xray-generated — live debug config for the model canvas (xray panel).
+  const [xrayConfig, setXrayConfig] = useState(() =>
+    xray ? { ...XRAY_DEFAULTS, ...(xray.loadXrayConfig() || {}) } : { ...XRAY_DEFAULTS }
+  )
+  useEffect(() => {
+    if (xray) xray.saveXrayConfig(xrayConfig)
+  }, [xrayConfig])
 
   const handleCopy = useCallback(async () => {
     try {
@@ -139,17 +152,13 @@ export default function TidalArtifact({ mousePos = { x: 0.5, y: 0.5 } }) {
       aria-label="Tidal Phase Artifact — ocean monitoring widget"
     >
       {glareStyle && <div style={glareStyle} />}
-      {/* Top Visual Area */}
-      <div style={styles.topVisualContainer}>
-        <video
-          style={styles.topVideo}
-          src={topVideoSrc}
-          autoPlay
-          loop
-          muted
-          playsInline
-          aria-label="ASCII art video preview"
-        />
+      {/* Top Visual Area — 3D model preview */}
+      <div
+        style={styles.topVisualContainer}
+        role="img"
+        aria-label="Interactive 3D preview of the Bench model"
+      >
+        <BenchModelCanvas reducedMotion={reducedMotion} config={xrayConfig} />
       </div>
 
       {/* Info Panel */}
@@ -220,6 +229,11 @@ export default function TidalArtifact({ mousePos = { x: 0.5, y: 0.5 } }) {
         <div style={styles.gridOverlay} />
         <NoiseCanvas mode={modeRef} mousePos={mouseRef} reducedMotion={reducedMotion} />
       </div>
+
+      {/* @xray-generated — debug panel (portals to body; local dev only) */}
+      {XrayPanel && (
+        <XrayPanel config={xrayConfig} onChange={setXrayConfig} defaults={XRAY_DEFAULTS} />
+      )}
     </div>
   )
 }
@@ -249,10 +263,11 @@ const styles = {
   topVisualContainer: {
     position: 'relative',
     width: '100%',
-    height: 'fit-content',
+    height: 200,
     flexShrink: 0,
     overflow: 'hidden',
     touchAction: 'none',
+    background: '#0b0f09',
   },
   bottomVisualContainer: {
     position: 'relative',
@@ -357,12 +372,6 @@ const styles = {
     display: 'inline-block',
     paddingRight: 0,
     animation: 'marquee 11s linear infinite',
-  },
-  topVideo: {
-    width: '100%',
-    height: 'fit-content',
-    display: 'block',
-    objectFit: 'cover',
   },
   cmdRow: {
     background: '#0b0f09',

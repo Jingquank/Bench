@@ -38,4 +38,6 @@ function packMetaPlugin() {
 export default defineConfig({
   plugins: [react(), packMetaPlugin()],
   base: '/Bench/',
+  // Treat 3D model files as static assets so `import url from '*.glb'` returns a URL.
+  assetsInclude: ['**/*.glb', '**/*.gltf'],
 })

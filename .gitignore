@@ -8,3 +8,6 @@ src/components/Nexus.jsx
 src/components/Nexus.css
 src/components/Playground.jsx
 src/components/Playground.css
+
+# xray debug panel (local dev only)
+src/components/XrayPanel.jsx
