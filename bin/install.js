@@ -124,7 +124,6 @@ const skills = [
   },
   { name: "xray", files: [{ src: "XRAY.md", dest: "SKILL.md" }], implicitInvocation: false },
   { name: "drill", files: [{ src: "DRILL.md", dest: "SKILL.md" }], implicitInvocation: false },
-  { name: "realitycheck", files: [{ src: "REALITYCHECK.md", dest: "SKILL.md" }], implicitInvocation: true },
   { name: "lore", files: [{ src: "LORE.md", dest: "SKILL.md" }], implicitInvocation: true },
   {
     name: "grid",

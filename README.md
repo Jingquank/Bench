@@ -7,7 +7,7 @@
 ╚═════╝ ╚══════╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝
 ```
 
-A skill pack for [Cursor](https://cursor.com), [Claude Code](https://claude.ai/code), and [Codex](https://developers.openai.com/codex) — editorial reports, live debug panels, plan drilling, reality checks, product lore, and layout grids.
+A skill pack for [Cursor](https://cursor.com), [Claude Code](https://claude.ai/code), and [Codex](https://developers.openai.com/codex) — editorial reports, live debug panels, plan drilling, product lore, and layout grids.
 
 **Live site:** [bench-skills.vercel.app](https://bench-skills.vercel.app/)
 
@@ -48,7 +48,6 @@ It records a small manifest per target and **auto-removes stale files** left by 
 | **WriteReport** | `/writereport` | Turn any doc or data into a polished editorial report (self-contained HTML / PDF) |
 | **Xray** | `/xray` | Live debug-UI panel to tweak any element's parameters in real time |
 | **Drill** | `/drill` | Interview that reviews your plan and fills the gaps before you code |
-| **Reality Check** | `/realitycheck` | First-principles PMF hypotheses + Likert questionnaires |
 | **Lore** | `/lore` | Maintain a `PRODUCT.md` of journeys, target users, and anti-goals |
 | **Grid** | `/grid` | Toggleable Müller-Brockmann layout grid overlay + tuning panel |
 
@@ -89,18 +88,6 @@ Interview-style review of your implementation plan that surfaces gaps and unmade
 - Works in plan mode (edits the plan in-place) and agent mode (summary in chat); short-circuits when the plan is already complete
 
 **File:** `DRILL.md`
-
-### Reality Check — `/realitycheck`
-
-`[FOCUS=<area-or-hypothesis>]`
-
-Form brutally honest, first-principles hypotheses about product-market fit, then generate Likert-scale questionnaires to validate or falsify them — zero confirmation bias.
-
-- Silently scans README, routes, dependencies, and UX, then interviews you for what code can't answer
-- 3–8 impact-ranked hypotheses that **challenge** assumptions, naming blind spots with codebase evidence
-- 15–20 Likert questions ordered by emotional weight (with reverse-coded items); outputs to Notion (markdown fallback) with a scoring guide
-
-**File:** `REALITYCHECK.md`
 
 ### Lore — `/lore`
 

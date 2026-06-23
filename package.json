@@ -1,7 +1,7 @@
 {
   "name": "bench",
   "version": "1.10.0",
-  "description": "Editorial reports, live debug panels, plan drilling, reality checks, product lore, and Müller-Brockmann layout grids — a skill pack for Cursor, Claude Code, and Codex.",
+  "description": "Editorial reports, live debug panels, plan drilling, product lore, and Müller-Brockmann layout grids — a skill pack for Cursor, Claude Code, and Codex.",
   "bin": {
     "bench": "bin/install.js"
   },
@@ -13,7 +13,6 @@
     "fonts/",
     "XRAY.md",
     "DRILL.md",
-    "REALITYCHECK.md",
     "LORE.md",
     "GRID.md",
     "grid/"
@@ -30,7 +29,6 @@
     "xray",
     "drill",
     "plan-review",
-    "realitycheck",
     "lore",
     "grid",
     "grid-system",

@@ -1,7 +1,7 @@
 # Version Check Before Push
 
 The version in `package.json` is **pack-wide**: it covers all skills in this
-repo (xray, drill, realitycheck, lore). Any skill change may warrant a bump —
+repo (xray, drill, lore). Any skill change may warrant a bump —
 e.g. if the `xray` skill is updated, bumping the shared version is valid.
 
 Before running `git push` (or any command that pushes commits to a remote), you MUST:
