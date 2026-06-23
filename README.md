@@ -48,7 +48,7 @@ It records a small manifest per target and **auto-removes stale files** left by 
 | **WriteReport** | `/writereport` | Turn any doc or data into a polished editorial report (self-contained HTML / PDF) |
 | **Xray** | `/xray` | Live debug-UI panel to tweak any element's parameters in real time |
 | **Drill** | `/drill` | Interview that reviews your plan and fills the gaps before you code |
-| **Lore** | `/lore` | Maintain a `PRODUCT.md` of journeys, target users, and anti-goals |
+| **Lore** | `/lore` | Maintain a `LORE.md` of journeys, target users, and anti-goals |
 | **Grid** | `/grid` | Toggleable Müller-Brockmann layout grid overlay + tuning panel |
 
 ### WriteReport — `/writereport`
@@ -93,9 +93,9 @@ Interview-style review of your implementation plan that surfaces gaps and unmade
 
 `[FOCUS=<journey-or-area>]`
 
-Generate and maintain a `PRODUCT.md` at the project root — a living codex of what the product is, who it's for, what it deliberately does **not** do, and the journeys that make it real.
+Generate and maintain a `LORE.md` at the project root — a living codex of what the product is, who it's for, what it deliberately does **not** do, and the journeys that make it real.
 
-- Auto-detects mode from `PRODUCT.md` presence — baseline draft first, diff-and-confirm on later runs
+- Auto-detects mode from `LORE.md` presence — baseline draft first, diff-and-confirm on later runs
 - Job-story journeys (`When X, I want Y, so I can Z`) backed by concrete steps and source-file citations
 - Monorepo-aware; `FOCUS=<area>` narrows the run; feeds `/drill` so plan reviews reference real journeys
 

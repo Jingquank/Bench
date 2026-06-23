@@ -1,13 +1,13 @@
 <!-- only:cursor -->
 ---
 name: lore
-description: Generate, iterate, and maintain a PRODUCT.md -- a living document of the product's user journeys, target users, and anti-goals. Use when the user says "lore", "update lore", "product.md", "user journeys", "log this feature", or "what does this product do". The doc evolves as features are added, modified, or removed.
+description: Generate, iterate, and maintain a LORE.md -- a living document of the product's user journeys, target users, and anti-goals. Use when the user says "lore", "update lore", "lore.md", "user journeys", "log this feature", or "what does this product do". The doc evolves as features are added, modified, or removed.
 ---
 <!-- /only -->
 <!-- only:claude -->
 ---
 name: lore
-description: Generate, iterate, and maintain a PRODUCT.md -- a living document of the product's user journeys, target users, and anti-goals. Use when the user says "lore", "update lore", "product.md", "user journeys", "log this feature", or "what does this product do". The doc evolves as features are added, modified, or removed.
+description: Generate, iterate, and maintain a LORE.md -- a living document of the product's user journeys, target users, and anti-goals. Use when the user says "lore", "update lore", "lore.md", "user journeys", "log this feature", or "what does this product do". The doc evolves as features are added, modified, or removed.
 user-invocable: true
 disable-model-invocation: false
 argument-hint: [FOCUS=<journey-or-area>]
@@ -16,13 +16,13 @@ argument-hint: [FOCUS=<journey-or-area>]
 <!-- only:codex -->
 ---
 name: lore
-description: Generate, iterate, and maintain a PRODUCT.md -- a living document of the product's user journeys, target users, and anti-goals. Use when the user says "lore", "update lore", "product.md", "user journeys", "log this feature", or "what does this product do". The doc evolves as features are added, modified, or removed.
+description: Generate, iterate, and maintain a LORE.md -- a living document of the product's user journeys, target users, and anti-goals. Use when the user says "lore", "update lore", "lore.md", "user journeys", "log this feature", or "what does this product do". The doc evolves as features are added, modified, or removed.
 ---
 <!-- /only -->
 
 # /lore -- Product Journey Codex
 
-Maintain `PRODUCT.md` at the project root: the canonical, living description of what the product is, who it's for, what it deliberately does NOT do, and the user journeys that make it real. `/lore` is the act, `PRODUCT.md` is the codex -- run it to write the codex from scratch on a new project, or to keep it in sync as features change.
+Maintain `LORE.md` at the project root: the canonical, living description of what the product is, who it's for, what it deliberately does NOT do, and the user journeys that make it real. `/lore` is the act, `LORE.md` is the codex -- run it to write the codex from scratch on a new project, or to keep it in sync as features change.
 
 ---
 
@@ -32,11 +32,11 @@ Run a single check at the start of every invocation:
 
 | Project state | Mode |
 |---|---|
-| No `PRODUCT.md` at repo root, project directory effectively empty (no source, no routes) | **BASELINE-EMPTY** |
-| No `PRODUCT.md` at repo root, project has code | **BASELINE-DERIVE** |
-| `PRODUCT.md` exists at repo root | **ITERATE** |
+| No `LORE.md` at repo root, project directory effectively empty (no source, no routes) | **BASELINE-EMPTY** |
+| No `LORE.md` at repo root, project has code | **BASELINE-DERIVE** |
+| `LORE.md` exists at repo root | **ITERATE** |
 
-State the detected mode to the user in one sentence before proceeding. If the user wants to override (e.g., "redo from scratch even though PRODUCT.md exists"), let them.
+State the detected mode to the user in one sentence before proceeding. If the user wants to override (e.g., "redo from scratch even though LORE.md exists"), let them.
 
 ### Optional: FOCUS argument
 
@@ -64,7 +64,7 @@ Read in priority order:
 | `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` | `description`, dependencies (domain signals: Stripe = payments, Prisma = data app, Three.js = 3D, etc.) |
 | `.env.example` | Third-party services in use |
 | `docs/`, `CLAUDE.md` / `AGENTS.md`, plan files | Existing product context, design decisions |
-| Existing `PRODUCT.md` (ITERATE mode) | Current journeys, personas, anti-goals -- treat as prior baseline, not ground truth |
+| Existing `LORE.md` (ITERATE mode) | Current journeys, personas, anti-goals -- treat as prior baseline, not ground truth |
 
 **Caveat: README staleness.** READMEs lag behind reality, especially after pivots or fast-moving development. Cross-check claims against the codebase before quoting them -- if `git log -- README.md` shows it hasn't been touched in months while the rest of the repo has, treat it as historical context (the product's intent, not its current state) and prefer code, routes, and live UI as ground truth.
 
@@ -89,7 +89,7 @@ Detect the framework and enumerate user-facing entry points:
 
 For each route/page/command, infer purpose from a quick read. As you draft each journey, you'll capture **how you learned it** in a one-line `Evidence:` summary -- not an exhaustive file index, just enough to point future runs at the right region.
 
-**Monorepo check.** If `package.json` declares `workspaces`, or the repo has `apps/`, `packages/`, `pnpm-workspace.yaml`, or `turbo.json`, stop and ask the user which app `PRODUCT.md` should describe. One PRODUCT.md per consumer-facing app -- at the app's root, not the repo's root.
+**Monorepo check.** If `package.json` declares `workspaces`, or the repo has `apps/`, `packages/`, `pnpm-workspace.yaml`, or `turbo.json`, stop and ask the user which app `LORE.md` should describe. One LORE.md per consumer-facing app -- at the app's root, not the repo's root.
 
 ### Step 3: Live Browser Inspection (web apps only)
 
@@ -99,11 +99,11 @@ For each route/page/command, infer purpose from a quick read. As you draft each 
 4. Note visual state -- modals, empty states, conditional UI, animations -- that source code alone hides.
 5. If no dev server is running, skip silently.
 
-### Step 4 (ITERATE mode only): Diff Against Existing PRODUCT.md
+### Step 4 (ITERATE mode only): Diff Against Existing LORE.md
 
 #### Step 4a: Schema check & migration
 
-Before diffing journeys, validate the existing `PRODUCT.md` matches the current schema:
+Before diffing journeys, validate the existing `LORE.md` matches the current schema:
 
 - Front matter has `Last updated:` and `Journeys:` fields
 - Top-level sections present: `## What this product is`, `## Target users`, `## Anti-goals`, `## User journeys`
@@ -115,14 +115,14 @@ If anything is missing, malformed, or in a legacy format, queue the structural c
 
 #### Step 4b: Per-journey diff
 
-For each journey in the existing PRODUCT.md:
+For each journey in the existing LORE.md:
 
 - **Re-derive it from current code/UI** the same way you would in BASELINE-DERIVE. Use the journey's `Evidence:` line as a hint for where to look, but don't trust it as ground truth -- code may have moved.
 - Compare the re-derived journey to what's written. If they match, mark **UNCHANGED**.
 - If steps, outcome, or job-story have meaningfully shifted, mark **MAYBE-MODIFIED**.
 - If the journey can't be re-derived at all (no code supports it anymore), mark **MAYBE-REMOVED**.
 
-Then scan for journeys the codebase contains that PRODUCT.md does NOT:
+Then scan for journeys the codebase contains that LORE.md does NOT:
 
 - New routes, new commands, new exported APIs that don't appear in any existing journey -> **CANDIDATE-NEW**.
 
@@ -149,7 +149,7 @@ In ITERATE mode, also ask focused questions about the change set. Always use the
 
 - For each `CANDIDATE-NEW` flow: "I see [file/route]. Is this a new journey, part of an existing one, or scaffolding I should ignore?"
 - For each `MAYBE-REMOVED`: "The journey 'Invite teammate via SMS' looks gone -- I can't find code that supports it anymore. Remove it, mark it `(stale)`, or did it move somewhere I missed?"
-- For each `MIGRATION`: "Your PRODUCT.md is missing the `## Anti-goals` section that the current `/lore` schema expects. Add it now (you'll be asked to fill it), or skip the migration this run?"
+- For each `MIGRATION`: "Your LORE.md is missing the `## Anti-goals` section that the current `/lore` schema expects. Add it now (you'll be asked to fill it), or skip the migration this run?"
 
 ### Step 6: Round 2 (only if Round 1 surfaced major ambiguity)
 
@@ -161,12 +161,12 @@ Trigger a second batch ONLY when README is absent or unhelpful and Round 1 answe
 
 ### Step 7a: BASELINE-EMPTY mode
 
-Write a stub `PRODUCT.md` with section headers and short prompts inside each one explaining what to fill in later. Do NOT invent content. Tell the user: "Project is too early for journeys -- I left a stub. Run `/lore` again once you have routes or commands."
+Write a stub `LORE.md` with section headers and short prompts inside each one explaining what to fill in later. Do NOT invent content. Tell the user: "Project is too early for journeys -- I left a stub. Run `/lore` again once you have routes or commands."
 
 ### Step 7b: BASELINE-DERIVE mode
 
-1. **Re-check before drafting.** Confirm `PRODUCT.md` still does not exist at the project root. If it does (e.g., it was created during your session, or mode detection was overridden), abort BASELINE and switch to ITERATE mode.
-2. Draft the full `PRODUCT.md` from discovery + interview answers. Use the format in **PRODUCT.md Template** below. (See Rules below for journey count -- match it to product complexity, not an arbitrary ceiling.)
+1. **Re-check before drafting.** Confirm `LORE.md` still does not exist at the project root. If it does (e.g., it was created during your session, or mode detection was overridden), abort BASELINE and switch to ITERATE mode.
+2. Draft the full `LORE.md` from discovery + interview answers. Use the format in **LORE.md Template** below. (See Rules below for journey count -- match it to product complexity, not an arbitrary ceiling.)
 
 ### Step 7c: ITERATE mode -- Diff and Confirm
 
@@ -174,7 +174,7 @@ Produce a **change preview** (do not write to disk yet). Reference journeys by t
 
 ```
 [MIGRATION] Schema upgrade
-  Why: Existing PRODUCT.md uses legacy `Source:` field; current schema uses `Evidence:`.
+  Why: Existing LORE.md uses legacy `Source:` field; current schema uses `Evidence:`.
   Action: Rename the field for all journeys. No content change.
 
 [ADD] Export project as ZIP
@@ -204,9 +204,9 @@ Then ask the user to approve/reject each change (use your structured-question to
 
 ## Phase 4 -- Write & Verify
 
-### Step 8: Write PRODUCT.md
+### Step 8: Write LORE.md
 
-Always at the project root: `PRODUCT.md`.
+Always at the project root: `LORE.md`.
 
 - **ITERATE mode:** use the Edit tool. Never use Write -- it would clobber any unrelated content (manual edits, comments).
 - **BASELINE-DERIVE / BASELINE-EMPTY mode:** check absence one final time, then use the Write tool. If the file exists at this point, abort and switch to ITERATE.
@@ -220,11 +220,11 @@ Always at the project root: `PRODUCT.md`.
 5. **Evidence sanity check.** For each journey's `Evidence:` line, spot-check any backticked file paths it mentions. If a referenced path doesn't exist:
    - **A peripheral path is broken** (one of several mentioned): rewrite the `Evidence:` line so it doesn't cite the missing file -- the journey itself is fine.
    - **The Evidence line points only to files that no longer exist:** the journey is orphaned. Surface to the user (via your structured-question tool, e.g. `AskUserQuestion`, using the journey's title): remove it, retain it with a `(stale)` marker in the title, or pause for manual fix.
-6. Report a one-line summary to the user: "PRODUCT.md updated -- 6 journeys (1 added, 1 modified, 4 unchanged)."
+6. Report a one-line summary to the user: "LORE.md updated -- 6 journeys (1 added, 1 modified, 4 unchanged)."
 
 ---
 
-## PRODUCT.md Template
+## LORE.md Template
 
 ```markdown
 # Product Codex -- [Product Name]
@@ -344,7 +344,7 @@ The main template above shows a web flow. For other project types, the shape is 
 
 ## Rules
 
-- **One PRODUCT.md per repo (or per app, in monorepos).** At the project root. Never nest, never duplicate.
+- **One LORE.md per repo (or per app, in monorepos).** At the project root. Never nest, never duplicate.
 - **A journey is not a route.** A journey delivers user-visible value end-to-end. Skip 404 / error pages, health checks, OAuth callbacks (unless they're the entire signup story), admin-only debug views, scaffold or template routes that haven't been touched, and pages with no user-visible content. If you're unsure whether a route qualifies, ask.
 - **Match count to complexity.** Don't impose an arbitrary ceiling. A landing page may have 1-2 journeys; a non-linear editor or rich SaaS may need 15+. Document every distinct user-visible value path; merge journeys that are actually variants of the same story.
 - **One-line `Evidence:`, not a file index.** Each journey ends with a one-sentence summary of how you learned it -- the code area, screenshot, or doc. Specific file paths in backticks are welcome but not required, and they don't have to be exhaustive.
@@ -357,9 +357,9 @@ The main template above shows a web flow. For other project types, the shape is 
 
 ## Integration with /drill
 
-`/drill` reads `PRODUCT.md` (when present) during its context-gathering phase. This means:
+`/drill` reads `LORE.md` (when present) during its context-gathering phase. This means:
 
 - A plan that introduces a new feature is automatically compared against existing journeys -- `/drill` can ask, by title, "does this extend the 'Sign up & create first project' journey, or is it a new one?"
 - A plan that touches files mentioned in a journey's `Evidence:` line (or files in the same code region) triggers `/drill` to ask about journey-level impact.
 
-Keep `PRODUCT.md` accurate; `/drill` picks it up automatically.
+Keep `LORE.md` accurate; `/drill` picks it up automatically.
