@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<!--
+  scout-artifact.html — the shell every scout visual output builds on.
+
+  How to use (agent instructions):
+  1. Copy this file to docs/scout/<technique>-<topic>.html.
+  2. Replace the content inside <main> with the artifact's real content,
+     composing from the blocks demonstrated below (keep the ones you need,
+     delete the rest). Update <title>, the eyebrow, and the h1.
+  3. Keep the token block, theme toggle, and (for quizzes) the quiz script
+     intact. Everything is inline — no CDNs, no build step.
+  4. Satoshi: if the installed skill dir ships fonts/Satoshi-Variable.woff2,
+     copy it next to the artifact (docs/scout/fonts/) or inline it as a
+     data: URI in the @font-face below. If absent, the system stack takes
+     over — do not link a remote font.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scout — Artifact</title>
+<style>
+  /* ---- Satoshi (optional, self-hosted; degrades to system sans) ---- */
+  @font-face {
+    font-family: "Satoshi";
+    src: url("fonts/Satoshi-Variable.woff2") format("woff2");
+    font-weight: 300 900;
+    font-display: swap;
+  }
+
+  /* ---- Tokens — Bench editorial system (warm gray + green, 12-step) ---- */
+  :root {
+    --font-sans: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+
+    --bg: #fffdf9;
+    --surface: #fcf9f4;
+    --ui: #f4efe8;
+    --ui-hover: #efe7dd;
+    --border-subtle: #dfd8ce;
+    --border: #d5cdc3;
+    --solid: #00e05a;
+    --on-solid: #142716;
+    --accent-text: #00862c;
+    --accent-surface: #f0fbf1;
+    --text: #251f17;
+    --text-muted: #686259;
+    --text-subtle: #888177;
+    --danger-text: #a94427;
+
+    --radius-1: 3px;
+    --radius-2: 4px;
+    --radius-3: 6px;
+    --radius-4: 8px;
+
+    --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+    --space-5: 24px; --space-6: 32px; --space-7: 40px; --space-8: 48px;
+    --space-9: 64px;
+
+    --fw-black: 900; --fw-bold: 700; --fw-medium: 500;
+  }
+  :root[data-theme="dark"] {
+    --bg: #000000;
+    --surface: #121315;
+    --ui: #1f1f22;
+    --ui-hover: #27282c;
+    --border-subtle: #393a3f;
+    --border: #46474e;
+    --solid: #00e05a;
+    --on-solid: #142716;
+    --accent-text: #00dc56;
+    --accent-surface: #162a18;
+    --text: #eeeef0;
+    --text-muted: #b2b3bd;
+    --text-subtle: #797b86;
+    --danger-text: #e08663;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #000000;
+      --surface: #121315;
+      --ui: #1f1f22;
+      --ui-hover: #27282c;
+      --border-subtle: #393a3f;
+      --border: #46474e;
+      --solid: #00e05a;
+      --on-solid: #142716;
+      --accent-text: #00dc56;
+      --accent-surface: #162a18;
+      --text: #eeeef0;
+      --text-muted: #b2b3bd;
+      --text-subtle: #797b86;
+      --danger-text: #e08663;
+    }
+  }
+
+  /* ---- Base ---- */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font: var(--fw-medium) 1rem/1.55 var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-9) clamp(16px, 5vw, 40px) var(--space-9);
+  }
+  h1 { font-weight: var(--fw-black); font-size: clamp(2rem, 2.5vw + 1rem, 3rem); line-height: 1.08; letter-spacing: -0.025em; }
+  h2 { font-weight: var(--fw-bold); font-size: 1.875rem; line-height: 1.2; letter-spacing: -0.02em; margin-top: var(--space-8); }
+  h3 { font-weight: var(--fw-bold); font-size: 1.25rem; line-height: 1.3; letter-spacing: -0.01em; margin-top: var(--space-6); }
+  p, ul, ol { margin-top: var(--space-4); }
+  ul, ol { padding-left: 1.2em; }
+  strong { font-weight: var(--fw-bold); }
+  a { color: var(--accent-text); }
+  code {
+    font: 0.875em ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: var(--ui);
+    border-radius: var(--radius-1);
+    padding: 0.1em 0.35em;
+  }
+
+  .eyebrow {
+    font-weight: var(--fw-bold); font-size: 0.75rem; line-height: 1.2;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: var(--space-3);
+  }
+  .lead { font-size: 1.125rem; line-height: 1.6; color: var(--text-muted); margin-top: var(--space-4); }
+  .rule { border: 0; border-top: 1px solid var(--border-subtle); margin: var(--space-7) 0 0; }
+
+  /* ---- Card / callout blocks (flat, border-defined — no shadows) ---- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-3);
+    padding: var(--space-5);
+    margin-top: var(--space-5);
+  }
+  .card > :first-child { margin-top: 0; }
+  .callout {
+    background: var(--accent-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-3);
+    padding: var(--space-4) var(--space-5);
+    margin-top: var(--space-5);
+  }
+  .callout .eyebrow { color: var(--accent-text); margin-bottom: var(--space-1); }
+
+  /* ---- Directions grid (brainstorm) ---- */
+  .directions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+  }
+  .directions .card { margin-top: 0; }
+
+  /* ---- Decision block (plan — decisions-first) ---- */
+  .decision { border-left: 3px solid var(--solid); }
+  .decision .meta { font-size: 0.8125rem; line-height: 1.4; letter-spacing: 0.01em; color: var(--text-muted); margin-top: var(--space-3); }
+
+  /* ---- Quiz ---- */
+  .quiz { counter-reset: q; }
+  .quiz fieldset {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-3);
+    background: var(--surface);
+    padding: var(--space-5);
+    margin-top: var(--space-4);
+  }
+  .quiz legend {
+    counter-increment: q;
+    font-weight: var(--fw-bold);
+    padding: 0 var(--space-2);
+  }
+  .quiz legend::before { content: "Q" counter(q) " · "; color: var(--accent-text); }
+  .quiz label {
+    display: flex; gap: var(--space-3); align-items: baseline;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-2);
+    margin-top: var(--space-1);
+    cursor: pointer;
+  }
+  .quiz label:hover { background: var(--ui-hover); }
+  .quiz input[type="radio"] { accent-color: var(--solid); }
+  .quiz .explain {
+    display: none;
+    font-size: 0.875rem; line-height: 1.5;
+    color: var(--text-muted);
+    border-top: 1px dashed var(--border-subtle);
+    padding-top: var(--space-3); margin-top: var(--space-3);
+  }
+  .quiz.checked .explain { display: block; }
+  .quiz.checked label.correct { background: var(--accent-surface); }
+  .quiz.checked label.missed { outline: 1px solid var(--danger-text); outline-offset: -1px; }
+  .quiz-bar { display: flex; gap: var(--space-4); align-items: center; margin-top: var(--space-5); flex-wrap: wrap; }
+  .quiz-check {
+    font: var(--fw-bold) 0.875rem/1 var(--font-sans);
+    background: var(--solid); color: var(--on-solid);
+    border: 0; border-radius: var(--radius-2);
+    padding: var(--space-3) var(--space-5);
+    cursor: pointer; min-height: 40px;
+  }
+  .quiz-check:hover { filter: brightness(0.95); }
+  .quiz-verdict { font-weight: var(--fw-black); font-size: 1.25rem; letter-spacing: -0.01em; display: none; }
+  .quiz-verdict.pass { display: block; color: var(--accent-text); }
+  .quiz-verdict.retry { display: block; color: var(--danger-text); }
+  .quiz-note { font-size: 0.8125rem; color: var(--text-muted); }
+
+  /* ---- Footer + theme toggle ---- */
+  footer {
+    font-size: 0.8125rem; line-height: 1.4; letter-spacing: 0.01em;
+    color: var(--text-subtle);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: var(--space-9); padding-top: var(--space-4);
+  }
+  .theme-toggle {
+    position: fixed; top: var(--space-4); right: var(--space-4);
+    font: var(--fw-bold) 0.6875rem/1 var(--font-sans);
+    letter-spacing: 0.02em; text-transform: uppercase;
+    background: var(--ui); color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 9999px;
+    padding: var(--space-2) var(--space-4);
+    cursor: pointer; min-height: 32px;
+  }
+  .theme-toggle:hover { background: var(--ui-hover); }
+
+  /* ---- Print — the primary view reads with ink only ---- */
+  @media print {
+    .theme-toggle, .quiz-check { display: none; }
+    .quiz .explain { display: block; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">Theme</button>
+
+<main>
+  <!-- ================= HEADER (always keep) ================= -->
+  <p class="eyebrow">Scout · Blindspot Pass <!-- technique · topic --></p>
+  <h1>Replace this with the artifact title</h1>
+  <p class="lead">
+    One-paragraph standfirst: what this artifact is, which unknowns it
+    surfaces, and what the reader should do with it.
+  </p>
+  <hr class="rule">
+
+  <!-- ================= SECTION (repeat as needed) ================= -->
+  <h2>A section heading</h2>
+  <p>
+    Body copy. Ground every claim in the territory — cite files as
+    <code>src/example.ts</code>, quote real constraints, keep the register
+    factual.
+  </p>
+
+  <!-- Callout: a finding, metric, or key takeaway -->
+  <div class="callout">
+    <p class="eyebrow">Key finding</p>
+    <p><strong>Session middleware already refreshes tokens.</strong>
+    Plans must not add a second token store — see <code>src/auth/session.ts</code>.</p>
+  </div>
+
+  <!-- ================= DIRECTIONS GRID (brainstorm artifacts) ================= -->
+  <h2>Directions</h2>
+  <div class="directions">
+    <div class="card">
+      <h3>Direction A — the cheap one</h3>
+      <p>What it is, what it optimizes for, what it gives up.</p>
+    </div>
+    <div class="card">
+      <h3>Direction B — the ambitious one</h3>
+      <p>Genuinely different in kind, not in shade.</p>
+    </div>
+  </div>
+
+  <!-- ================= DECISION BLOCK (plan artifacts, decisions-first) ================= -->
+  <h2>Decisions you are most likely to tweak</h2>
+  <div class="card decision">
+    <h3>Data model — single table with a type column</h3>
+    <p>The choice made and what it implies.</p>
+    <p class="meta">Alternative: split tables per type · Flips if: the types diverge in more than two fields</p>
+  </div>
+
+  <!-- ================= QUIZ (quiz artifacts — keep block + script) ================= -->
+  <h2>Quiz — merge only when you pass</h2>
+  <div class="quiz" id="quiz">
+    <fieldset>
+      <legend>Where is tax computed after this change?</legend>
+      <label><input type="radio" name="q1" value="a"> In the cart component, at render time</label>
+      <label><input type="radio" name="q1" value="b" data-correct> Server-side, in <code>src/api/tax.ts</code></label>
+      <label><input type="radio" name="q1" value="c"> In the checkout reducer</label>
+      <p class="explain">
+        The diff routes totals through the existing server endpoint — the
+        client only displays what <code>src/api/tax.ts</code> returns.
+      </p>
+    </fieldset>
+
+    <fieldset>
+      <legend>What happens if the session token expires mid-checkout?</legend>
+      <label><input type="radio" name="q2" value="a" data-correct> The middleware refreshes it transparently</label>
+      <label><input type="radio" name="q2" value="b"> The user is logged out and the cart is cleared</label>
+      <label><input type="radio" name="q2" value="c"> The request fails with a 401 shown to the user</label>
+      <p class="explain">
+        Refresh is handled by the session middleware this change depends on
+        but did not touch — the reason it appears in this quiz.
+      </p>
+    </fieldset>
+
+    <div class="quiz-bar">
+      <button class="quiz-check" type="button" id="quizCheck">Check answers</button>
+      <p class="quiz-verdict" id="quizVerdict"></p>
+      <p class="quiz-note">Soft gate: scout recommends merging only after a clean pass — your call.</p>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER (always keep) ================= -->
+  <footer>
+    Generated by <strong>/scout</strong> · fed 2 entries to <code>docs/scout-log.md</code> ·
+    suggested next move: implementation plan.
+  </footer>
+</main>
+
+<script>
+  // ---- Theme toggle (keep) ----
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    btn.addEventListener("click", function () {
+      var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      var current = root.getAttribute("data-theme") || (dark ? "dark" : "light");
+      root.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    });
+  })();
+
+  // ---- Quiz scoring — live PASS / RETRY soft gate (keep for quiz artifacts) ----
+  (function () {
+    var quiz = document.getElementById("quiz");
+    if (!quiz) return;
+    document.getElementById("quizCheck").addEventListener("click", function () {
+      var fieldsets = quiz.querySelectorAll("fieldset");
+      var right = 0;
+      fieldsets.forEach(function (fs) {
+        fs.querySelectorAll("label").forEach(function (l) {
+          l.classList.remove("correct", "missed");
+        });
+        var correct = fs.querySelector("input[data-correct]");
+        var picked = fs.querySelector("input:checked");
+        if (correct) correct.closest("label").classList.add("correct");
+        if (picked && picked === correct) {
+          right++;
+        } else if (picked) {
+          picked.closest("label").classList.add("missed");
+        }
+      });
+      quiz.classList.add("checked");
+      var verdict = document.getElementById("quizVerdict");
+      var pass = right === fieldsets.length;
+      verdict.textContent = (pass ? "PASS" : "RETRY") + " · " + right + "/" + fieldsets.length;
+      verdict.className = "quiz-verdict " + (pass ? "pass" : "retry");
+    });
+  })();
+</script>
+</body>
+</html>

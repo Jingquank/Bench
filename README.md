@@ -7,7 +7,7 @@
 ╚═════╝ ╚══════╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝
 ```
 
-A skill pack for [Cursor](https://cursor.com), [Claude Code](https://claude.ai/code), and [Codex](https://developers.openai.com/codex) — editorial reports, live debug panels, plan drilling, product lore, and layout grids.
+A skill pack for [Cursor](https://cursor.com), [Claude Code](https://claude.ai/code), and [Codex](https://developers.openai.com/codex) — editorial reports, live debug panels, plan drilling, product lore, layout grids, and unknowns discovery.
 
 **Live site:** [bench-skills.vercel.app](https://bench-skills.vercel.app/)
 
@@ -50,6 +50,7 @@ It records a small manifest per target and **auto-removes stale files** left by 
 | **Drill** | `/drill` | Interview that reviews your plan and fills the gaps before you code |
 | **Lore** | `/lore` | Maintain a `LORE.md` of journeys, target users, and anti-goals |
 | **Grid** | `/grid` | Toggleable Müller-Brockmann layout grid overlay + tuning panel |
+| **Scout** | `/scout` | Discover your unknowns before, during, and after implementation |
 
 ### WriteReport — `/writereport`
 
@@ -111,6 +112,19 @@ Build a live, toggleable **Müller-Brockmann** layout grid into a site or webapp
 - Debug panel rewrites the product's grid custom properties live — presets, copy-to-CSS / JSON, localStorage persistence
 - Derives the starting grid from the project's real type and tokens, and ships `grid.css` so the real layout sits on the overlay's grid
 - Hotkeys: `shift+G` panel · `g` overlay · `m` cycle layers · `[` `]` nudge baseline · invoke as `/grid editorial`, `/grid columns=4 rows=8`, or bare `/grid`
+
+**Files:** `SKILL.md`, `references/`, `assets/`
+
+### Scout — `/scout`
+
+`[MODE=blindspot|brainstorm|interview|reference|plan|notes|pitch|quiz | <description>]`
+
+Discover the unknowns in your task while they're still cheap to fix — the gap between your prompt (the map) and the codebase's real constraints (the territory).
+
+- Diagnoses where your unknowns hide (known unknowns, "I'll know it when I see it", never-considered) and routes to the right technique
+- Eight techniques across the lifecycle — blind spot pass, brainstorm & prototype, interview, references, implementation plan (pre) · implementation notes (during) · pitch and comprehension quiz with a PASS / RETRY soft gate (post)
+- Persists learnings to `docs/scout-log.md` — what you learn becomes the map for next time; artifacts render on a self-contained editorial HTML shell
+- Bare `/scout` interviews you about your starting point, inspects repo state, then recommends a technique and why
 
 **Files:** `SKILL.md`, `references/`, `assets/`
 

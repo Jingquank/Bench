@@ -126,6 +126,18 @@ const skills = [
   { name: "drill", files: [{ src: "DRILL.md", dest: "SKILL.md" }], implicitInvocation: false },
   { name: "lore", files: [{ src: "LORE.md", dest: "SKILL.md" }], implicitInvocation: true },
   {
+    name: "scout",
+    files: [
+      { src: "SCOUT.md", dest: "SKILL.md" },
+      { src: "scout/references/taxonomy.md", dest: "references/taxonomy.md" },
+      { src: "scout/references/playbook.md", dest: "references/playbook.md" },
+      { src: "scout/assets/scout-artifact.html", dest: "assets/scout-artifact.html" },
+      // Shares WriteReport's bundled font (binary; optional — degrades to system sans).
+      { src: "fonts/Satoshi-Variable.woff2", dest: "fonts/Satoshi-Variable.woff2", binary: true, optional: true },
+    ],
+    implicitInvocation: false,
+  },
+  {
     name: "grid",
     files: [
       { src: "GRID.md", dest: "SKILL.md" },
