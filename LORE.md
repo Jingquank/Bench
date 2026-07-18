@@ -26,6 +26,32 @@ Maintain `LORE.md` at the project root: the canonical, living description of wha
 
 ---
 
+## Affordable-model delegation
+
+Use a fast, affordable model for **meaningful batches of read-only discovery or structured
+drafting**: repo-wide surface mapping, multiple independent routes or commands, multi-route browser
+inspection, schema and journey diffs, or a multi-section LORE.md draft. Keep single-file lookups,
+small deterministic searches, and tiny copy edits in the primary agent.
+
+When model-selectable subagents are available, **Claude Code prefers Sonnet 5** and other coding
+agents choose the closest available equivalent with strong code-search and writing ability. Do not
+prompt the user to choose a model, and do not reflexively choose the cheapest model if it would
+weaken factual reliability or prose.
+
+Discovery subagents must return structured findings with supporting file paths (and lines when
+useful), proposed journey or change classification, and explicit uncertainty. The primary agent
+validates every claim and evidence path before using it. If output is incomplete or unsupported,
+send one targeted correction to the same affordable model, then complete or repair it in the primary
+agent. If model selection is unavailable, use a default subagent; if delegation is unavailable or
+the batch is too small, continue directly.
+
+The **primary agent always** detects the mode, resolves product meaning and ambiguity, conducts the
+interview, locks the evidence and user decisions, presents every approval choice, and performs the
+final write and verification. Delegation never bypasses the monorepo question, change preview, or
+approval gates.
+
+---
+
 ## Mode Detection
 
 Run a single check at the start of every invocation:
@@ -52,7 +78,8 @@ Match `FOCUS` loosely: substring match against journey titles, route segments, a
 
 ## Phase 1 -- Silent Discovery
 
-Do all of this silently -- no user interaction yet. Use parallel tool calls or explore subagents where independent.
+Do all of this silently -- no user interaction yet. Use affordable explore subagents for meaningful
+independent batches under the policy above; otherwise use direct tool calls.
 
 ### Step 1: Identify the Product
 
@@ -89,6 +116,10 @@ Detect the framework and enumerate user-facing entry points:
 
 For each route/page/command, infer purpose from a quick read. As you draft each journey, you'll capture **how you learned it** in a one-line `Evidence:` summary -- not an exhaustive file index, just enough to point future runs at the right region.
 
+When this inventory is delegated, require one record per surface: route/page/command, purpose,
+supporting path, candidate journey relationship, and uncertainty. Treat every classification as a
+proposal until the primary agent checks it.
+
 **Monorepo check.** If `package.json` declares `workspaces`, or the repo has `apps/`, `packages/`, `pnpm-workspace.yaml`, or `turbo.json`, stop and ask the user which app `LORE.md` should describe. One LORE.md per consumer-facing app -- at the app's root, not the repo's root.
 
 ### Step 3: Live Browser Inspection (web apps only)
@@ -98,6 +129,10 @@ For each route/page/command, infer purpose from a quick read. As you draft each 
 3. Screenshot each route relevant to a journey (landing, signup, core workflow, dashboard, settings, pricing).
 4. Note visual state -- modals, empty states, conditional UI, animations -- that source code alone hides.
 5. If no dev server is running, skip silently.
+
+Multi-route inspection may run in an affordable subagent when it has the required browser access.
+The primary agent reviews its route coverage, screenshots, and observations before accepting them as
+journey evidence. If the subagent lacks the browser session, keep this step in the primary agent.
 
 ### Step 4 (ITERATE mode only): Diff Against Existing LORE.md
 
@@ -127,6 +162,10 @@ Then scan for journeys the codebase contains that LORE.md does NOT:
 - New routes, new commands, new exported APIs that don't appear in any existing journey -> **CANDIDATE-NEW**.
 
 **Rename heuristic.** Before finalizing the change set, check for renames. If a `MAYBE-REMOVED` journey looks like a `CANDIDATE-NEW` flow under a different name (similar shape, similar component names, or `git log --follow --diff-filter=R` shows a rename in the same area), prefer to merge the two into a single `MODIFY` of the existing journey with an updated `Evidence:` line -- not a delete + add. When ambiguous, ask the user using descriptive titles, not journey numbers.
+
+Schema checks, per-journey re-derivation, and candidate diffs may be delegated when they form a
+meaningful batch. The primary agent must re-check classifications and rename matches before they
+reach the interview or change preview.
 
 ---
 
@@ -158,6 +197,19 @@ Trigger a second batch ONLY when README is absent or unhelpful and Round 1 answe
 ---
 
 ## Phase 3 -- Draft or Diff
+
+### Evidence-constrained drafting
+
+After discovery and interview decisions are stable, the primary agent locks the product summary,
+approved facts, target users, anti-goals, journey set, steps, and evidence references. For a
+meaningful multi-section or multi-journey draft, give that locked packet to **one affordable writing
+subagent** so terminology and voice stay consistent. It may improve clarity and flow but must not
+invent, remove, or reinterpret product behavior. Require stable journey titles or IDs in its return
+so the primary agent can match every paragraph to its evidence.
+
+The primary agent validates the draft against the locked packet before using it in BASELINE-DERIVE
+or an ITERATE change preview. Apply the same one-correction-then-primary-repair policy above. A small
+stub, one-journey edit, or mechanical migration stays in the primary agent.
 
 ### Step 7a: BASELINE-EMPTY mode
 
@@ -344,6 +396,9 @@ The main template above shows a web flow. For other project types, the shape is 
 
 ## Rules
 
+- **Keep product judgment and writes in the primary agent.** Subagents may discover and draft from
+  locked evidence; the primary agent owns interpretation, interviews, approvals, final edits, and
+  verification.
 - **One LORE.md per repo (or per app, in monorepos).** At the project root. Never nest, never duplicate.
 - **A journey is not a route.** A journey delivers user-visible value end-to-end. Skip 404 / error pages, health checks, OAuth callbacks (unless they're the entire signup story), admin-only debug views, scaffold or template routes that haven't been touched, and pages with no user-visible content. If you're unsure whether a route qualifies, ask.
 - **Match count to complexity.** Don't impose an arbitrary ceiling. A landing page may have 1-2 journeys; a non-linear editor or rich SaaS may need 15+. Document every distinct user-visible value path; merge journeys that are actually variants of the same story.

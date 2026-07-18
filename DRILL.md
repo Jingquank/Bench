@@ -28,6 +28,31 @@ This is not a verification tool. The primary output is *questions and suggestion
 
 ---
 
+## Affordable-model delegation
+
+Use a fast, affordable model for **meaningful batches of read-only discovery**: repo-wide mapping,
+multiple independent code regions, several dependencies, or multi-route browser inspection. Keep a
+single-file lookup or small deterministic search in the primary agent; subagent startup would cost
+more time than it saves.
+
+When model-selectable subagents are available, **Claude Code prefers Sonnet 5** and other coding
+agents choose the closest available equivalent with strong code-search and structured-synthesis
+ability. Do not prompt the user to choose a model, and do not reflexively choose the cheapest model
+if it cannot produce reliable evidence.
+
+Give each discovery subagent a bounded question and require a structured return: finding, supporting
+file path (and line when useful), relevance to a named plan item, and uncertainty or missing context.
+The primary agent validates that evidence before using it. If a result is incomplete or unsupported,
+send one targeted correction to the same affordable model, then complete or repair it in the primary
+agent. If model selection is unavailable, use a default subagent; if delegation is unavailable or the
+batch is too small, continue directly.
+
+The **primary agent always** locates and reads the plan, assigns confidence labels, decides which
+questions matter, conducts every interview round, and finalizes the plan. Delegation never changes
+the user-facing flow or authorizes a subagent to edit project files or the plan.
+
+---
+
 ## Phase 1 -- Gather Context
 
 Do all of this silently. No user interaction yet.
@@ -53,7 +78,8 @@ Read the full plan. Parse out:
 
 ### Step 2: Map the Codebase
 
-Use parallel explore subagents or direct tool calls to quickly gather:
+For a meaningful batch, use affordable explore subagents under the policy above; otherwise use
+direct tool calls. Gather:
 
 1. **Project structure**: directory tree (top 2-3 levels), `src/` layout
 2. **Key configs**: `package.json` (dependencies, scripts), `tsconfig.json`, framework configs (vite, next, webpack), `.env.example`
@@ -79,6 +105,10 @@ The goal is to understand what already exists so you can ask: "Did you know X is
    - Note the current visual state: what's already built, what's missing, what the layout looks like
 3. If no dev server is running, skip this step. Note that you have no visual context and move on.
 
+Multi-route inspection may run in an affordable subagent when it has the required browser access.
+The primary agent reviews its route list, screenshots, and observations before citing them in an
+interview question. If the subagent lacks the browser session, keep this step in the primary agent.
+
 ### Step 4: Scan Dependencies
 
 For each new library, package, or external service mentioned in the plan:
@@ -86,6 +116,9 @@ For each new library, package, or external service mentioned in the plan:
 1. Use WebSearch to verify it exists, is actively maintained, and the version is reasonable
 2. Check if the project already has a similar dependency installed (e.g., plan says "add axios" but `fetch` wrapper already exists, or plan says "add lodash" but the project uses `ramda`)
 3. Note any findings -- these become questions or suggestions in Phase 2
+
+Several independent dependency checks may be delegated as one meaningful batch. The primary agent
+must verify the returned source and applicability before turning a finding into a recommendation.
 
 ---
 
@@ -176,6 +209,9 @@ After updating, present a brief summary of changes made to the plan.
 ---
 
 ## Rules
+
+- **Keep judgment in the primary agent.** Subagents gather evidence; the primary agent owns labels,
+  questions, interviews, and plan changes.
 
 <!-- only:cursor -->
 - **Never edit project files.** The plan file (`.plan.md`) is the sole exception -- editing it is allowed even when plan mode restricts other writes.

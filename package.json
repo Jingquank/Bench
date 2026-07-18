@@ -1,6 +1,6 @@
 {
   "name": "bench",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "Editorial reports, live debug panels, plan drilling, product lore, and Müller-Brockmann layout grids — a skill pack for Cursor, Claude Code, and Codex.",
   "bin": {
     "bench": "bin/install.js"

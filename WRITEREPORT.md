@@ -27,8 +27,9 @@ report: an editorial layout, exported as a self-contained HTML and/or PDF, in tw
 languages, with light and dark themes. The look comes from a bundled editorial design system
 (`DESIGN.md`, shipped alongside this skill) — but its **internal name never appears in the output**.
 
-**You are the translator** -- like Mastermind, there is no translation API. Translate first,
-then build, so both languages are baked into the output.
+**Keep writing and translation inside the coding-agent workflow** -- like Mastermind, there is no
+translation API. Use the affordable writing-model dispatch in Step 4 so polished copy in both
+languages is baked into the output before final assembly.
 
 ## Dispatch
 
@@ -151,6 +152,10 @@ Reorganize the content into a magazine-style report (do not just dump the source
 Keep the source's meaning; improve its structure and hierarchy. Vary the rhythm — do not apply the
 same block, spacing, or chart shape mechanically down the page.
 
+The **primary agent owns the editorial structure and factual scaffolding**: lock the outline,
+claims, metrics, and a stable identifier for every human-readable content block before Step 4.
+The writing model may polish the wording, but it must not introduce, remove, or reinterpret facts.
+
 **Build with the anti-slop checklist in mind from the start** (varied charts, a real weight/size
 hierarchy, trimmed copy, varied spacing) so the first render is already close — the Step 6 audit
 then catches what slipped, rather than carrying the load alone.
@@ -243,11 +248,41 @@ primary view + metrics** (see Step 7). Don't make the primary view depend on JS.
 
 ---
 
-## Step 4: Translate into both languages
+## Step 4: Polish and translate with an affordable writing model
 
-Translate every human-readable string into both `langPair.a` and `langPair.b`. Preserve Markdown
-structure and inline formatting; **do not translate** code, identifiers, URLs, or numeric data.
-Keep both language variants for every text block -- they both ship in the HTML.
+For **every normal run and `demo` run** (not `setup`), delegate copy polishing and translation to
+one fast, affordable model with strong writing and multilingual ability whenever the coding agent
+supports subagents. If the environment supports model selection:
+
+- **Claude Code:** prefer **Sonnet 5**.
+- **Other coding agents (including Cursor and Codex):** select the closest available equivalent
+  optimized for writing quality, cost, and latency. Do not reflexively choose the cheapest model
+  when it would materially weaken the prose, and do not prompt the user to choose a model.
+
+Use **one writing subagent for the complete copy set** so voice, terminology, and block structure
+stay consistent. Give it the source, the locked editorial outline, factual constraints, language
+pair, and stable content-block identifiers from Step 3. It must work in this order:
+
+1. Produce polished canonical copy in `langPair.a`. If the source is not in `langPair.a`, create a
+   faithful primary-language version from the source first.
+2. Translate that canonical copy into `langPair.b`.
+3. Return paired `langPair.a` / `langPair.b` blocks with matching identifiers and structure.
+
+Translate every human-readable string. Preserve Markdown structure and inline formatting; **do
+not translate or alter** code, identifiers, URLs, numeric data, or factual claims. Copy polishing
+may improve clarity, rhythm, and editorial flow only.
+
+While the writing subagent works, the primary agent may continue language-neutral calculations,
+chart planning, and layout preparation. It must validate the returned copy before final HTML
+assembly: every identifier must be present in both languages, structures must align, and protected
+content must remain unchanged. If the result is incomplete, mismatched, or weak, send **one
+targeted correction** to the same affordable model; then have the primary agent repair anything
+that still fails validation.
+
+If model-selectable subagents are unavailable, use an available default subagent. If delegation
+itself is unavailable, the primary agent performs the same polish-then-translate sequence. Never
+add a translation API or block report generation because preferred model routing is unavailable.
+Both language variants for every text block ship in the HTML.
 
 ---
 
@@ -445,6 +480,11 @@ reflexively and everywhere. When in doubt, earn the element or cut it.
   `docs/.writereport.json` only on an explicit non-default choice (or `/writereport setup`), then reuse
   it silently.
 - **Both languages always ship** in the HTML; PDF exports one file per language.
+- **Affordable writing-model dispatch.** On every normal and `demo` run, use one affordable,
+  strong-writing subagent to polish canonical `langPair.a` copy and then translate it to
+  `langPair.b`; Claude Code prefers Sonnet 5 and other agents choose the closest available
+  equivalent. Validate paired block IDs and protected content, retry once on failure, then repair
+  or fall back in the primary agent. `setup` never dispatches writing work.
 - **Degrade gracefully** when a browser/print tool or font subsetter is unavailable -- never hard
   fail; fall back and tell the user what changed.
 - **One Satoshi superfamily, weight-driven hierarchy.** Display uses Satoshi Black 900, headings

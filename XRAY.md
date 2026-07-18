@@ -43,6 +43,29 @@ If the target is ambiguous (e.g., a generic name that matches multiple component
 
 ---
 
+## Affordable-model delegation
+
+Use a fast, affordable model only for **meaningful batches of read-only analysis**: a complex
+component spanning multiple files, several design-token sources, or a repo-wide clean-mode artifact
+inventory. Keep a single component lookup or small deterministic search in the primary agent.
+
+When model-selectable subagents are available, **Claude Code prefers Sonnet 5** and other coding
+agents choose the closest available equivalent with strong code-search and structured-analysis
+ability. Do not prompt the user to choose a model, and do not reflexively choose the cheapest model
+if it cannot classify code safely.
+
+Require structured, path-backed results and explicit uncertainty. The primary agent validates every
+candidate before presenting it or acting on it. If output is incomplete or unsupported, send one
+targeted correction to the same affordable model, then complete or repair it in the primary agent.
+If model selection is unavailable, use a default subagent; if delegation is unavailable or the batch
+is too small, continue directly.
+
+Delegation is **inventory-only**. The primary agent always identifies the target and scope, asks for
+confirmation, generates and wires code, restores values, removes artifacts, and performs browser QA.
+A subagent must never edit or delete files, change runtime state, or weaken either confirmation gate.
+
+---
+
 ## Build Mode
 
 Follow these steps in order. Do not skip steps.
@@ -89,6 +112,11 @@ Scan the source for hardcoded values that control the element's appearance or be
 - IDs, keys, refs, or callback definitions
 
 For each parameter, record: `key` (descriptive camelCase name), `defaultValue`, `type` (number, boolean, color, enum).
+
+If the target is a complex component spanning multiple relevant files, Steps 2 and 3 may run as one
+affordable analysis task. Require each candidate to include its key, exact default, type, proposed
+control and range/options, supporting file and location, and any uncertainty. The primary agent
+checks the source values and exclusions before showing the Step 4 summary.
 
 ### Step 3: Choose Controls
 
@@ -180,6 +208,11 @@ background: #1a1a1a, text: #e0e0e0, border: rgba(255,255,255,0.15),
 accent: #6366f1, font: system-ui monospace, radius: 6px
 ```
 
+When several design documents, stylesheets, or theme files must be reconciled, delegate their
+read-only inventory as one affordable analysis task. Require the source path, discovered tokens and
+non-color rules, theme mechanism, and conflicts. The primary agent resolves precedence and decides
+the final panel mapping before generating code.
+
 ### Step 6: Generate the Debug Panel
 
 Create a new component file for the debug panel. **Every generated element MUST have `data-xray="true"` as an attribute.** Every generated code block MUST begin with a `// @xray-generated` comment.
@@ -270,6 +303,11 @@ Search the entire `src/` directory (or project root) for:
 - Files containing `XRAY_DEFAULTS` or `XRAY_` prefixed exports
 - Standalone component files whose name contains `Xray` (e.g., `XrayPanel.jsx`)
 
+For a repo-wide or multi-component cleanup, an affordable subagent may produce this inventory. It
+must separate files to inspect, possible standalone generated files, generated blocks, defaults,
+and uncertainties, with supporting paths. The primary agent re-runs the decisive searches and owns
+the Step 3 summary; the subagent does not preserve values, remove files, or clear storage.
+
 ### Step 2: Preserve Current Values
 
 Before removing anything, recover the most recent values to bake back:
@@ -333,6 +371,8 @@ For each affected file:
 
 ## Rules
 
+- **Keep all mutations and approvals in the primary agent.** Subagents may inventory candidates
+  only; they never generate, wire, restore, remove, or verify runtime changes on their own.
 - **Never add runtime dependencies.** The debug panel is pure inline code.
 - **Always use `data-xray="true"`** on every generated DOM element.
 - **Always use `// @xray-generated`** as the first line of every generated code block.
