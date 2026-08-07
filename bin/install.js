@@ -140,6 +140,7 @@ const skills = [
     ],
     implicitInvocation: false,
   },
+  { name: "huh", files: [{ src: "HUH.md", dest: "SKILL.md" }], implicitInvocation: false },
 ];
 
 // Codex reads optional per-skill metadata from agents/openai.yaml. We only need

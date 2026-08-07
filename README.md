@@ -7,7 +7,7 @@
 ╚═════╝ ╚══════╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝
 ```
 
-A skill pack for [Cursor](https://cursor.com), [Claude Code](https://claude.ai/code), and [Codex](https://developers.openai.com/codex) — editorial reports, live debug panels, plan drilling, product lore, and layout grids.
+A skill pack for [Cursor](https://cursor.com), [Claude Code](https://claude.ai/code), and [Codex](https://developers.openai.com/codex) — editorial reports, live debug panels, plan drilling, product lore, layout grids, and plain-language explanations.
 
 **Live site:** [bench-skills.vercel.app](https://bench-skills.vercel.app/)
 
@@ -50,6 +50,7 @@ It records a small manifest per target and **auto-removes stale files** left by 
 | **Drill** | `/drill` | Interview that reviews your plan and fills the gaps before you code |
 | **Lore** | `/lore` | Maintain a `LORE.md` of journeys, target users, and anti-goals |
 | **Grid** | `/grid` | Toggleable Müller-Brockmann layout grid overlay + tuning panel |
+| **Huh** | `/huh` | Say that again in plain language — bilingual, one level simpler each time |
 
 ### WriteReport — `/writereport`
 
@@ -113,6 +114,20 @@ Build a live, toggleable **Müller-Brockmann** layout grid into a site or webapp
 - Hotkeys: `shift+G` panel · `g` overlay · `m` cycle layers · `[` `]` nudge baseline · invoke as `/grid editorial`, `/grid columns=4 rows=8`, or bare `/grid`
 
 **Files:** `SKILL.md`, `references/`, `assets/`
+
+### Huh — `/huh`
+
+`[thing to explain]`
+
+Stuck on an answer full of jargon? `/huh` says it again in **ASD-STE100 Simplified Technical English** — the controlled English of aircraft maintenance manuals — with your own language on the next line.
+
+- Explains the **last response**, the **options in a question**, or whatever you type after the command
+- **Bilingual by line** — English leads, your language in italics beneath, plus a glossary that gives each term in both languages
+- Run it again and it drops a level: plain → one everyday analogy → shortest possible. Resets on a new topic
+- Asks your language once per session and **writes nothing** — no config file, no `git status` noise
+- Built for speed: no deliberation, zero tool calls, and the answer's first line lands immediately
+
+**File:** `HUH.md`
 
 ## License
 

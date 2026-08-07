@@ -1,7 +1,7 @@
 {
   "name": "bench",
-  "version": "1.10.1",
-  "description": "Editorial reports, live debug panels, plan drilling, product lore, and Müller-Brockmann layout grids — a skill pack for Cursor, Claude Code, and Codex.",
+  "version": "1.11.0",
+  "description": "Editorial reports, live debug panels, plan drilling, product lore, Müller-Brockmann layout grids, and plain-language explanations — a skill pack for Cursor, Claude Code, and Codex.",
   "bin": {
     "bench": "bin/install.js"
   },
@@ -15,7 +15,8 @@
     "DRILL.md",
     "LORE.md",
     "GRID.md",
-    "grid/"
+    "grid/",
+    "HUH.md"
   ],
   "keywords": [
     "cursor",
@@ -32,7 +33,11 @@
     "lore",
     "grid",
     "grid-system",
-    "muller-brockmann"
+    "muller-brockmann",
+    "huh",
+    "plain-language",
+    "simplified-technical-english",
+    "asd-ste100"
   ],
   "scripts": {
     "dev": "vite",

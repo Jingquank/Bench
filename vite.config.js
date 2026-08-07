@@ -4,7 +4,7 @@ import { statSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 
 // Shipped skills — "last updated" reflects the most recently touched one.
-const SKILL_FILES = ['XRAY.md', 'DRILL.md', 'LORE.md']
+const SKILL_FILES = ['XRAY.md', 'DRILL.md', 'LORE.md', 'HUH.md']
 
 function packMetaPlugin() {
   return {
