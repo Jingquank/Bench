@@ -92,8 +92,10 @@ output does not stream: the user watches a spinner instead of reading the headli
 **Stay inline.**
 
 Delegate the STE-rewrite-and-translate pass to one fast, affordable model only when the target is
-genuinely bulky: a long plan, a whole document, a multi-file walkthrough -- work where the wait is
-unavoidable anyway. When model-selectable subagents are available, **Claude Code prefers Sonnet 5**
+**not already in context** and reading it is real work: a plan from an earlier session, a document
+the user names by path, a multi-file walkthrough. **Length alone never triggers delegation** -- a
+long answer about material already in context still arrives faster inline, because a subagent cannot
+stream. When model-selectable subagents are available, **Claude Code prefers Sonnet 5**
 and other coding agents choose the closest available equivalent with strong writing and multilingual
 ability. Do not prompt the user to choose a model. In that case, say in one line what is being read
 before starting, so the pause reads as work rather than a hang.
@@ -137,12 +139,15 @@ italic second line in Step 3 is simply omitted.
 Resolve what to explain, in this order. Stop at the first match.
 
 1. **`$ARGUMENTS` is present** -- explain that. It may be a term (`/huh what is ASD-STE100`), a
-   quoted line, a file path, or a question.
+   quoted line, a file path, or a question. If the argument is a path to a plan file, use
+   **Explaining a plan** below.
 2. **The previous assistant turn posed a question with options** -- explain each option, then
    **re-present the question verbatim** so the user can still answer it. See Step 3 for the option
    format.
-3. **Otherwise** -- explain the previous assistant response.
-4. **Nothing to explain** (no prior assistant turn) -- say so in one line and ask what to explain.
+3. **A plan is on the table** -- the previous assistant turn presented a plan for approval, or plan
+   mode is active and a plan file has been written. Use **Explaining a plan** below.
+4. **Otherwise** -- explain the previous assistant response.
+5. **Nothing to explain** (no prior assistant turn) -- say so in one line and ask what to explain.
 
 <!-- only:claude -->
 ### Using it during a question
@@ -167,6 +172,8 @@ whenever the target changes -- a new response, a new question, a new argument.
 | **3** | third and after | Shortest useful form: what it is, why it matters. No glossary, no bullets. | ~40 words per language |
 
 At level 3 and beyond, stay at level 3 but change the analogy rather than repeating it.
+
+Plans use a different ladder. See **Explaining a plan**.
 
 ---
 
@@ -239,12 +246,81 @@ summary, and never start doing the work.
 
 ---
 
+## Explaining a plan
+
+A plan is an ordered sequence, not a paragraph. This section overrides Step 1 and Step 3 for that
+one target. Everything else -- the language pair, the Delivery rules, the STE rules -- still applies.
+
+### Find the plan
+
+- **Already in context**, because it was just presented: use that. **Do not re-read the file.**
+<!-- only:cursor -->
+- Otherwise look in `.cursor/plans/` for `.plan.md` files and take the most recently modified one.
+<!-- /only -->
+<!-- only:claude,codex -->
+- Otherwise use the `$ARGUMENTS` path if one was given. Failing that, look in your environment's
+  plans location (Claude Code: `~/.claude/plans/`) and take the most recently modified file.
+<!-- /only -->
+- If no plan exists at all, say so in one line and stop.
+
+### Delegate by context, not by length
+
+- **In context** -- write the walkthrough inline. Zero tool calls. It streams, so the headline is
+  readable about a second in.
+- **Not in context**, such as an earlier session's plan or a path the user passes -- this is the one
+  targeted lookup the Fast path allows. Say in one line what is being read. Hand the read-and-draft
+  to one fast affordable model; **Claude Code prefers Sonnet 5**. Check the returned walkthrough
+  against the plan before showing it.
+- **Length alone never triggers delegation.** A long answer about material already in context still
+  arrives faster inline, because a subagent cannot stream.
+
+### Shape -- one line per step
+
+- The **headline** states what the plan produces, as a consequence. Never "this plan is a document
+  that describes...".
+- Then a numbered list: one line per plan step, in the plan's own order, keeping the plan's own
+  numbering.
+- **Never renumber, merge, reorder, or drop a step at level 1.** The list maps one to one with the
+  plan, so any line traces back to the step it came from.
+- The budget scales with the step count rather than a fixed word cap. Each line still obeys the STE
+  sentence limit.
+- Glossary rules from Step 3 are unchanged.
+
+### The ladder for plans
+
+| Level | Shape |
+|-------|-------|
+| **1** | One line per step, plan order, one to one with the plan. |
+| **2** | Steps grouped into two or three named phases. Each phase names the step numbers it covers. |
+| **3** | One sentence on what the whole plan produces. |
+
+**The analogy rule is suspended for plans.** Grouping replaces it at level 2. A multi-step sequence
+has no single comparison that keeps the order intact.
+
+### The plan is the artifact
+
+- The explanation is **disposable**. The plan file is what gets approved and what gets executed.
+- **Never offer the explanation for approval.** Hand the real plan back through the normal approval
+  path, unchanged.
+- A "yes", "looks good", or "go" after a plan `/huh` approves **the plan as written**. Execute the
+  plan. Never execute the summary.
+- If the explanation and the plan disagree, **the plan wins**. The explanation was the error. Repair
+  the explanation. Never edit the plan to match it.
+- `/huh` explains a plan. **`/drill` is the skill that changes one.**
+
+Hand back with one line, such as: *"That was a summary. The plan itself is unchanged -- approve it to
+continue."*
+
+---
+
 ## Rules
 
 - **Explain, never execute.** No file edits, no commands, no continuing the interrupted task, no
   "while I was at it".
 - **Consequence before definition.** Never open with what a thing is.
 - **Neutral on options.** Explain what each does and who it suits. Never recommend one.
+- **The plan is the artifact.** A plan `/huh` explains. Approval and execution always apply to the
+  plan file, never to the summary.
 - **Never persist the language.** Session memory only -- no config file, no home-directory state.
 - **Zero tool calls on the normal path.** The material is already in context.
 - **The level counter resets** when the target changes.
