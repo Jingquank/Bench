@@ -57,6 +57,33 @@ first, in order of how much they save:
 
 ---
 
+## Delivery
+
+The Fast path decides *when* the answer lands. This decides *what shape it lands in*. Assume the
+reader is stuck, impatient, and looking at a narrow screen. Every rule below takes work off them.
+
+- **Consequence before definition.** Open with what happened, or with what it means for the reader.
+  Never open with what a thing is. "Lint found 4 problems. None are yours" -- not "Lint is a tool
+  that checks source code". A definition, if it is still needed, goes in the glossary.
+- **One idea per line.** If a bullet joins two ideas with "and", split it into two bullets.
+- **Bold the word that carries the line.** One phrase per bullet at most. Bold everything and
+  nothing is bold.
+- **No nested bullets.** A flat list costs the reader nothing to track. An indented one asks them to
+  hold their place while they read.
+- **No mid-sentence parentheses, no subordinate clauses.** They force a re-read. Write two sentences.
+- **Front-load every line.** The point goes in the first few words. Detail comes after, or not at all.
+- **Never bury a negative.** "None are yours", not "these are not all attributable to your changes".
+- **No "it depends".** If it does depend, name the one thing it depends on, then stop.
+- **Close with the next action** -- something the reader can say or run. Not a summary. See Step 4.
+
+Never open with background, a restatement of the question, or "let me explain". The first line is
+the answer. See Fast path rule 3.
+
+Where this section and Step 2 disagree, **Step 2 governs word choice and this section governs order
+and shape.**
+
+---
+
 ## Affordable-model delegation
 
 The material is already in context, so a subagent buys nothing on a short answer. Startup costs more
@@ -135,7 +162,7 @@ whenever the target changes -- a new response, a new question, a new argument.
 
 | Level | When | Shape | Budget |
 |-------|------|-------|--------|
-| **1** | first `/huh` | Plain STE. Headline, three to five bullets, glossary only if real jargon appeared. | ~120 words per language |
+| **1** | first `/huh` | Plain STE, consequence first. Headline, three to five bullets, glossary only if real jargon appeared. | ~120 words per language |
 | **2** | second `/huh`, same target | No jargon at all. Led by one everyday analogy, named as an analogy. | ~80 words per language |
 | **3** | third and after | Shortest useful form: what it is, why it matters. No glossary, no bullets. | ~40 words per language |
 
@@ -189,11 +216,13 @@ can run down one language and skip the other. Jargon appears inline as `` `code`
 ```
 
 - The **headline** is one sentence that answers the question on its own. Someone who reads only that
-  line should still get the point.
+  line should still get the point. It states a consequence or an outcome, never a definition, and
+  carries exactly one bolded hook.
 - The **glossary appears only when a real technical term showed up.** Never invent an entry to fill
   the table. Every term carries its plain meaning in **both** languages.
-- **Options** (dispatch case 2) get one line each: what happens if the user picks it, and who should
-  pick it. Then re-print the original question verbatim.
+- **Options** (dispatch case 2) get one line each: what happens if the user picks it, and who it
+  suits. **Never recommend one.** Describe what each does, then re-print the original question
+  verbatim. Choosing is the user's job.
 
 ```md
 **Home-level** -- saves the setting in your home folder. Pick this if you want to answer once.
@@ -204,9 +233,9 @@ can run down one language and skip the other. Jargon appears inline as `` `code`
 
 ## Step 4: Hand control back
 
-Close with one short line that returns to what was interrupted -- what the user can say to continue,
-or the re-asked question. One line only. Do not summarise the explanation again, and do not start
-doing the work.
+Close with one short line naming the **next action** -- something the user can say or run verbatim,
+like ``say **run the build**`` -- or the re-asked question. One line only. Never close with a
+summary, and never start doing the work.
 
 ---
 
@@ -214,6 +243,8 @@ doing the work.
 
 - **Explain, never execute.** No file edits, no commands, no continuing the interrupted task, no
   "while I was at it".
+- **Consequence before definition.** Never open with what a thing is.
+- **Neutral on options.** Explain what each does and who it suits. Never recommend one.
 - **Never persist the language.** Session memory only -- no config file, no home-directory state.
 - **Zero tool calls on the normal path.** The material is already in context.
 - **The level counter resets** when the target changes.

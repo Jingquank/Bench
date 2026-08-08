@@ -125,7 +125,7 @@ Stuck on an answer full of jargon? `/huh` says it again in **ASD-STE100 Simplifi
 - **Bilingual by line** — English leads, your language in italics beneath, plus a glossary that gives each term in both languages
 - Run it again and it drops a level: plain → one everyday analogy → shortest possible. Resets on a new topic
 - Asks your language once per session and **writes nothing** — no config file, no `git status` noise
-- Built for speed: no deliberation, zero tool calls, and the answer's first line lands immediately
+- Written to be **scannable** — answer first, one idea per line, no nested bullets — and to arrive fast: no deliberation, zero tool calls
 
 **File:** `HUH.md`
 
