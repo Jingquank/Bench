@@ -1,13 +1,13 @@
 <!-- only:cursor -->
 ---
 name: huh
-description: Re-explain the last thing that happened in plain language, using ASD-STE100 Simplified Technical English, shown in English and the user's language together. Use when the user says "huh", "huh?", "explain that simply", "in plain English", "what does that mean", or "I don't get it". Explains the previous answer, the options in a question, or anything typed after the command.
+description: "Say that again, plainly: add the context I was missing."
 ---
 <!-- /only -->
 <!-- only:claude -->
 ---
 name: huh
-description: Re-explain the last thing that happened in plain language, using ASD-STE100 Simplified Technical English, shown in English and the user's language together. Use when the user says "huh", "huh?", "explain that simply", "in plain English", "what does that mean", or "I don't get it". Explains the previous answer, the options in a question, or anything typed after the command.
+description: "Say that again, plainly: add the context I was missing."
 user-invocable: true
 disable-model-invocation: true
 argument-hint: [thing to explain]
@@ -16,16 +16,18 @@ argument-hint: [thing to explain]
 <!-- only:codex -->
 ---
 name: huh
-description: Re-explain the last thing that happened in plain language, using ASD-STE100 Simplified Technical English, shown in English and the user's language together. Use when the user says "huh", "huh?", "explain that simply", "in plain English", "what does that mean", or "I don't get it". Explains the previous answer, the options in a question, or anything typed after the command.
+description: "Say that again, plainly: add the context I was missing."
 ---
 <!-- /only -->
 
 # /huh -- Plain-Language Explainer
 
-Say again, in words a non-expert can read. `/huh` rewrites the last thing that happened under
-**ASD-STE100 Simplified Technical English** -- the controlled English of aircraft maintenance
-manuals: one word per meaning, short sentences, active voice, no idiom -- and shows it in English
-and the user's language together.
+The user stopped following. Re-pitch where the conversation has got to: add the context they were
+missing, then say it in **ASD-STE100 Simplified Technical English**, with the project's own names,
+in English and the user's language together.
+
+STE is the controlled English of aircraft maintenance manuals: one word per meaning, short
+sentences, active voice, no idiom.
 
 `/huh` explains, then gives control back. It never edits a file, runs a command, installs anything,
 or continues the task it interrupted. The user decides what happens next.
@@ -34,26 +36,20 @@ or continues the task it interrupted. The user decides what happens next.
 
 ## Fast path
 
-Latency *is* the feature here. A `/huh` that arrives late has already failed -- the user ran it
-because they were stuck, and every second of silence is a second of being stuck. These rules come
-first, in order of how much they save:
+Latency *is* the feature. The user ran `/huh` because they were stuck, and every second of silence
+is a second of being stuck. These rules come first, in order of how much they save:
 
-1. **Do not deliberate.** Everything needed is already in the conversation and the output format is
-   fixed. Compose the answer directly. A planning pass on a five-bullet explanation costs more than
-   the explanation.
-2. **Zero tool calls.** Never re-read a file, re-run a search, or re-open a document to explain
-   something already present in the conversation. One targeted lookup is allowed *only* when the
-   user's argument names something genuinely absent from context -- and then say so in one line
-   before doing it.
-3. **The first token is the answer.** No preamble, no "let me break this down simply", no restating
-   the question. The bold headline is the first thing on screen, readable about a second in, while
-   the rest still streams.
-4. **Never re-paste what is already on screen.** Point at it -- ``the `pruneOrphans` block above`` --
-   instead of quoting it back.
-5. **Keep the per-line language pairing** from Step 3. Stacked single-language blocks would make the
-   reader wait for the whole English body before their own language appears.
-6. **Respect the word budget for the level.** Short first, deeper only on demand. The ladder in
-   Step 1 is a speed feature as much as a comprehension one.
+1. **Answer from context.** Everything needed is already in the conversation and the output format
+   is fixed, so there is nothing to gather before writing.
+2. **Zero tool calls.** The material is already in context. One targeted lookup is allowed only when
+   the user's argument names something genuinely absent from context. Say so in one line before
+   doing it.
+3. **The first token is the answer.** The bold headline is the first thing on screen, readable about
+   a second in, while the rest still streams. Preamble and a restated question push it down.
+4. **Point at what is already on screen** -- ``the `pruneOrphans` block above`` -- instead of
+   quoting it back.
+5. **Keep the per-line language pairing** from Step 3, so the reader's own language arrives with
+   each line rather than after the whole English body.
 
 ---
 
@@ -63,21 +59,20 @@ The Fast path decides *when* the answer lands. This decides *what shape it lands
 reader is stuck, impatient, and looking at a narrow screen. Every rule below takes work off them.
 
 - **Consequence before definition.** Open with what happened, or with what it means for the reader.
-  Never open with what a thing is. "Lint found 4 problems. None are yours" -- not "Lint is a tool
-  that checks source code". A definition, if it is still needed, goes in the glossary.
+  "Lint found 4 problems. None are yours" -- rather than "Lint is a tool that checks source code".
+  A definition, if still needed, goes in the glossary.
+- **Add the missing premise.** Name the thing the earlier message assumed the reader knew. A
+  re-pitch that only deletes words has failed.
 - **One idea per line.** If a bullet joins two ideas with "and", split it into two bullets.
-- **Bold the word that carries the line.** One phrase per bullet at most. Bold everything and
-  nothing is bold.
-- **No nested bullets.** A flat list costs the reader nothing to track. An indented one asks them to
-  hold their place while they read.
-- **No mid-sentence parentheses, no subordinate clauses.** They force a re-read. Write two sentences.
+- **Bold the word that carries the line.** One phrase per bullet at most.
+- **One flat list.** A flat list costs the reader nothing to track.
+- **Two short sentences beat one with a clause.** A parenthesis or a subordinate clause forces a
+  re-read.
 - **Front-load every line.** The point goes in the first few words. Detail comes after, or not at all.
-- **Never bury a negative.** "None are yours", not "these are not all attributable to your changes".
-- **No "it depends".** If it does depend, name the one thing it depends on, then stop.
-- **Close with the next action** -- something the reader can say or run. Not a summary. See Step 4.
-
-Never open with background, a restatement of the question, or "let me explain". The first line is
-the answer. See Fast path rule 3.
+- **State a negative plainly.** "None are yours", rather than "these are not all attributable to
+  your changes".
+- **Name the one thing it depends on**, then stop. "It depends" on its own is a non-answer.
+- **Close with the next action** -- something the reader can say or run. See Step 4.
 
 Where this section and Step 2 disagree, **Step 2 governs word choice and this section governs order
 and shape.**
@@ -86,24 +81,20 @@ and shape.**
 
 ## Affordable-model delegation
 
-The material is already in context, so a subagent buys nothing on a short answer. Startup costs more
-than the faster tokens save, a subagent cannot check a claim it cannot see, and -- decisively -- its
-output does not stream: the user watches a spinner instead of reading the headline one second in.
-**Stay inline.**
+**Stay inline.** The material is already in context, so a subagent buys nothing: startup costs more
+than the faster tokens save, it cannot check a claim it cannot see, and its output does not stream.
+The user would watch a spinner instead of reading the headline one second in.
 
 Delegate the STE-rewrite-and-translate pass to one fast, affordable model only when the target is
 **not already in context** and reading it is real work: a plan from an earlier session, a document
-the user names by path, a multi-file walkthrough. **Length alone never triggers delegation** -- a
-long answer about material already in context still arrives faster inline, because a subagent cannot
-stream. When model-selectable subagents are available, **Claude Code prefers Sonnet 5**
-and other coding agents choose the closest available equivalent with strong writing and multilingual
-ability. Do not prompt the user to choose a model. In that case, say in one line what is being read
-before starting, so the pause reads as work rather than a hang.
+the user names by path, a multi-file walkthrough. Context, not length, is the trigger. **Claude Code
+prefers the `sonnet` model alias**; other coding agents choose the closest equivalent with strong writing and
+multilingual ability, without asking the user. Say in one line what is being read before starting,
+so the pause reads as work rather than a hang.
 
 The **primary agent always** decides what to explain, owns every factual claim, sets the level, and
-delivers the answer. A subagent must never edit files, run commands, or continue the interrupted
-task. If a delegated result is incomplete, wrong, or breaks the format, repair it in the primary
-agent rather than sending it on.
+delivers the answer. A subagent only reads and drafts. If a delegated result is incomplete, wrong,
+or breaks the format, repair it in the primary agent rather than sending it on.
 
 ---
 
@@ -114,20 +105,20 @@ On the **first** `/huh` of a session, ask which language to explain in. Ask once
 - Offer **English** and **简体中文** as the standing choices. If the user has written in some other
   language in this conversation, offer that language instead of 简体中文 as the second choice.
   Always allow a free-text answer for any other language.
-- **Skip the question entirely** when the invocation already names a language -- `/huh in Japanese`,
+- **Skip the question** when the invocation already names a language -- `/huh in Japanese`,
   `/huh 用中文` -- and use that.
-- Reuse the answer silently for every later `/huh` in the session. Never ask twice.
+- Reuse the answer silently for every later `/huh` in the session. One question per session.
 
 <!-- only:claude -->
-Ask with the question tool, one question, three options plus free text.
+Ask with the question tool, one question, the two choices plus free text.
 <!-- /only -->
 <!-- only:cursor,codex -->
 Ask as a single short line in chat, listing the choices inline.
 <!-- /only -->
 
-**Never write a file.** `/writereport` persists its language pair to `docs/.writereport.json`;
-`/huh` deliberately does not. There is no config file, no home-directory state, and nothing in
-`git status` afterwards. A new session asks again -- that is the intended trade.
+**Session memory only.** `/writereport` persists its language pair to `docs/.writereport.json`;
+`/huh` keeps the answer in the conversation. There is no config file, no home-directory state, and
+nothing in `git status` afterwards. A new session asks again. That is the intended trade.
 
 If the answer is **English**, the output is single-language STE. There is no pair to make, and the
 italic second line in Step 3 is simply omitted.
@@ -146,7 +137,8 @@ Resolve what to explain, in this order. Stop at the first match.
    format.
 3. **A plan is on the table** -- the previous assistant turn presented a plan for approval, or plan
    mode is active and a plan file has been written. Use **Explaining a plan** below.
-4. **Otherwise** -- explain the previous assistant response.
+4. **Otherwise** -- re-pitch the previous assistant response. When that response rests on something
+   the user never saw, start from there and say so in the headline.
 5. **Nothing to explain** (no prior assistant turn) -- say so in one line and ask what to explain.
 
 <!-- only:claude -->
@@ -162,16 +154,19 @@ clearly typed "huh" into an Other box and the run continues, treat it as case 2 
 
 ## Step 1: Choose the level
 
-Each consecutive `/huh` on the **same** target goes one level simpler. The counter resets to level 1
-whenever the target changes -- a new response, a new question, a new argument.
+Each consecutive `/huh` on the **same** target goes one level simpler. Simpler means fewer
+assumptions, not fewer words. The counter resets to level 1 whenever the target changes -- a new
+response, a new question, a new argument.
 
-| Level | When | Shape | Budget |
-|-------|------|-------|--------|
-| **1** | first `/huh` | Plain STE, consequence first. Headline, three to five bullets, glossary only if real jargon appeared. | ~120 words per language |
-| **2** | second `/huh`, same target | No jargon at all. Led by one everyday analogy, named as an analogy. | ~80 words per language |
-| **3** | third and after | Shortest useful form: what it is, why it matters. No glossary, no bullets. | ~40 words per language |
+| Level | When | What changes |
+|-------|------|--------------|
+| **1** | first `/huh` | Re-pitch the target. Add the premise it assumed. Headline, bullets, glossary only if real jargon appeared. |
+| **2** | second `/huh`, same target | Start further back, from the last point the user clearly followed. Plain words only, plus one everyday analogy, named as an analogy. |
+| **3** | third and after | The one thing to know, then the next action. A new analogy each time. |
 
-At level 3 and beyond, stay at level 3 but change the analogy rather than repeating it.
+The only length rule: **shorter than the thing it explains.** Going long defeats the skill; going
+terse defeats the reader. When the answer runs long, cut detail and assumptions, and keep the
+premise.
 
 Plans use a different ladder. See **Explaining a plan**.
 
@@ -181,20 +176,23 @@ Plans use a different ladder. See **Explaining a plan**.
 
 The writing rules that carry the standard:
 
-- **One word, one meaning.** Choose one term per concept and repeat it. Never vary a term for style.
+- **One word, one meaning.** Choose one term per concept and repeat it, even where a stylist would
+  vary it.
+- **Use the project's own names.** Take them from `CLAUDE.md`, `CONTEXT.md`, `LORE.md`, or the code,
+  when they are already in context. A real name stays as it is and goes in the glossary, because the
+  user needs the searchable word. A friendlier synonym would take that word away.
 - **Short sentences.** Twenty words maximum for a step or instruction, twenty-five for description.
 - **One instruction per sentence.** Split a compound instruction into two sentences.
-- **Active voice, present tense.** "The installer copies the file", not "the file is copied".
-- **Keep the articles.** Write "the manifest", not "manifest".
-- **No noun cluster longer than three words.** Unpack it: "skill install manifest file" becomes
-  "the file that lists the installed skills".
-- **No idiom, slang, metaphor, or jokes.** **Level 2 is the single exception:** exactly one analogy,
-  explicitly marked as an analogy, with every other rule still in force.
+- **Active voice, present tense.** "The installer copies the file", rather than "the file is copied".
+- **Keep the articles.** Write "the manifest", rather than "manifest".
+- **Noun clusters of three words at most.** Unpack the longer ones: "skill install manifest file"
+  becomes "the file that lists the installed skills".
+- **Literal language.** Idiom, slang, metaphor, and jokes stay out. **Level 2 is the single
+  exception:** exactly one analogy, explicitly marked as an analogy, with every other rule still in
+  force.
 - **Say what a pronoun refers to** whenever "it" or "this" could point at two things.
-- **A term with no simple substitute stays as it is** and goes in the glossary. Do not invent a
-  friendly synonym for a real technical name -- the user needs the searchable word.
-- **Never translate or paraphrase code**, identifiers, paths, flags, or commands. Quote them
-  verbatim as `` `code` `` and explain around them.
+- **Quote code verbatim** -- identifiers, paths, flags, commands -- as `` `code` `` and explain
+  around it. Code reads the same in both languages.
 
 Accuracy outranks simplicity. If simplifying a point would make it wrong, keep the hard word and
 define it. If the thing being explained was **wrong** rather than unclear, say that plainly instead
@@ -223,13 +221,13 @@ can run down one language and skip the other. Jargon appears inline as `` `code`
 ```
 
 - The **headline** is one sentence that answers the question on its own. Someone who reads only that
-  line should still get the point. It states a consequence or an outcome, never a definition, and
-  carries exactly one bolded hook.
-- The **glossary appears only when a real technical term showed up.** Never invent an entry to fill
-  the table. Every term carries its plain meaning in **both** languages.
+  line should still get the point. It states a consequence or an outcome, and carries exactly one
+  bolded hook.
+- The **glossary appears only when a real technical term showed up.** Every term carries its plain
+  meaning in **both** languages. An empty glossary is omitted, not padded.
 - **Options** (dispatch case 2) get one line each: what happens if the user picks it, and who it
-  suits. **Never recommend one.** Describe what each does, then re-print the original question
-  verbatim. Choosing is the user's job.
+  suits. Describe each one, then re-print the original question verbatim. **Choosing is the user's
+  job**, so every option gets the same neutral treatment.
 
 ```md
 **Home-level** -- saves the setting in your home folder. Pick this if you want to answer once.
@@ -241,8 +239,8 @@ can run down one language and skip the other. Jargon appears inline as `` `code`
 ## Step 4: Hand control back
 
 Close with one short line naming the **next action** -- something the user can say or run verbatim,
-like ``say **run the build**`` -- or the re-asked question. One line only. Never close with a
-summary, and never start doing the work.
+like ``say **run the build**`` -- or the re-asked question. One line only. That line replaces a
+summary, and the work waits for the user's word.
 
 ---
 
@@ -253,7 +251,7 @@ one target. Everything else -- the language pair, the Delivery rules, the STE ru
 
 ### Find the plan
 
-- **Already in context**, because it was just presented: use that. **Do not re-read the file.**
+- **Already in context**, because it was just presented: use that, with zero tool calls.
 <!-- only:cursor -->
 - Otherwise look in `.cursor/plans/` for `.plan.md` files and take the most recently modified one.
 <!-- /only -->
@@ -263,27 +261,18 @@ one target. Everything else -- the language pair, the Delivery rules, the STE ru
 <!-- /only -->
 - If no plan exists at all, say so in one line and stop.
 
-### Delegate by context, not by length
-
-- **In context** -- write the walkthrough inline. Zero tool calls. It streams, so the headline is
-  readable about a second in.
-- **Not in context**, such as an earlier session's plan or a path the user passes -- this is the one
-  targeted lookup the Fast path allows. Say in one line what is being read. Hand the read-and-draft
-  to one fast affordable model; **Claude Code prefers Sonnet 5**. Check the returned walkthrough
-  against the plan before showing it.
-- **Length alone never triggers delegation.** A long answer about material already in context still
-  arrives faster inline, because a subagent cannot stream.
+A plan that is not in context is the one lookup the Fast path allows, and the one case for
+**Affordable-model delegation** above. Check the returned walkthrough against the plan before
+showing it.
 
 ### Shape -- one line per step
 
-- The **headline** states what the plan produces, as a consequence. Never "this plan is a document
-  that describes...".
+- The **headline** states what the plan produces, as a consequence, like any other headline.
 - Then a numbered list: one line per plan step, in the plan's own order, keeping the plan's own
   numbering.
-- **Never renumber, merge, reorder, or drop a step at level 1.** The list maps one to one with the
-  plan, so any line traces back to the step it came from.
-- The budget scales with the step count rather than a fixed word cap. Each line still obeys the STE
-  sentence limit.
+- **Level 1 maps one to one with the plan**: same steps, same order, same numbers, so any line
+  traces back to the step it came from.
+- The budget scales with the step count. Each line still obeys the STE sentence limit.
 - Glossary rules from Step 3 are unchanged.
 
 ### The ladder for plans
@@ -294,39 +283,19 @@ one target. Everything else -- the language pair, the Delivery rules, the STE ru
 | **2** | Steps grouped into two or three named phases. Each phase names the step numbers it covers. |
 | **3** | One sentence on what the whole plan produces. |
 
-**The analogy rule is suspended for plans.** Grouping replaces it at level 2. A multi-step sequence
-has no single comparison that keeps the order intact.
+**Grouping replaces the analogy for plans.** A multi-step sequence has no single comparison that
+keeps the order intact.
 
 ### The plan is the artifact
 
 - The explanation is **disposable**. The plan file is what gets approved and what gets executed.
-- **Never offer the explanation for approval.** Hand the real plan back through the normal approval
-  path, unchanged.
+- Hand the real plan back through the normal approval path, unchanged. Approval goes to the plan
+  file; the explanation is a reading aid.
 - A "yes", "looks good", or "go" after a plan `/huh` approves **the plan as written**. Execute the
-  plan. Never execute the summary.
+  plan, not the summary.
 - If the explanation and the plan disagree, **the plan wins**. The explanation was the error. Repair
-  the explanation. Never edit the plan to match it.
+  the explanation and leave the plan as it is.
 - `/huh` explains a plan. **`/drill` is the skill that changes one.**
 
 Hand back with one line, such as: *"That was a summary. The plan itself is unchanged -- approve it to
 continue."*
-
----
-
-## Rules
-
-- **Explain, never execute.** No file edits, no commands, no continuing the interrupted task, no
-  "while I was at it".
-- **Consequence before definition.** Never open with what a thing is.
-- **Neutral on options.** Explain what each does and who it suits. Never recommend one.
-- **The plan is the artifact.** A plan `/huh` explains. Approval and execution always apply to the
-  plan file, never to the summary.
-- **Never persist the language.** Session memory only -- no config file, no home-directory state.
-- **Zero tool calls on the normal path.** The material is already in context.
-- **The level counter resets** when the target changes.
-- **Code is quoted, never translated.**
-- **Stay inside the word budget.** Going long defeats the skill; escalate to a simpler level instead
-  of writing more.
-- **Accuracy first.** Never simplify a statement into a false one. Flag an error as an error.
-- **Keep judgment in the primary agent.** Delegation is a writing pass on bulky material and nothing
-  more.

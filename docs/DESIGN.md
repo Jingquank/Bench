@@ -1,60 +1,71 @@
 ---
 version: alpha
 name: P.I.N.O.C. — Editorial
-description: Editorial system on a Radix-based token foundation — a single Satoshi superfamily with weight-driven hierarchy over a Radix custom warm-gray + green palette (12-step scales), Radix radius/space scales, film grain, and an interactive data-viz layer.
-scope: src/components/landing/**  (rendered under [data-pinoc-landing])
+description: Editorial system on the Viggle brandbook palette — a Satoshi superfamily with weight-driven hierarchy over nine brand tokens per theme, two derived 7-step chart ramps, Radix radius/space scales, film grain, and a catalogued interactive data-viz layer.
+scope: the generated /writereport output (one standalone HTML file with an inline stylesheet)
 colors:
-  # Radix custom palette — two 12-step scales (warm gray + green accent), light
-  # + dark, generated from seeds accent=#00E05A, gray=#F3EEE7, dark-bg=#000000
-  # (radix-ui.com/colors/custom). Steps carry fixed roles (§3): 1–2 backgrounds,
-  # 3–5 component bg, 6–8 borders/focus, 9–10 solid accent, 11 low-contrast text,
-  # 12 high-contrast text. Semantic aliases below map roles → steps.
+  # Brand palette — Viggle brandbook (viggle-www/docs/brandbook.html). Nine flat
+  # tokens per theme, NOT a 12-step scale. Charts need ordered ladders, so two
+  # 7-step ramps are derived from these anchors: a WARM ramp that carries all data
+  # encoding, and a JOLT ramp that supplies accent tones only. Derived steps sit on
+  # the brand's own hue curve and are marked NEW — they do not appear in brandbook.html.
   light:
-    gray:   ["#fffdf9","#fcf9f4","#f4efe8","#efe7dd","#e7e0d6","#dfd8ce","#d5cdc3","#c1bab0","#928b82","#888177","#686259","#251f17"]
-    gray-a: ["#ffaa0006","#ba74000b","#864e0017","#874b0022","#6a3f0029","#59350031","#4d2b003c","#3721004f","#2113007d","#20130088","#170e00a6","#0f0900e8"]
-    green:  ["#fafefa","#f3fcf4","#ddfcdf","#c6f8cb","#aff1b7","#96e6a1","#75d685","#37c35b","#00e05a","#00d649","#00862c","#174320"]
-    green-a:["#00cc0005","#00c0160c","#00e90f22","#00e01739","#00d31a50","#00c31b69","#00b41e8a","#00b32ec8","#00e05a","#00d649","#00862c","#00300ae8"]
-    green-contrast: "#142716"   # ink on solid accent (step 9/10)
-    green-surface:  "#f0fbf1cc" # tinted accent surface
-    gray-surface:   "#ffffffcc"
+    paper:        "#fcfcfc"   # page ground
+    beige:        "#f1eeea"   # card ground / band
+    ink:          "#29231e"   # text; heaviest data mark
+    bark:         "#4d453d"
+    taupe:        "#74685a"   # muted text
+    mist:         "#e1e1e1"
+    silver:       "#9a9a9a"
+    fill:         "#d9d9d9"
+    jolt:         "#00e13f"   # brand accent
+    on-media:     "#fcfcfc"
+    on-media-ink: "#29231e"
+    cta-ink:      "#29231e"
   dark:
-    gray:   ["#000000","#121315","#1f1f22","#27282c","#2f3035","#393a3f","#46474e","#5e606a","#6c6e79","#797b86","#b2b3bd","#eeeef0"]
-    gray-a: ["#00000000","#dbe7ff15","#e9e9ff22","#e3e8ff2c","#e3e7ff35","#e7ebff3f","#e5e9ff4e","#e3e7ff6a","#e4e8ff79","#e7ebff86","#f0f2ffbd","#fdfdfff0"]
-    green:  ["#000000","#0b150c","#0e2a13","#0b3b17","#114a1f","#195928","#206a32","#247f3a","#00e05a","#00d54f","#00dc56","#abf5b4"]
-    green-a:["#00000000","#86ff9215","#55ff742a","#30ff643b","#3bff6b4a","#48ff7359","#4dff796a","#49ff757f","#00ff67e0","#00ff5fd5","#00ff64dc","#b2ffbbf5"]
-    green-contrast: "#142716"
-    green-surface:  "#162a1880"
-    gray-surface:   "#1f1f2280"
-  # Semantic aliases (reference the steps; theme-independent)
-  aliases:
-    bg: gray-1                  # app background
-    bg-subtle: gray-2
-    surface: gray-2             # panels / cards (flat, border-defined)
-    ui: gray-3                  # component bg
-    ui-hover: gray-4
-    ui-active: gray-5
-    border-subtle: gray-6
-    border: gray-7
-    border-hover: gray-8        # focus ring
-    solid: green-9              # solid accent
-    solid-hover: green-10
-    accent-text: green-11       # accent text / links (low-contrast accent)
-    on-solid: green-contrast    # text on solid accent
-    accent-surface: green-surface
-    text: gray-12               # high-contrast text
-    text-muted: gray-11         # low-contrast text
-    text-subtle: gray-10
-    focus: text                 # focus ring = gray-12 (high-contrast; step-8 fails 3:1)
-  # Overlay alpha — true-neutral transparent scales (Radix blackA/whiteA, fixed,
-  # theme-independent) for scrims / hover washes / shadows. NOT for the grain tint
-  # (the grain keeps its green cast, §5). Wide-gamut: every gray/green token also
-  # ships a P3 variant via @supports (display-p3); sRGB hex above is the floor.
+    paper:        "#151110"
+    beige:        "#221d18"
+    ink:          "#f4f1ec"
+    bark:         "#d9d2c8"
+    taupe:        "#a5988a"
+    mist:         "#e1e1e1"
+    silver:       "#6b6b6b"
+    fill:         "#2e2a25"
+    jolt:         "#00e13f"
+  # WARM data ramp — w1 = most important, w7 = lightest / ground. Lightness IS the
+  # data (§7). The ramp inverts by theme so w1 is always the heaviest mark on its
+  # own ground. w4/w5/w6 are derived; every other step is a brandbook token.
+  warm:
+    light: ["#29231e","#4d453d","#74685a","#9a8c7c","#bbb3aa","#dad7d3","#f1eeea"]
+    dark:  ["#f4f1ec","#d9d2c8","#a5988a","#7f6f60","#594f44","#3b332c","#221d18"]
+    # light L*  14  30  45  59* 73* 86* 94    (* derived, hue 33)
+    # dark  L*  95  85  64  48* 34* 22* 11    (* derived, hue 30)
+  # JOLT accent ramp — hue 137 throughout, brandbook --jolt pinned at g5.
+  # LOCKED: the jolt ramp never encodes magnitude. It supplies accent tones only.
+  # Heat, intensity and every other ordinal encoding uses the WARM ramp (§7).
+  jolt:
+    ramp:     ["#00300d","#005518","#008125","#00b132","#00e13f","#acecbe","#e3f5e8"]
+    # L*         16      31      47      63      79      88      95
+    on-light: "#008125"   # g3 — 4.91:1 on paper. Accent text, hairlines, the one mark.
+    on-dark:  "#00e13f"   # g5 — 10.58:1 on dark paper. The literal brandbook value.
+    contrast: "#00300d"   # ink on a jolt fill
+  # Semantic roles — the whole colour vocabulary. §7 charts use these names.
+  roles:
+    BG:     paper              # page ground
+    BG-alt: beige              # card ground / band
+    TXT:    ink                # text, and the heaviest data mark
+    MUT:    taupe              # muted text, axis labels
+    GRID:   warm-6             # gridlines, hairlines, bar tracks
+    DATA:   warm-1 … warm-7    # assigned by importance, never by sequence
+    HERO:   jolt.on-light / jolt.on-dark   # one mark per chart, never two
+  # Overlay alpha — true-neutral transparent scales (fixed, theme-independent) for
+  # scrims / hover washes / the shadow ladder. Not for the grain tint (§5).
   overlay:
     black-a: ["rgba(0,0,0,.05)","rgba(0,0,0,.1)","rgba(0,0,0,.15)","rgba(0,0,0,.2)","rgba(0,0,0,.3)","rgba(0,0,0,.4)","rgba(0,0,0,.5)","rgba(0,0,0,.6)","rgba(0,0,0,.7)","rgba(0,0,0,.8)","rgba(0,0,0,.9)","rgba(0,0,0,.95)"]
     white-a: ["rgba(255,255,255,.05)","rgba(255,255,255,.1)","rgba(255,255,255,.15)","rgba(255,255,255,.2)","rgba(255,255,255,.3)","rgba(255,255,255,.4)","rgba(255,255,255,.5)","rgba(255,255,255,.6)","rgba(255,255,255,.7)","rgba(255,255,255,.8)","rgba(255,255,255,.9)","rgba(255,255,255,.95)"]
 typography:
-  # Role-based Satoshi scale — CSS tokens scoped to [data-pinoc-landing] in
-  # -landing-root.css (--fs-* / --lh-* / --ls-* / --fw-* + --font-sans). One
+  # Role-based Satoshi scale — emitted as CSS tokens in the report's inline
+  # stylesheet (--fs-* / --lh-* / --ls-* / --fw-* + --font-sans). One
   # Satoshi superfamily throughout; hierarchy comes from weight, size, and
   # tracking — not a second face. Three weight tiers: Black 900 display, Bold
   # 700 headings + labels, Medium 500 body. Headings are sentence/title case.
@@ -146,10 +157,10 @@ rounded:
   none: 0
   "1": 3px      # chips, tags, small inputs
   "2": 4px      # buttons, inputs
-  "3": 6px      # cards, charts (default surface radius)
+  "3": 6px      # default mid-size surface
   "4": 8px      # larger cards, media frames
   "5": 12px
-  "6": 16px
+  "6": 16px     # chart cards (brandbook)
   full: 9999px
 spacing:
   # Radix space scale (--space-1..9), 4px base.
@@ -165,7 +176,7 @@ spacing:
 shadows:
   # Radix-style elevation ladder (--shadow-1..6). Overlays use the true-neutral
   # black-a steps. Reserved for tooltips / popovers / raised chrome only — cards
-  # stay flat & border-defined (soft-shadow "ghost cards" remain an anti-slop tell).
+  # stay flat, no border and no shadow (soft-shadow "ghost cards" remain an anti-slop tell).
   "1": "0 1px 2px var(--black-a3)"
   "2": "0 2px 4px var(--black-a3), 0 1px 2px var(--black-a4)"
   "3": "0 4px 12px var(--black-a4), 0 1px 3px var(--black-a3)"
@@ -176,30 +187,32 @@ shadows:
 
 # Design System: P.I.N.O.C. — Editorial
 
-The editorial system styles the marketing landing (everything under
-`src/components/landing/`, rendered inside the `[data-pinoc-landing]` scope). It
+The editorial system styles the generated report (one standalone HTML file with an
+inline stylesheet). It
 runs a single Satoshi superfamily — Black 900 display, Bold 700 headings, Medium
-500 body — over a **Radix-based token foundation**: two 12-step scales (warm gray
-+ green accent, light and dark), a Radix radius/space scale, and a film-grain
-overlay, punctuated by full-bleed dark and green "magazine" bands.
+500 body — over the **Viggle brandbook palette**: nine flat brand tokens per theme
+(light and dark), two 7-step ramps derived from them for charts, a Radix
+radius/space scale, and a film-grain overlay, punctuated by full-bleed dark and
+jolt "magazine" bands.
 
-It carries the brand DNA — warm paper, electric-green accent, film grain, a
-disciplined token scale — and expresses it through four signature moves:
+It carries the brand DNA — warm paper, electric jolt accent, film grain, a
+disciplined role vocabulary — and expresses it through four signature moves:
 
 1. **Display headings** in Satoshi Black 900, sentence/title case; titles and
    section/card headings step down to Bold 700 (§1).
 2. **Satoshi body** at Medium 500, with labels and eyebrows set in the same family
    at Bold 700 — the display↔body contrast is the weight jump, not a second face (§1).
-3. **Radix step-driven colour** — every surface, border, and text colour maps to a
-   numbered step (1–12), so light/dark and emphasis are systematic, not ad-hoc.
-   Full-bleed bands (dark Hero, green Testimonials) use the dark scale / `green-9`
-   surface (§3).
-4. **An interactive data-viz layer** — charts carry 2–3 meaningful toggleable
-   views, hover tooltips, computed metrics with plain-language insights, and Radix
-   icons for labels and hierarchy (§7).
+3. **Role-driven brand colour** — every surface, border, and text colour resolves
+   to a named role (`BG`, `TXT`, `MUT`, `GRID`, `DATA`, `HERO`), so light/dark and
+   emphasis are systematic, not ad-hoc. Full-bleed bands use the dark theme values
+   or a `jolt` fill (§3).
+4. **A catalogued, interactive data-viz layer** — forms are selected from
+   `CHARTS.md` by data shape and copied from `charts/gallery.html`, then carry
+   meaningful toggleable views, tooltips, computed metrics with plain-language
+   insights, and Radix icons for labels and hierarchy (§7).
 
-Cards stay flat and border-defined (no shadows); the radius, space, and palette
-all come from the Radix token scales.
+Chart cards are flat and separated by whitespace — no border, no shadow; radius and
+space come from the token scales, colour from the brand roles.
 
 ---
 
@@ -213,14 +226,35 @@ tall x-height, lining figures set to cap-height. Two traits drive the scale:
 2. **Slightly wide default spacing** → large sizes look loose untreated. Tracking
    **tightens as size grows, opens as it shrinks**, and opens generously on caps.
 
-The landing runs this **single family** and builds hierarchy from **weight, size,
+The report runs this **single family** and builds hierarchy from **weight, size,
 and tracking** — never a second face. Because Satoshi has true lowercase, headings
 are **sentence/title case**, never forced all-caps.
 
-**Font:** Satoshi — self-hosted variable font `/fonts/Satoshi-Variable.woff2`
-(weights 300–900), `@font-face { font-weight: 300 900 }` in `global.css`. Exposed
-as the scoped token **`--font-sans`** on `[data-pinoc-landing]` in
-`-landing-root.css`:
+**Latin:** Satoshi, loaded **from Fontshare**, its own foundry — Satoshi is not on
+Google Fonts:
+
+```html
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+```
+
+**CJK:** Satoshi carries 431 glyphs and **zero CJK ideographs** — it cannot set
+Chinese at all. Reports default to English + 简体中文, so the stack always pairs it
+with **Noto Sans SC** from Google Fonts, which is sliced by `unicode-range` so only
+the glyphs actually used are downloaded:
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+```
+
+Always give the stack a real fallback so a blocked CDN degrades to system type:
+
+```css
+font-family: Satoshi, "Noto Sans SC", system-ui, -apple-system, sans-serif;
+```
+
+Weights map across both families: Satoshi 900/700/500 pair with Noto Sans SC
+900/700/400. Exposed as the token **`--font-sans`**:
 
 ```css
 --font-sans: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
@@ -248,8 +282,8 @@ long column. Lighter in-body emphasis uses *italics* — there is no 600 weight.
 
 ### Scale
 
-The role scale lives as **CSS tokens scoped to `[data-pinoc-landing]`** in
-`-landing-root.css`. Sections reference these tokens directly; keep `clamp()`,
+The role scale lives as **CSS tokens on `:root`** in the report's inline
+stylesheet. Sections reference these tokens directly; keep `clamp()`,
 line-height, and `em` tracking literals out of section CSS.
 
 **Sizes** (fluid `clamp()` on the three display steps so heroes don't overflow on
@@ -294,7 +328,7 @@ positive opens up caps):
 | `--ls-h2`          | -0.02em   | `--ls-caption`| 0.01em   |
 | `--ls-h3`          | -0.015em  | `--ls-overline`| 0.08em  |
 
-Every landing `letter-spacing` references a `--ls-*` token.
+Every `letter-spacing` in the report references a `--ls-*` token.
 
 ### Role classes
 
@@ -348,7 +382,7 @@ This is a **consistency treatment**: the editorial display/body **sizes are
 unchanged** (the Satoshi standard); the point is that every text element — chrome
 included — draws size, line-height, and tracking from the same `--fs-*`/`--lh-*`/
 `--ls-*` tokens, so tracking stays unified across the whole scale (display tighter,
-caps wider). Chart SVG text uses the dedicated `--cfs-*` scale (§7).
+caps wider). Chart SVG text is authored in viewBox user units (§7).
 
 ### Editorial role mapping
 
@@ -364,7 +398,7 @@ The rest of this doc names editorial roles; they map onto the role scale:
 | Eyebrows / labels / tags  | `overline`                     |
 | Captions / counters       | `caption`                      |
 
-> **Heading-tag mapping** (in `-landing-root.css`): `h1` → `--fs-title` /
+> **Heading-tag mapping:** `h1` → `--fs-title` /
 > `--lh-title` + `--fw-bold`; `h2`–`h5` → matching `--fs-*` / `--lh-*` + `--fw-bold`;
 > the hero headline takes a `display-*` class at `--fw-black`. A section's `.title`
 > typically sets only its `--fs-*` size; weight, line-height, and tracking come from
@@ -386,91 +420,120 @@ tell). Map by element size:
 | ------------- | --- | ------------------------------------------ |
 | `--radius-1`  | 3   | Chips, tags, small inputs, legend swatches |
 | `--radius-2`  | 4   | Buttons, inputs, view-toggle segments      |
-| `--radius-3`  | 6   | **Cards, charts** — the default surface    |
+| `--radius-3`  | 6   | Default mid-size surface                   |
 | `--radius-4`  | 8   | Larger cards, media frames                 |
 | `--radius-5`  | 12  | Feature panels (sparingly)                 |
-| `--radius-6`  | 16  | Largest containers (rare)                  |
+| `--radius-6`  | 16  | **Chart cards** (brandbook, §7)            |
 | `--radius-full` | 9999 | Pills, dots, avatars, circular controls |
 
 `border-radius: 9999px`/`50%` is for genuinely round elements only (dots, pills,
-avatars, nav buttons). Cards stay **flat and border-defined** — no drop shadows
-(soft-shadow "ghost cards" are a slop tell); `--shadow-*` is for tooltips/popovers.
+avatars, nav buttons). Cards stay **flat — no border, no shadow** — and separate by
+whitespace (soft-shadow "ghost cards" are a slop tell); `--shadow-*` is for
+tooltips/popovers.
 
 ---
 
-## 3. Color — two Radix scales, step-driven
+## 3. Color — brandbook tokens, role-driven
 
-Colour is a **Radix custom palette**: a warm **gray** neutral and a **green**
-accent, each a 12-step scale with light + dark themes plus alpha (`*-a*`) and
-`green-contrast` / surface tokens (see frontmatter). The brand green and warm
-paper are the generator seeds (`green-9 = #00E05A`, light `gray-1 = #FFFDF9`,
-dark `gray-1 = #000000`).
+Colour is the **Viggle brandbook palette**: nine flat tokens per theme (`paper`,
+`beige`, `ink`, `bark`, `taupe`, `mist`, `silver`, `fill`, `jolt`) in light and
+dark, plus the overlay alpha scales. It is **not** a 12-step scale — there are no
+numbered steps to reach for, only **named roles**.
 
-### Steps carry fixed roles
+### Roles carry the meaning
 
-Each step does one job — never reach for an ad-hoc value:
+Every colour decision resolves to a role. Never reach for a raw hex.
 
-| Step | Role                                  | Typical token                |
-| ---- | ------------------------------------- | ---------------------------- |
-| 1    | App background                        | `--bg` → `--gray-1`          |
-| 2    | Subtle background / panels            | `--surface` → `--gray-2`     |
-| 3    | UI element background                 | `--ui` → `--gray-3`          |
-| 4    | Hovered UI background                 | `--ui-hover` → `--gray-4`    |
-| 5    | Active / selected UI background       | `--ui-active` → `--gray-5`   |
-| 6    | Subtle borders & separators           | `--border-subtle` → `gray-6` |
-| 7    | UI element border                     | `--border` → `--gray-7`      |
-| 8    | Hovered border / **focus ring**       | `--border-hover` → `gray-8`  |
-| 9    | **Solid** accent                      | `--solid` → `--green-9`      |
-| 10   | Hovered solid                         | `--solid-hover` → `green-10` |
-| 11   | Low-contrast (muted) text             | `--text-muted` → `gray-11`   |
-| 12   | High-contrast text                    | `--text` → `--gray-12`       |
+| Role     | Light                | Dark                 | Job                                  |
+| -------- | -------------------- | -------------------- | ------------------------------------ |
+| `BG`     | `paper` `#fcfcfc`    | `paper` `#151110`    | Page ground                          |
+| `BG-alt` | `beige` `#f1eeea`    | `beige` `#221d18`    | Card ground, full-bleed band         |
+| `TXT`    | `ink` `#29231e`      | `ink` `#f4f1ec`      | Text; the heaviest data mark         |
+| `MUT`    | `taupe` `#74685a`    | `taupe` `#a5988a`    | Muted text, axis labels, captions    |
+| `GRID`   | `warm-6` `#dad7d3`   | `warm-6` `#3b332c`   | Gridlines, hairlines, bar tracks     |
+| `DATA`   | warm ramp `w1…w7`    | warm ramp `w1…w7`    | All data marks (§7)                  |
+| `HERO`   | `#008125` (jolt g3)  | `#00e13f` (jolt g5)  | **One** accent mark — never two      |
 
-Steps 11/12 are contrast-guaranteed (APCA Lc 60 / 90) over steps 1–2 of the same
-scale. **Accent text** uses `green-11` (`--accent-text`), never `green-9` (that's
-a solid-background colour, weak as text). Text on a solid-accent surface uses
-`green-contrast` (`--on-solid`, `#142716`).
+`silver`, `fill` and `mist` are **pure neutrals with no hue**. They are chrome
+colours — dividers, disabled states, inert UI — and must never be spliced into the
+warm ramp, which would break its hue continuity mid-ladder.
 
-### Surfaces & full-bleed bands
+### The two ramps
 
-The editorial "magazine" bands still apply — expressed in steps:
+The brandbook's warm family (`ink → bark → taupe`) is already an even ladder at
+~15 L\* per step, then stops dead: there is a **49.5 L\* gap** to `beige` with
+nothing warm inside it. Three steps are derived on the brand's own hue-33 curve,
+with chroma falling as lightness rises, to close it:
 
-- **Dark band (Hero):** switch the section to the **dark scale** (`gray-1`…`gray-12`
-  dark) — `--bg` becomes `#000000`, text `gray-12` (`#EEEEF0`), borders `gray-6/7`.
-- **Green band (Testimonials):** fill with `--solid` (`green-9`); all content uses
-  `--on-solid` (`green-contrast`) for text and `green-a*` alphas for hairlines.
-  A second green fill on green disappears — keep one fill, ink in `on-solid`.
+| Step | Light     | L\* | Dark      | L\* | Source  |
+| ---- | --------- | --- | --------- | --- | ------- |
+| `w1` | `#29231e` | 14  | `#f4f1ec` | 95  | `ink`   |
+| `w2` | `#4d453d` | 30  | `#d9d2c8` | 85  | `bark`  |
+| `w3` | `#74685a` | 45  | `#a5988a` | 64  | `taupe` |
+| `w4` | `#9a8c7c` | 59  | `#7f6f60` | 48  | derived |
+| `w5` | `#bbb3aa` | 73  | `#594f44` | 34  | derived |
+| `w6` | `#dad7d3` | 86  | `#3b332c` | 22  | derived |
+| `w7` | `#f1eeea` | 94  | `#221d18` | 11  | `beige` |
+
+The ramp **inverts by theme**, so `w1` is always the heaviest mark on its own
+ground and "most important = furthest from the page" holds in both.
+
+The **jolt ramp** runs hue 137 throughout with the brandbook `--jolt` pinned at
+`g5`, each step lightness-matched to its warm twin:
+
+| Step | Hex       | L\* | On paper  | On dark paper |
+| ---- | --------- | --- | --------- | ------------- |
+| `g1` | `#00300d` | 16  | 14.33:1   | 1.28:1        |
+| `g2` | `#005518` | 31  | 8.85:1    | 2.07:1        |
+| `g3` | `#008125` | 47  | **4.91:1** | 3.72:1       |
+| `g4` | `#00b132` | 63  | 2.79:1    | 6.55:1        |
+| `g5` | `#00e13f` | 79  | 1.73:1    | **10.58:1**   |
+| `g6` | `#acecbe` | 88  | 1.32:1    | 13.84:1       |
+| `g7` | `#e3f5e8` | 95  | 1.11:1    | 16.52:1       |
+
+**The jolt ramp is locked.** It never encodes magnitude — not in heat matrices, not
+in calendar heat, not in any ordinal scale. Those all use the warm ramp. The jolt
+ramp exists so the accent has a *correct value on every surface*: `g3` on light,
+`g5` on dark. Both clear 3:1; `g5` alone on paper measures 1.73:1 and would be the
+faintest mark on the chart, which is why it is never used there.
 
 ### Accent discipline
 
-Green stays **surgical**: solid CTA fills, the one accent word in a headline,
-`green-11` for links/accent text, and `green-a*` alphas for subtle washes/hover.
-**In charts green is reserved for a single highlight per chart** (§7) — data marks
-default to neutral gray. Don't paint large neutral areas green; that's the gray
-scale's job.
+`HERO` marks **one thing** — the subject of the point the section is making. A
+second hero dissolves the first. Outside charts, the accent covers solid CTA fills,
+the one accent word in a headline, links and accent text (`g3` on light), and
+`jolt` washes via the overlay alphas. Never paint large neutral areas with it.
 
-### Interactive states (Radix 3/4/5 model)
+### Surfaces & full-bleed bands
 
-Drive every interactive element from the step scale: **bg rest → `--ui` (3),
-hover → `--ui-hover` (4), active/selected → `--ui-active` (5)**; borders rest/hover
-= `7`/`8`. **Focus ring = `--focus` (`--text`/gray-12), 2px, 2px offset** — a step-8
-ring fails the 3:1 non-text floor, so use the high-contrast token (or `--accent-text`).
+- **Dark band:** switch the section to the dark theme values — `BG` becomes
+  `#151110`, `TXT` `#f4f1ec`, `GRID` `#3b332c`. The warm ramp inverts with it.
+- **Jolt band:** fill with `jolt` `#00e13f`; all content inks in `jolt.contrast`
+  (`#00300d`). A second jolt fill on jolt disappears — one fill, ink on top.
 
-### Overlays & wide gamut
+### Interactive states
 
-- **Overlay alpha** `--black-a1..12` / `--white-a1..12` (true-neutral, fixed) for
-  scrims, hover washes, and the `--shadow-*` ladder. Prefer these over `gray-a*`
-  when you want a *neutral* overlay (dark `gray-a` is cool-tinted). The **grain
-  keeps its green cast** (§5) — don't neutralize it.
-- **Wide gamut (P3):** each `gray`/`green` token ships a P3/`oklch` variant in an
-  `@supports (color: color(display-p3 1 1 1))` block; the green reads noticeably
-  richer on P3 displays. **sRGB hex is the floor** — never P3-only.
+Rest / hover / active climb the warm ramp from the ground: `w7` → `w6` → `w5` on
+light, and the same three steps on dark. Borders rest/hover use `GRID` then `w5`.
+**Focus ring = `TXT`, 2px, 2px offset** — the brand has no mid-tone that clears 3:1
+on both grounds, so the high-contrast token carries it.
 
-> **Token-only color, from the steps.** No hardcoded one-offs. Derive transparency
-> from the **alpha steps** (`--gray-a*` / `--green-a*` / `--black-a*` / `--white-a*`)
-> rather than ad-hoc `color-mix`/`rgba`. Data-viz colour is specced in §7.
+### The hard gates
+
+1. **Contrast.** Body and small labels ≥ **4.5:1** against their ground; large text
+   and shape boundaries ≥ **3:1**. Adjust lightness to fix a failure — never shift
+   a brand hue.
+2. **One system per report.** A single output file locks one colour system for
+   every chart in it. If one chart cannot express itself in that system, change the
+   system globally or drop the whole report to the warm ramp. Never mix per chart.
+3. **Colour is never the only cue.** Categories keep labels, ordinals keep length
+   or position, the hero keeps an annotation. Strip the colour out and the chart
+   must still read.
+
+> **Role-only colour.** No hardcoded one-offs. Derive transparency from the overlay
+> alpha steps rather than ad-hoc `rgba`/`color-mix`. Data-viz colour is specced in §7.
 
 ---
-
 ## 4. Spacing — Radix space scale
 
 Spacing is the **Radix space scale** (`--space-1`…`--space-9` = 4/8/12/16/24/32/
@@ -498,9 +561,8 @@ belongs **between** blocks; keep within-block spacing tighter.
 
 ## 5. Texture — film grain
 
-A single shared **`GrainOverlay`** component (`src/components/layout/GrainOverlay.tsx`)
-is mounted once at the top of the landing tree (`PinocLandingPage.tsx`).
-Mechanics:
+A single fixed grain element (`.vg-grain`) is emitted once at the top of the
+report's `<body>`. Mechanics:
 
 - A `position: fixed; inset: 0` overlay at **`--z-grain`** (300),
   `pointer-events: none`, `contain: strict` — it sits above all content and
@@ -508,14 +570,14 @@ Mechanics:
 - Texture is an inline SVG **`feTurbulence` `fractalNoise`** desaturated to grey
   (`feColorMatrix saturate 0`).
 - **Light theme:** `opacity: 0.12`, `mix-blend-mode: multiply`, plus a `.tint`
-  layer washing `--solid` (`green-9`) at ~30% with `mix-blend-mode: color` (the
+  layer washing `jolt` (`#00e13f`) at ~30% with `mix-blend-mode: color` (the
   subtle green cast).
-- **Dark theme:** background is dark `gray-1` (`#000000`); grain uses
+- **Dark theme:** background is dark `paper` (`#151110`); grain uses
   `mix-blend-mode: screen`, `opacity: 0.15`, tint hidden.
 - A top-to-bottom mask fades the grain in from `0.35` → `1.0` so the top of the
   viewport stays cleaner.
 
-The landing supports light and dark via `data-theme`; the grain inherits the
+The report supports light and dark via `data-theme`; the grain inherits the
 active theme, so the two blend branches above switch with it.
 
 ### Layering
@@ -534,126 +596,197 @@ The grain sits at the top of the shared z-index ladder:
 ## 6. Accessibility & motion
 
 - Respect `prefers-reduced-motion: reduce` — animation collapses to near-instant
-  (~0.01ms), applied globally in `global.css`.
+  (~0.01ms), applied globally in the inline stylesheet.
 - Guard hover-only affordances (lifts, underlines, glows) with `(hover: hover)`
   so touch devices skip phantom hover states.
-- Focus ring: 2px solid **`--text`** (`gray-12`) with 2px offset, via
-  `:focus-visible` (keyboard only) — a step-8 ring fails the 3:1 non-text contrast
-  floor on light surfaces, so use a high-contrast token (`--text`, or `--accent-text`
-  green-11) instead. All interactive chart controls (view toggles, legend buttons)
-  are real `<button>`s and must be keyboard-reachable.
-- Contrast: lean on Radix steps — body text `gray-12` / muted `gray-11` clear
-  APCA Lc 60/90 on steps 1–2; text on `green-9` uses `green-contrast`. Re-check
+- Focus ring: 2px solid **`TXT`** with 2px offset, via `:focus-visible` (keyboard
+  only) — the brand has no mid-tone that clears the 3:1 non-text floor on both
+  grounds, so the high-contrast role carries it (§3). All interactive chart controls
+  (view toggles, legend buttons) are real `<button>`s and must be keyboard-reachable.
+- Contrast: `TXT` and `MUT` clear 4.5:1 on `BG` and `BG-alt`; shape boundaries
+  clear 3:1. Text on a `jolt` fill uses `jolt.contrast` (`#00300d`). Re-check
   any colour pairing the steps don't already guarantee.
 - **Adaptive / responsive:** the output must read on a phone. Use breakpoints
   (≈`760px` tablet, `420px` phone): stack multi-column grids (stats, metrics,
-  small-multiples) to 1–2 columns; charts are HTML/CSS so they reflow without
-  shrinking text; keep interactive controls ≥ ~40px touch targets; never let a chart
-  force horizontal overflow. Honour safe-area insets.
+  small-multiples) to 1–2 columns; charts are fixed-`viewBox` SVG and stay legible
+  only through the mandatory `≤760px` one-column rule and the narrow variants in §7;
+  keep interactive controls ≥ ~40px touch targets; never let a chart force
+  horizontal overflow. Honour safe-area insets.
 
 ---
 
 ## 7. Data visualization
 
-Charts are **first-class, interactive, and adaptive**, built on the Radix tokens.
-This section defines the *visual language*; the skill (`WRITEREPORT.md` §3) defines
-the *behavior* — multiple meaningful views, hover tooltips, and computed metrics
-with plain-language insights.
+Charts are **first-class, interactive, and catalogued**. This section defines the
+*visual language*. **`CHARTS.md` defines which form to reach for**, and
+`charts/gallery.html` holds a working implementation of each one. The skill
+(`WRITEREPORT.md` §3) defines the *behaviour* — meaningful views, tooltips, and
+computed metrics with plain-language insights.
 
-### Adaptive by construction — HTML/CSS bars, SVG only for lines
+**Never invent a chart form.** Select from `CHARTS.md` by data shape, then copy the
+matching render function out of `charts/gallery.html` and re-bind it to the real
+data. All 28 catalogued forms ship working code — there is no case in which
+improvising the geometry is correct.
 
-**Dense charts (bars, columns, dots, stacked, grouped, tables) are built from
-HTML/CSS elements — not a fixed-`viewBox` SVG.** A `viewBox` SVG scaled to a phone
-column downscales its text to ~4px; HTML/CSS bars **reflow and keep real, legible
-text at every width**. Reserve **SVG for genuinely graphical forms (line / area /
-scatter)**; give those a modest `viewBox` and **bump their text on small screens**
-(media query) since their labels are sparse. Row layout is **label → value → bar**
-(value *before* the growing bar/track), so the value never gets pushed off a narrow
-viewport. Use `minmax(0,1fr)` for the flexible bar track.
+### The card — four fixed parts
 
-### Chart text scale (dedicated, rem)
+Every chart ships in the same frame. The parts are not optional.
 
-Chart text uses its **own small scale** (`--cfs-*`, in **rem** so it scales with the
-root and stays accessible), tuned independently of the editorial `--fs-*`:
+1. **Conclusion title** (`h4`, Bold 700). States the finding, never the chart type.
+   *"Where we gained, where we bled"* — not *"Revenue bar chart"*.
+2. **Subtitle** (`--fs-caption`, `MUT`). Legend meaning, unit, and time range,
+   separated by `·`. If a mark encodes a unit, say so here: *"one dot = one person"*.
+3. **The chart.**
+4. **Source line** (`--fs-micro`, uppercase, `+0.08em`, `GRID` colour). Form name ·
+   series · data source.
 
-| Token         | rem (≈px) | Used for                              |
-| ------------- | --------- | ------------------------------------- |
-| `--cfs-value` | .8125 (13) | Data / value labels (`tnum`)         |
-| `--cfs-label` | .8125 (13) | Category / series labels             |
-| `--cfs-axis`  | .6875 (11) | Axis ticks, legend, mean-line label  |
+Card ground `BG-alt`, radius **16px** (brandbook), **no border and no shadow** —
+cards separate by whitespace. Padding `--space-6 --space-6 --space-5`.
 
-Keep chart text at or **below** body size. For the residual SVG line charts only,
-author the `viewBox` modestly (~560 wide) and bump `ls-*` text at `≤760px`/`≤420px`.
+### Geometry — fixed viewBox, one column on narrow
 
-### Chart palette — neutral by default, **green is surgical**
+Charts are authored as **fixed-`viewBox` SVG**, not fluid HTML/CSS. In writereport's
+editorial measure (~720px content column) a half-width card renders a `400` viewBox
+at roughly **1:1**, so a user unit is about a pixel and authored text sizes land as
+authored. At `≤760px` the grid drops to one column and the same card renders at
+about **0.9×** — still legible. That breakpoint is mandatory:
 
-Data marks are **neutral gray**; green marks **one thing per chart — the insight's
-subject** (the point the section makes), plus the mean line and metric deltas.
+```css
+.vg-chartgrid { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-5) }
+@media (max-width:760px){ .vg-chartgrid{ grid-template-columns:1fr } }
+```
 
-| Role                              | Token                                            |
-| --------------------------------- | ------------------------------------------------ |
-| **Default data mark** (bar/column/dot) | `--gray-9`                                   |
-| **Highlight** (the insight's subject) | `--solid` (`green-9`) — **once per chart**    |
-| Secondary / comparison series     | `--gray-7` / `--gray-11`                          |
-| Bar track / empty                 | `--gray-a3`                                       |
-| Ordinal / sequential ramp         | gray ramp `gray-5 → 7 → 9 → 11`, **green only on the emphasized step** |
-| Diverging (for/against, ±)        | grays both sides; **green only on the emphasized extreme** (no 2nd hue, never red) |
-| **Line / cumulative**             | **`--gray-9` line + one `--solid` point** at the key threshold |
-| Gridlines / baseline              | `--gray-6` (or `--gray-a6`) · zero line `gray-7` |
-| Axis tick labels                  | `--gray-11` (`--cfs-axis`)                        |
-| Value / data labels               | `--gray-12` (`--cfs-value`, `tnum`)              |
-| Reference line (mean / median)    | `green-11`, dashed, labeled                       |
+| Card    | viewBox   | Desktop | Phone (1-col) |
+| ------- | --------- | ------- | ------------- |
+| half    | `400×300` | ~1.0×   | ~0.9×         |
+| wide    | `840×300` | ~0.86×  | **~0.43×**    |
 
-Chart surface: page `--bg` or `--surface`, radius `--radius-3`, **no shadow**.
-Bars `--radius-1/2`; dots `r≈6`. **Rule: green = the point being made, once per
-chart.** If you can't name why a mark is green, it's gray. Always direct-label
-marks — a near-monochrome palette demands it.
+A wide card at one column halves its text, so **every wide form must ship a narrow
+variant** — a re-laid `400`-wide viewBox swapped in at the breakpoint — or be marked
+`desktop-only` in `CHARTS.md`, which excludes it from reports meant to be read on a
+phone. There is no third option: never let a `840` viewBox shrink to a phone.
+
+Use `preserveAspectRatio="xMidYMid meet"` and set `width:100%; height:auto`.
+
+### Chart text scale
+
+Because the viewBox renders near 1:1, chart text is authored in **user units** and
+reads as px. Chart text stays at or below body size.
+
+| Role                          | Units | Weight | Notes                        |
+| ----------------------------- | ----- | ------ | ---------------------------- |
+| Value / data label            | 13    | 800    | `tnum`, `TXT`                |
+| Category / series label       | 11    | 500    | `TXT`                        |
+| Axis tick / legend            | 9.5   | 600    | `MUT`                        |
+| Source line                   | 9     | 500    | `GRID`, uppercase `+0.08em`  |
+
+**Floor: 8 units on a half card, 7 on a wide one.** Information that does not fit
+moves to hover — never shrink text below the floor to force it in.
+
+### Palette — warm ramp carries the data
+
+Data marks come from the **warm ramp** (§3), assigned **by importance, not by
+sequence**: the most important series takes `w1`, the next `w2`, and so on down the
+ladder. Lightness *is* the encoding.
+
+| Role                              | Light            | Dark             |
+| --------------------------------- | ---------------- | ---------------- |
+| Default data mark                 | `w1` `#29231e`   | `w1` `#f4f1ec`   |
+| Second / third series             | `w2`, `w3`       | `w2`, `w3`       |
+| Receding / context marks          | `w4`, `w5`       | `w4`, `w5`       |
+| Bar track / empty / gridline      | `w6`             | `w6`             |
+| **HERO — the insight's subject**  | `#008125` (g3)   | `#00e13f` (g5)   |
+| Axis tick labels                  | `MUT`            | `MUT`            |
+| Value labels                      | `TXT`            | `TXT`            |
+| Reference line (mean / median)    | `#008125` dashed | `#00e13f` dashed |
+
+**One hero per chart.** If you cannot name why a mark is the hero, it is `w1`.
+Ordinal and sequential encodings — heat matrices, calendar heat, intensity — use the
+**warm ramp**, never the jolt ramp (§3, locked). Always direct-label marks: a
+near-monochrome palette demands it.
+
+**Fills are solid.** No gradients, no glows, no drop shadows on marks. Texture comes
+from lightness contrast and shape alone. The one exception is an overlay form where
+opacity itself encodes density — there the transparency is data, not decoration.
+
+### Craft details
+
+- **Bar caps:** capsule ends, radius 999. Vertical bars round the top only;
+  horizontal bars round the outer end only.
+- **Hairlines:** 1 unit, `GRID`. Baselines and zero lines 1.5 units, `w4`.
+- **Dots:** r 4 on half cards, r 3 on wide. Unit dots r 2.5.
+- **Never break a bar axis.** A bar's contract is length ∝ value. For an extreme
+  value, either let it run to the top, or add an inset detail chart, or state
+  plainly in the subtitle that the scale is clipped.
+- **Area encodings use `√value` for radius** — never the raw value.
+- **Demo or placeholder data must be deterministic.** A seeded generator, never
+  `Math.random()`; a refresh has to render identically or screenshots and PDF
+  exports stop matching.
+
+### Motion
+
+Use the brandbook's own tokens: `--out-strong cubic-bezier(.23,1,.32,1)`, entrance
+`--disc 180ms` for chrome, ~700ms for a chart entrance. Fast in, no bounce.
+
+- Marks enter on scroll into view, once, and replay on click.
+- Stagger dots 12ms each, bars 100ms each.
+- **`prefers-reduced-motion: reduce` disables every entrance** and renders the final
+  state immediately. Non-negotiable.
+- **Motion never outranks structure.** An effect that needs a new layout to hold it
+  does not belong.
 
 ### Metric callouts — numbers + insight
 
-Computed metrics (%, mean, median, std dev, top-box, deltas…) render as callouts
-beside or above the chart they explain:
+Computed metrics render as callouts beside or above the chart they explain:
 
-- **Value:** Black 900, `--text`, tabular (`tnum`), at **`--fs-h4`** (~20px — not h3).
-- **Label:** `--fs-overline` (Bold 700, `--text-muted`, 0.08em caps).
-- **Delta:** `▲` `green-11` (up) / `▼` `gray-11` (down) / `–` `gray-10` (flat) —
-  via Radix arrows (§8); never red/green-only — pair the arrow with the sign.
-- **Insight:** one `--fs-caption` line in `--text-muted`, strictly descriptive (what
-  the number means), never a bare figure and never a recommendation.
+- **Value:** Black 900, `TXT`, tabular (`tnum`), at `--fs-h4`.
+- **Label:** `--fs-overline` (Bold 700, `MUT`, 0.08em caps).
+- **Delta:** `▲` hero colour (up) / `▼` `MUT` (down) / `–` `w4` (flat) — via Radix
+  arrows (§8); never colour-only, always pair the arrow with the sign.
+- **Insight:** one `--fs-caption` line in `MUT`, strictly descriptive — what the
+  number means. Never a bare figure, never a recommendation.
 
 ### Interactive chrome
 
-Drive states from the **3/4/5 step model** (§3); focus ring = `--focus`.
+- **View toggle** (segmented control): `--radius-2` buttons on `w6`; hover `w5`;
+  **active = `TXT` fill + `BG` text**; labels `--fs-micro`; Radix chart-type icons
+  (§8). Real `<button>`s, keyboard-reachable.
+- **Tooltip:** `TXT` ground with `BG` text on light, inverted on dark; `--radius-2`,
+  `--shadow-3`, no border. Shows on hover **and** focus.
+- **Series focus:** hovering or focusing a legend key raises its series and drops
+  the rest back via an overlay alpha wash.
 
-- **View toggle** (segmented control): `--radius-2` buttons on `--ui` (3); hover
-  `--ui-hover` (4); **active = `--solid` fill + `--on-solid` text**; labels at
-  `--fs-micro`; Radix chart-type icons (§8). Real `<button>`s, keyboard-reachable.
-- **Tooltip:** `--surface` bg, 1px `--border`, **`--shadow-3`**, `--radius-2`; value
-  `gray-12` (`tnum`), context `gray-11`. Shows on hover **and** focus.
-- **Series focus / legend:** hovering/clicking a legend key highlights its series;
-  others drop back via a `--black-a* / --white-a*` wash.
+### Print, PDF, and the network
 
-### Print / static fallback
+Output loads Satoshi from Fontshare, Noto Sans SC from Google Fonts, and ECharts
+from jsDelivr for the three forms that need it. **The report therefore requires a
+network connection to render as designed** — this is a deliberate trade for the
+catalogue's range (see `WRITEREPORT.md` Rules).
 
-The **primary view** renders statically (HTML/CSS marks, or inline `<svg>` for
-lines) with full labels and the key metric callouts, so it reads with JS off and in
-PDF. Toggles, tooltips, and alternate views are screen-only enhancements (the skill
-exports the primary view to PDF). Because charts are HTML/CSS, they **reflow to the
-print/page width** as well as the screen.
+- Give every font a real fallback stack so a cold or blocked CDN degrades to
+  system type rather than to nothing.
+- The **primary view renders statically** with full labels and metric callouts.
+  Toggles, tooltips and alternate views are screen-only.
+- **PDF export must wait for fonts and any library to finish loading before
+  printing** — `document.fonts.ready`, plus an explicit readiness check for ECharts
+  where it is used. Printing early produces a page of fallback type and empty
+  chart frames.
+- `@media print` hides toggles, tooltips and the grain, and shows only each chart's
+  primary view.
 
 ---
-
 ## 8. Icons — Radix Icons, inlined
 
 Iconography is **Radix Icons** (15×15, `currentColor`, MIT / WorkOS). **Inline the
 SVG paths** directly in the output — never `npm`, CDN, `<img>`, or icon fonts (it
-must stay self-contained). Colour inherits via `currentColor`; size via
+the report already depends on three CDNs and must not add a fourth). Colour
+inherits via `currentColor`; size via
 `width`/`height`.
 
 - **Size:** 15px inline with body/caption; 16–18px in controls/headings. Optically
   centre with text (flex `align-items:center`, or `vertical-align:-0.125em`).
-- **Colour:** default `--text-muted` (`gray-11`); emphasis `--accent-text`
-  (`green-11`); on a solid-accent surface `--on-solid`.
+- **Colour:** default `MUT`; emphasis the hero tone (`#008125` light / `#00e13f`
+  dark); on a `jolt` fill `jolt.contrast`.
 - **Sanctioned uses (with restraint — icons clarify, never decorate):**
   - Metric deltas — `ArrowUpIcon` / `ArrowDownIcon` / `MinusIcon`.
   - Info / definition on a metric or chart — `InfoCircledIcon`,
@@ -676,19 +809,19 @@ must stay self-contained). Colour inherits via `currentColor`; size via
    500** body. Contrast is the weight jump, never a second face.
 2. **Big-heading line-height** stays at or above its `--lh-*` (display 1.0–1.08);
    the hero is the largest, in `display-2xl`/`display-xl` at Black 900.
-3. **Color?** Two Radix 12-step scales (warm `gray`, `green` accent) + overlay
-   `black-a`/`white-a` + P3. Pick by **step role**: bg `gray-1/2`, component bg
-   `3/4/5` (rest/hover/active), borders `6/7/8`, solid accent `green-9`, muted text
-   `gray-11`, text `gray-12`, accent text `green-11`, ink-on-green `green-contrast`,
-   focus `--focus`. Alpha from `*-a*`/overlay steps — no ad-hoc rgba.
-4. **Corners?** Radix radius scale — cards/charts `--radius-3` (6px); chips
-   `--radius-1/2`; `full` only on dots/pills. Cards flat; `--shadow-*` for tooltips only.
+3. **Color?** Nine brandbook tokens per theme + two derived 7-step ramps + overlay
+   alphas. Pick by **role**: `BG` paper, `BG-alt` beige, `TXT` ink, `MUT` taupe,
+   `GRID` w6, `DATA` warm ramp, `HERO` jolt `g3` on light / `g5` on dark. The jolt
+   ramp is **locked** — it never encodes magnitude. Alpha from overlay steps only.
+4. **Corners?** Radix radius scale — chips `--radius-1/2`; `full` on dots/pills;
+   **chart cards 16px** (brandbook). Cards flat; `--shadow-*` for tooltips only.
 5. **Spacing?** Radix `--space-*` everywhere in layout (no hardcoded px) — section
    padding `--space-9`/`8`, within-block `--space-1..5`. Vary it.
 6. **Text size?** Editorial `--fs-*` (display→caption) for content; chrome uses
-   `--fs-overline`/`caption`/`micro`; charts use the dedicated `--cfs-*` scale.
-7. **Charts?** Neutral `gray-9` marks; **green is surgical — one highlight per chart**
-   (the insight's subject) + mean line + delta. 2–3 toggleable views, tooltips,
-   metric callouts **with insights** (§7).
+   `--fs-overline`/`caption`/`micro`; chart SVG text is in viewBox user units (§7).
+7. **Charts?** Select the form from `CHARTS.md` by data shape, copy it from
+   `charts/gallery.html` — never invent one. Warm-ramp marks assigned by importance;
+   **one hero per chart**. Fixed viewBox + a `≤760px` one-column breakpoint. 2–3
+   toggleable views, tooltips, metric callouts **with insights** (§7).
 8. **Icons?** Radix Icons, **inlined** SVG, `currentColor`, with restraint (§8).
 9. **Texture?** One `GrainOverlay`, keeps its green cast; neutral overlays use `*-a` steps.

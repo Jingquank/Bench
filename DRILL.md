@@ -35,7 +35,7 @@ multiple independent code regions, several dependencies, or multi-route browser 
 single-file lookup or small deterministic search in the primary agent; subagent startup would cost
 more time than it saves.
 
-When model-selectable subagents are available, **Claude Code prefers Sonnet 5** and other coding
+When model-selectable subagents are available, **Claude Code prefers the `sonnet` model alias** and other coding
 agents choose the closest available equivalent with strong code-search and structured-synthesis
 ability. Do not prompt the user to choose a model, and do not reflexively choose the cheapest model
 if it cannot produce reliable evidence.
@@ -55,7 +55,7 @@ the user-facing flow or authorizes a subagent to edit project files or the plan.
 
 ## Phase 1 -- Gather Context
 
-Do all of this silently. No user interaction yet.
+Gather all of this before asking the user anything. A one-line note on what you are reading is fine; questions wait for Phase 2.
 
 ### Step 1: Locate the Plan
 
@@ -99,7 +99,7 @@ The goal is to understand what already exists so you can ask: "Did you know X is
 <!-- /only -->
 2. If a dev server is running:
    - Identify the local URL (typically `http://localhost:PORT`)
-   - Navigate to that URL using whatever browser tool you have (Cursor: in-editor preview; Claude Code: Chrome MCP `mcp__claude-in-chrome__navigate`). If you have no browser tool, skip the visual steps below and note you have no visual context.
+   - Navigate to that URL using whatever browser tool you have (Cursor: in-editor preview; Claude Code: the Chrome MCP browser tools). If you have no browser tool, skip the visual steps below and note you have no visual context.
    - Identify pages/routes that are relevant to the plan items
    - Navigate to each relevant page and take a screenshot
    - Note the current visual state: what's already built, what's missing, what the layout looks like
@@ -113,7 +113,7 @@ interview question. If the subagent lacks the browser session, keep this step in
 
 For each new library, package, or external service mentioned in the plan:
 
-1. Use WebSearch to verify it exists, is actively maintained, and the version is reasonable
+1. Use your web-search tool to verify it exists, is actively maintained, and the version is reasonable
 2. Check if the project already has a similar dependency installed (e.g., plan says "add axios" but `fetch` wrapper already exists, or plan says "add lodash" but the project uses `ramda`)
 3. Note any findings -- these become questions or suggestions in Phase 2
 
@@ -195,7 +195,7 @@ Between rounds, briefly summarize what was resolved and what's left. Don't re-as
 4. **Accepted suggestions**: If the user accepted any proactive suggestions, add them as plan items or enrich existing ones
 5. **Dependency decisions**: Record which libraries/approaches were chosen and why
 
-Do NOT remove anything the user didn't ask to remove. Only add and refine.
+Add and refine; leave existing items in place unless the user asked to drop them. The plan is theirs.
 
 After updating, present a brief summary of changes made to the plan.
 
@@ -221,8 +221,7 @@ After updating, present a brief summary of changes made to the plan.
 <!-- /only -->
 - **Always ask with concrete options** when a question has a finite set of valid answers -- use your structured-question tool if you have one (e.g. `AskUserQuestion`), otherwise lay out the numbered options in plain prose. Freeform is fine for open-ended "what should this look like?" questions.
 - **Reference real code.** Every question should cite a file path, component name, or dependency when relevant. Don't ask "how should auth work?" -- ask "the project uses Express with `cookie-session` (from `package.json`). Should auth use the existing session middleware or switch to JWT?"
-- **Don't ask more than 3-5 questions per round.** Batch related questions. Too many at once overwhelms the user.
-- **Don't repeat yourself.** Track what's been answered. Never re-ask a resolved question.
+- **Keep each round small.** Batch related questions into a handful the user can answer in one sitting; a long list at once overwhelms them.
 - **Suggest, don't prescribe.** Frame ideas as options, not directives. "Have you considered X?" not "You should do X."
 - **Respect "good enough."** If the user wants to move on, stop drilling and finalize with what you have.
 - **No generic questions.** Every question must be grounded in something specific: a file you read, a pattern you found, a screenshot you took, or a dependency you checked. If you can't ground a question, don't ask it.

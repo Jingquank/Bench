@@ -1,7 +1,7 @@
 {
   "name": "bench",
-  "version": "1.12.0",
-  "description": "Editorial reports, live debug panels, plan drilling, product lore, Müller-Brockmann layout grids, and plain-language explanations — a skill pack for Cursor, Claude Code, and Codex.",
+  "version": "1.13.0",
+  "description": "Editorial reports with a 28-form chart catalogue, plan drilling, product lore, and plain-language explanations — a skill pack for Cursor, Claude Code, and Codex.",
   "bin": {
     "bench": "bin/install.js"
   },
@@ -9,13 +9,12 @@
     "bin/install.js",
     "WRITEREPORT.md",
     "docs/DESIGN.md",
+    "docs/CHARTS.md",
+    "docs/charts/",
     "reference/demo.md",
     "fonts/",
-    "XRAY.md",
     "DRILL.md",
     "LORE.md",
-    "GRID.md",
-    "grid/",
     "HUH.md"
   ],
   "keywords": [
@@ -27,17 +26,16 @@
     "writereport",
     "editorial-report",
     "pdf",
-    "xray",
     "drill",
     "plan-review",
     "lore",
-    "grid",
-    "grid-system",
-    "muller-brockmann",
     "huh",
     "plain-language",
     "simplified-technical-english",
-    "asd-ste100"
+    "asd-ste100",
+    "charts",
+    "data-visualization",
+    "chart-catalogue"
   ],
   "scripts": {
     "dev": "vite",

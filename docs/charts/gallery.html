@@ -1,0 +1,1888 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chart gallery — Editorial</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<!-- ECharts is needed by exactly three forms: Sankey, Treemap and Network. The
+     gallery carries all three, so it always loads it. A generated report emits
+     this tag ONLY when it contains one of them (WRITEREPORT.md Step 5). -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   BRAND TOKENS — the single source of truth for every chart in this file.
+   Values come from the Viggle brandbook; the w4/w5/w6 ramp steps are derived
+   on the brand's own hue curve. See DESIGN.md §3. Any colour that conflicts
+   with this block is wrong.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#fcfcfc; --bg-alt:#f1eeea; --txt:#29231e; --mut:#74685a;
+  --w1:#29231e; --w2:#4d453d; --w3:#74685a; --w4:#9a8c7c;
+  --w5:#bbb3aa; --w6:#dad7d3; --w7:#f1eeea;
+  --grid:#dad7d3; --hero:#008125; --hero-ink:#00300d;
+  --silver:#9a9a9a; --fill:#d9d9d9; --mist:#e1e1e1;
+  --sp3:12px; --sp4:16px; --sp5:24px; --sp6:32px; --sp9:64px;
+  --card-r:16px; --out-strong:cubic-bezier(.23,1,.32,1);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#151110; --bg-alt:#221d18; --txt:#f4f1ec; --mut:#a5988a;
+    --w1:#f4f1ec; --w2:#d9d2c8; --w3:#a5988a; --w4:#7f6f60;
+    --w5:#594f44; --w6:#3b332c; --w7:#221d18;
+    --grid:#3b332c; --hero:#00e13f; --hero-ink:#00300d; --silver:#6b6b6b; --fill:#2e2a25;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151110; --bg-alt:#221d18; --txt:#f4f1ec; --mut:#a5988a;
+  --w1:#f4f1ec; --w2:#d9d2c8; --w3:#a5988a; --w4:#7f6f60;
+  --w5:#594f44; --w6:#3b332c; --w7:#221d18;
+  --grid:#3b332c; --hero:#00e13f; --hero-ink:#00300d; --silver:#6b6b6b; --fill:#2e2a25;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--txt);
+  font-family:Satoshi,"Noto Sans SC",system-ui,-apple-system,sans-serif;
+  font-weight:500; padding:var(--sp9) var(--sp5);
+  -webkit-font-smoothing:antialiased;
+}
+.vg-wrap{max-width:880px;margin:0 auto}
+.vg-intro{margin-bottom:var(--sp9)}
+.vg-intro h1{font-weight:900;font-size:2.25rem;letter-spacing:-.02em;line-height:1.15}
+.vg-intro p{margin-top:var(--sp4);color:var(--mut);font-size:1rem;line-height:1.55;max-width:60ch}
+.vg-intro code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.875em}
+
+/* ── Card — the four fixed parts (DESIGN.md §7) ───────────────────────────── */
+.vg-chartgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp5)}
+@media (max-width:760px){ .vg-chartgrid{grid-template-columns:1fr} }
+.vg-card{background:var(--bg-alt);border-radius:var(--card-r);padding:var(--sp6) var(--sp6) var(--sp5)}
+.vg-card.wide{grid-column:1/-1}
+.vg-card h2{font-weight:700;font-size:1.25rem;letter-spacing:-.01em;line-height:1.3}
+.vg-sub{margin-top:4px;color:var(--mut);font-size:.8125rem;line-height:1.4}
+.vg-src{margin-top:var(--sp3);color:var(--grid);font-size:.6875rem;font-weight:500;
+        letter-spacing:.08em;text-transform:uppercase}
+.vg-card svg{display:block;width:100%;height:auto;margin-top:var(--sp4);cursor:pointer}
+.vg-card svg text{font-family:Satoshi,"Noto Sans SC",system-ui,sans-serif}
+
+/* ── Motion — brandbook easing, fast in, no bounce (DESIGN.md §7) ─────────── */
+.vg-grow{transform-box:fill-box;transform-origin:left center;animation:vgGrow .7s var(--out-strong) both}
+@keyframes vgGrow{from{transform:scaleX(0)}}
+.vg-rise{transform-box:fill-box;transform-origin:bottom center;animation:vgRise .7s var(--out-strong) both}
+@keyframes vgRise{from{transform:scaleY(0)}}
+.vg-pop{transform-box:fill-box;transform-origin:center;animation:vgPop .5s var(--out-strong) both}
+@keyframes vgPop{from{transform:scale(0)}}
+.vg-fade{animation:vgFade .6s ease both}
+@keyframes vgFade{from{opacity:0}}
+.vg-draw{animation:vgDraw .9s var(--out-strong) both}
+@keyframes vgDraw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){
+  .vg-grow,.vg-rise,.vg-pop,.vg-fade{animation:none}
+  .vg-draw{animation:none;stroke-dasharray:none!important;stroke-dashoffset:0!important}
+}
+/* Print must never capture a mid-entrance state: force the final frame.
+   Without this a PDF exported before the animations settle is a page of
+   empty cards — every mark is still at scale(0). */
+@media print{
+  .vg-card svg{cursor:default}
+  .vg-grow,.vg-rise,.vg-pop,.vg-fade{animation:none!important;transform:none!important;opacity:1!important}
+  .vg-draw{animation:none!important;stroke-dasharray:none!important;stroke-dashoffset:0!important}
+}
+
+/* ── Big Stat — HTML, not SVG. The number IS the section (DESIGN.md §7). ──── */
+.vg-stat{padding:var(--sp5) 0 var(--sp4)}
+.vg-stat-label{font-size:.75rem;font-weight:700;letter-spacing:.08em;
+               text-transform:uppercase;color:var(--mut)}
+.vg-stat-value{font-size:3rem;font-weight:900;letter-spacing:-.025em;line-height:1.08;
+               font-variant-numeric:tabular-nums;color:var(--txt);margin-top:6px}
+.vg-stat-delta{font-size:.8125rem;font-weight:700;font-variant-numeric:tabular-nums;
+               margin-top:6px}
+.vg-stat-insight{font-size:.8125rem;color:var(--mut);margin-top:var(--sp3);
+                 line-height:1.4;max-width:34ch}
+
+/* ── ECharts containers. Only Sankey / Treemap / Network use these. ───────── */
+.vg-ech{width:100%;height:300px;margin-top:var(--sp4)}
+.vg-card.wide .vg-ech{height:340px}
+.vg-ech-fallback{display:flex;align-items:center;justify-content:center;height:100%;
+                 padding:0 var(--sp6);text-align:center;font-size:.8125rem;
+                 color:var(--mut);border:1px dashed var(--grid);border-radius:8px}
+</style>
+</head>
+<body>
+<div class="vg-wrap">
+
+<div class="vg-intro">
+  <h1>Chart gallery</h1>
+  <p>Working reference implementations for <code>CHARTS.md</code>. Find the form
+  by its banner comment in the script below, copy its render function, and re-bind it
+  to real data. Colour, type and motion come from <code>DESIGN.md</code> §7 — do not
+  restyle here. Click any chart to replay its entrance.</p>
+</div>
+
+<div class="vg-chartgrid">
+
+  <div class="vg-card">
+    <h2>Support load sits with two teams</h2>
+    <div class="vg-sub">Tickets resolved · Q3 2026 · hero = the team the section is about</div>
+    <svg id="c-rankedbars" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Ranked Bars · Tickets · Internal helpdesk export</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Six squads, shipped and counted</h2>
+    <div class="vg-sub">One tick = one release · Q3 2026 · unit is countable by eye</div>
+    <svg id="c-countedrows" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Counted Rows · Releases · Deploy log</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Response times cluster tightly</h2>
+    <div class="vg-sub">Median first-response, hours · by plan · range is narrow, so dots not bars</div>
+    <svg id="c-dotplot" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Dot Plot · Hours to first response · Support metrics</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Onboarding got faster everywhere</h2>
+    <div class="vg-sub">Days to first value · before → after · not a trend, two states</div>
+    <svg id="c-dumbbell" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Dumbbell · Days · Activation cohort study</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Most traffic still arrives direct</h2>
+    <div class="vg-sub">Share of sessions · Q3 2026 · the whole matters as much as the parts</div>
+    <svg id="c-ring" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Segmented Ring · Sessions · Web analytics</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Sixty-one in every hundred convert</h2>
+    <div class="vg-sub">One cell = one signup in a hundred · trial cohort · countable by design</div>
+    <svg id="c-waffle" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Waffle Grid · Signups · Trial funnel</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Every incident this quarter, one dot each</h2>
+    <div class="vg-sub">One dot = one incident · grouped by cause · 48 records, all shown</div>
+    <svg id="c-unitfield" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Unit Field · Incidents · On-call log</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Enterprise revenue leans on renewals</h2>
+    <div class="vg-sub">Revenue by segment · new / expansion / renewal · totals differ too</div>
+    <svg id="c-stacked" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Stacked Bars · Revenue · Finance close</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Signups climbed after the March rebuild</h2>
+    <div class="vg-sub">Daily signups · 30 days · web vs mobile · hero marks the rebuild ship date</div>
+    <svg id="c-threadline" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Thread Line · Signups · Product analytics</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Concurrency holds through the quarter</h2>
+    <div class="vg-sub">Peak concurrent users · 60 days · zero baseline, so volume reads honestly</div>
+    <svg id="c-threadarea" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Thread Area · Concurrent users · Platform telemetry</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Two plans traded places</h2>
+    <div class="vg-sub">Share of revenue · Q1 → Q3 · only the endpoints matter, and rank changed</div>
+    <svg id="c-slope" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Slope · Revenue share · Finance close</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Most tickets close inside six hours</h2>
+    <div class="vg-sub">Tickets by resolution time · bins carry business meaning · y axis is a count</div>
+    <svg id="c-binned" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Binned Columns · Tickets · Support metrics</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Free plan carries the long tail</h2>
+    <div class="vg-sub">First-response time by plan · box = IQR · dots = outliers · n = 90 per plan</div>
+    <svg id="c-box" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Box Plot · Hours to first response · Support metrics</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Deal sizes cluster below the mean</h2>
+    <div class="vg-sub">One dot = one closed deal · 120 records, all shown · Q3 2026</div>
+    <svg id="c-beeswarm" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Beeswarm · Deal value · CRM export</div>
+  </div>
+
+  <div class="vg-card wide">
+    <h2>Three products trade the same river</h2>
+    <div class="vg-sub">Share of platform traffic · 36 weeks · composition shifts and the total moves · narrow screens show six periods as stacked bars</div>
+    <svg id="c-flow" viewBox="0 0 840 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Flow Ribbon · Traffic · Platform telemetry</div>
+  </div>
+
+  <div class="vg-card wide">
+    <h2>Five pipelines, five tempos</h2>
+    <div class="vg-sub">Build duration distribution · one curve per pipeline · narrow screens show the same groups as a box plot</div>
+    <svg id="c-ridge" viewBox="0 0 840 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Ridgeline · Build minutes · CI history</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Price and satisfaction pull apart above $40</h2>
+    <div class="vg-sub">Monthly price vs CSAT · 48 accounts · n = 48 · r = −0.61 · dashed line = fit</div>
+    <svg id="c-scatter" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Scatter · Price / CSAT · Account review</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Adoption runs hot on the newest releases</h2>
+    <div class="vg-sub">Feature use by release · darker = heavier use · warm ramp encodes intensity</div>
+    <svg id="c-heat" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Heat Matrix · Weekly active use · Product analytics</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Two thirds of the way to the annual goal</h2>
+    <div class="vg-sub">ARR against the FY26 target · tick marks the target · as of Q3 close</div>
+    <svg id="c-arc" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Progress Arc · ARR · Finance close</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Three teams cleared target, two did not</h2>
+    <div class="vg-sub">Quarterly delivery against target · bands = poor / fair / good · rule = target</div>
+    <svg id="c-bullet" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Bullet · Story points · Delivery review</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Accounts grew faster than they churned</h2>
+    <div class="vg-sub">Trailing twelve months · against the prior period</div>
+    <div id="c-bigstat" role="img"></div>
+    <div class="vg-src">Big Stat · NRR · Finance close</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Support load peaks Tuesday afternoon</h2>
+    <div class="vg-sub">Tickets by weekday and hour · area = volume · narrow screens bucket into six-hour blocks</div>
+    <svg id="c-punch" viewBox="0 0 840 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Punch Card · Tickets · Support metrics</div>
+  </div>
+
+  <div class="vg-card wide">
+    <h2>A year of deploys, day by day</h2>
+    <div class="vg-sub">Deploys per day · 2026 · darker = more · weekends read as gaps · desktop only</div>
+    <svg id="c-cal" viewBox="0 0 840 200" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Calendar Heat · Deploys · CI history</div>
+  </div>
+
+  <div class="vg-card wide">
+    <h2>Twelve products, four dimensions</h2>
+    <div class="vg-sub">Each axis scaled independently · one line per product · desktop only</div>
+    <svg id="c-parcoord" viewBox="0 0 840 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Parallel Coordinates · Product metrics · Portfolio review</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>From gross to net, step by step</h2>
+    <div class="vg-sub">Q3 revenue bridge · $k · dark = opening / closing · connectors tie each step</div>
+    <svg id="c-waterfall" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+    <div class="vg-src">Waterfall · Revenue · Finance close</div>
+  </div>
+
+  <div class="vg-card">
+    <h2>Where the engineering quarter went</h2>
+    <div class="vg-sub">Engineer-weeks by area and team · area = time · small tiles label on hover</div>
+    <div class="vg-ech" id="c-treemap" role="img"></div>
+    <div class="vg-src">Treemap · Engineer-weeks · Planning review</div>
+  </div>
+
+  <div class="vg-card wide">
+    <h2>Channels pour into three plans</h2>
+    <div class="vg-sub">Signup flow · acquisition channel → trial type → plan · band width = volume · desktop only</div>
+    <div class="vg-ech" id="c-sankey" role="img"></div>
+    <div class="vg-src">Sankey · Signups · Growth analytics</div>
+  </div>
+
+  <div class="vg-card wide">
+    <h2>Integrations orbit the core API</h2>
+    <div class="vg-sub">Service dependency graph · node area = number of connections · drag to explore · desktop only</div>
+    <div class="vg-ech" id="c-network" role="img"></div>
+    <div class="vg-src">Network · Service dependencies · Architecture audit</div>
+  </div>
+
+</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   VG — shared helpers. Inline this block into any single-file report that
+   carries a chart. Colours are read from CSS custom properties so the light
+   and dark themes both work without a second code path.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const VG = (() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const el  = (p, t, a = {}) => { const n = document.createElementNS(NS, t);
+    for (const k in a) n.setAttribute(k, a[k]); p.appendChild(n); return n; };
+  const txt = (p, a, s) => { const n = el(p, 'text', a); n.textContent = s; return n; };
+  const tip = (n, s) => { const t = document.createElementNS(NS, 'title'); t.textContent = s;
+    n.appendChild(t); return n; };
+
+  /* Type roles in viewBox user units — DESIGN.md §7. Floor: 8 half / 7 wide. */
+  const T = {
+    value: { 'font-size': 13,  'font-weight': 800, 'font-variant-numeric': 'tabular-nums' },
+    label: { 'font-size': 11,  'font-weight': 500 },
+    axis:  { 'font-size': 9.5, 'font-weight': 600 },
+  };
+  const apply = (a, role) => Object.assign({}, T[role], a);
+
+  /* Deterministic pseudo-random. Demo data must render identically on every
+     refresh or screenshots and PDF exports stop matching. Never Math.random(). */
+  const rnd = (i, k = 1) => Math.abs(((i * 73856093) ^ (k * 19349663)) % 1000) / 1000;
+
+  /* Render on scroll-in, once; click to replay. Honours reduced-motion by
+     letting the CSS disable the animations while still drawing the marks.
+
+     A chart that never scrolls into view never renders, so printing a long
+     report would capture empty cards for everything below the fold. Every
+     pending chart is therefore force-drawn on `beforeprint`, which covers
+     both Cmd-P and headless --print-to-pdf. */
+  const pending = new Map();
+  const reveal = (id, fn) => {
+    const node = document.getElementById(id);
+    if (!node) return;
+    const draw = () => { node.innerHTML = ''; fn(node); pending.delete(id); };
+    pending.set(id, draw);
+    const io = new IntersectionObserver(es => {
+      if (es[0].isIntersecting) { draw(); io.disconnect(); }
+    }, { threshold: .25 });
+    io.observe(node);
+    node.addEventListener('click', () => { node.innerHTML = ''; fn(node); });
+  };
+  const drawAll = () => { [...pending.values()].forEach(d => d()); };
+  window.addEventListener('beforeprint', drawAll);
+  /* Headless printing may not fire beforeprint; expose it for the exporter. */
+  window.vgDrawAll = drawAll;
+
+  const fmt = n => n.toLocaleString('en-US');
+  return { NS, css, el, txt, tip, T, apply, rnd, reveal, drawAll, fmt };
+})();
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Shared geometry for a 400×300 half card.
+   Margins l 96 · r 16 · t 8 · b 28 (DESIGN.md §7).
+   ───────────────────────────────────────────────────────────────────────────── */
+const M = { l: 96, r: 16, t: 8, b: 28, W: 400, H: 300 };
+M.iw = M.W - M.l - M.r;   /* 288 */
+M.ih = M.H - M.t - M.b;   /* 264 */
+/* ─────────────────────────────────────────────────────────────────────────────
+   Geometry sets. Category charts hang labels off a wide left margin; x/y charts
+   need far less. Wide cards use the 840 viewBox and MUST ship a narrow variant.
+   ───────────────────────────────────────────────────────────────────────────── */
+const MX = { l: 44, r: 18, t: 12, b: 30, W: 400, H: 300 };   /* x/y, half card */
+MX.iw = MX.W - MX.l - MX.r; MX.ih = MX.H - MX.t - MX.b;
+const MW = { l: 52, r: 18, t: 12, b: 30, W: 840, H: 300 };   /* wide card      */
+MW.iw = MW.W - MW.l - MW.r; MW.ih = MW.H - MW.t - MW.b;
+
+/* Linear scale. */
+VG.scale = (d0, d1, r0, r1) => v => r0 + ((v - d0) / ((d1 - d0) || 1)) * (r1 - r0);
+
+/* Polyline and Catmull-Rom-smoothed paths. */
+VG.line = pts => 'M' + pts.map(p => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join('L');
+VG.smooth = (pts, t = 0.5) => {
+  if (pts.length < 2) return '';
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    d += `C${(p1[0] + (p2[0] - p0[0]) / 6 * t).toFixed(1)} ${(p1[1] + (p2[1] - p0[1]) / 6 * t).toFixed(1)},` +
+         `${(p2[0] - (p3[0] - p1[0]) / 6 * t).toFixed(1)} ${(p2[1] - (p3[1] - p1[1]) / 6 * t).toFixed(1)},` +
+         `${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d;
+};
+
+/* Deterministic normal sample — demo data only. Never Math.random(). */
+VG.gauss = (i, k, mean, sd) => {
+  const u1 = Math.max(1e-6, VG.rnd(i, k)), u2 = VG.rnd(i + 977, k + 13);
+  return mean + sd * Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+};
+VG.quantile = (sorted, q) => {
+  const pos = (sorted.length - 1) * q, base = Math.floor(pos), rest = pos - base;
+  return sorted[base + 1] !== undefined
+    ? sorted[base] + rest * (sorted[base + 1] - sorted[base]) : sorted[base];
+};
+/* Gaussian kernel density, for Ridgeline. */
+VG.kde = (samples, xs, bw) => xs.map(x => samples.reduce((a, v) => {
+  const u = (x - v) / bw; return a + Math.exp(-0.5 * u * u);
+}, 0) / (samples.length * bw * Math.sqrt(2 * Math.PI)));
+
+/* Rounded axis ticks. Raw hi/count gives values like 1038 and 3113; a reference
+   implementation must not teach that. Returns ticks from 0 to at or above hi. */
+VG.niceTicks = (hi, count = 4) => {
+  const mag = Math.pow(10, Math.floor(Math.log10((hi || 1) / count)));
+  /* Score each candidate step by how close it lands to the requested tick
+     count. Picking the first step >= raw is what produced axes reading
+     0 and 50 for data topping out at 80. */
+  let best = null;
+  [1, 2, 2.5, 5, 10].forEach(m => {
+    const step = m * mag;
+    const score = Math.abs((Math.floor(hi / step) + 1) - (count + 1));
+    if (!best || score < best.score) best = { step, score };
+  });
+  const out = [];
+  for (let v = 0; v <= hi + best.step * 0.001; v += best.step) out.push(+v.toFixed(6));
+  return out;
+};
+VG.fmtShort = v => Math.abs(v) >= 1e6
+  ? (v / 1e6).toFixed(Math.abs(v) < 1e7 ? 2 : 1).replace(/\.?0+$/, '') + 'M'
+  : Math.abs(v) >= 1000
+  ? (v / 1000).toFixed(Math.abs(v) < 10000 ? 1 : 0).replace(/\.0$/, '') + 'k'
+  : String(v);
+
+/* Axis furniture shared by the x/y forms. */
+VG.yAxis = (svg, g, y, ticks, fmt = String) => {
+  ticks.forEach(t => {
+    VG.el(svg, 'line', { x1: g.l, x2: g.W - g.r, y1: y(t), y2: y(t),
+      stroke: VG.css('--grid'), 'stroke-width': 1 });
+    VG.txt(svg, VG.apply({ x: g.l - 6, y: y(t) + 3, 'text-anchor': 'end',
+      fill: VG.css('--mut') }, 'axis'), fmt(t));
+  });
+};
+
+/* Wide forms must swap to a narrow variant at the breakpoint rather than
+   shrinking — an 840 viewBox on a phone halves its text (DESIGN.md §7).
+   Re-renders on crossing the breakpoint, not on every resize tick. */
+VG.revealResponsive = (id, { wide, narrow, bp = 760 }) => {
+  const node = document.getElementById(id);
+  if (!node) return;
+  let mode = null;
+  const pick = () => (window.innerWidth <= bp ? 'narrow' : 'wide');
+  const draw = () => {
+    mode = pick();
+    node.setAttribute('viewBox', mode === 'narrow' ? '0 0 400 300' : '0 0 840 300');
+    node.innerHTML = '';
+    (mode === 'narrow' ? narrow : wide)(node);
+  };
+  VG.reveal(id, () => draw());
+  window.addEventListener('resize', () => { if (mode && pick() !== mode) draw(); });
+};
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   RANKED BARS
+   Shape: ≤10 categories, one value each, order is the story.
+   Sorted descending. Capsule outer end. Value labelled at the bar end.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.rankedBars = (svg, rows, { hero = null, unit = '' } = {}) => {
+  const data = [...rows].sort((a, b) => b.v - a.v);
+  const max  = Math.max(...data.map(d => d.v));
+  const pitch = M.ih / data.length;
+  const h = Math.min(22, pitch - 10);
+
+  data.forEach((d, i) => {
+    const y = M.t + i * pitch + (pitch - h) / 2;
+    const w = Math.max(2, (d.v / max) * (M.iw - 44));
+    const isHero = d.k === hero;
+
+    /* track */
+    VG.el(svg, 'rect', { x: M.l, y, width: M.iw - 44, height: h, rx: h / 2, fill: VG.css('--w6') });
+    /* bar — capsule, grows from the axis */
+    const bar = VG.el(svg, 'rect', {
+      x: M.l, y, width: w, height: h, rx: h / 2,
+      fill: VG.css(isHero ? '--hero' : '--w1'), class: 'vg-grow',
+      style: `animation-delay:${i * 100}ms`,
+    });
+    VG.tip(bar, `${d.k}: ${VG.fmt(d.v)}${unit}`);
+
+    VG.txt(svg, VG.apply({ x: M.l - 8, y: y + h / 2 + 4, 'text-anchor': 'end',
+      fill: VG.css('--txt') }, 'label'), d.k);
+    /* Large values are abbreviated: a 7-digit label at 13 units runs past the
+       400-unit card and clips. Small demo values keep their full form. */
+    VG.txt(svg, VG.apply({ x: M.l + w + 8, y: y + h / 2 + 4,
+      fill: VG.css(isHero ? '--hero' : '--txt'), class: 'vg-fade',
+      style: `animation-delay:${i * 100 + 350}ms` }, 'value'),
+      (d.v >= 10000 ? VG.fmtShort(d.v) : VG.fmt(d.v)) + unit);
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   COUNTED ROWS
+   Shape: ≤8 categories whose values are countable units.
+   One tick per unit. The unit must be named in the subtitle.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.countedRows = (svg, rows, { hero = null, tick = 7, gap = 3 } = {}) => {
+  const data  = [...rows].sort((a, b) => b.v - a.v);
+  const pitch = M.ih / data.length;
+  const h = Math.min(16, pitch - 12);
+
+  data.forEach((d, i) => {
+    const y = M.t + i * pitch + (pitch - h) / 2;
+    const isHero = d.k === hero;
+    for (let u = 0; u < d.v; u++) {
+      const mark = VG.el(svg, 'rect', {
+        x: M.l + u * (tick + gap), y, width: tick, height: h, rx: 2,
+        fill: VG.css(isHero ? '--hero' : '--w1'), class: 'vg-pop',
+        style: `animation-delay:${i * 60 + u * 12}ms`,
+      });
+      VG.tip(mark, `${d.k}: ${d.v}`);
+    }
+    VG.txt(svg, VG.apply({ x: M.l - 8, y: y + h / 2 + 4, 'text-anchor': 'end',
+      fill: VG.css('--txt') }, 'label'), d.k);
+    VG.txt(svg, VG.apply({ x: M.l + d.v * (tick + gap) + 5, y: y + h / 2 + 4,
+      fill: VG.css(isHero ? '--hero' : '--mut'), class: 'vg-fade',
+      style: `animation-delay:${i * 60 + d.v * 12 + 200}ms` }, 'value'), d.v);
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   DOT PLOT
+   Shape: ≤15 categories, one value each, tight range.
+   Use when bars would be mostly ink and the differences are small.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.dotPlot = (svg, rows, { hero = null, unit = '', pad = .15 } = {}) => {
+  const data = [...rows].sort((a, b) => b.v - a.v);
+  const vs = data.map(d => d.v);
+  const span = Math.max(...vs) - Math.min(...vs) || 1;
+  const lo = Math.min(...vs) - span * pad, hi = Math.max(...vs) + span * pad;
+  const x = v => M.l + ((v - lo) / (hi - lo)) * (M.iw - 30);
+  const pitch = M.ih / data.length;
+  const mean = vs.reduce((a, b) => a + b, 0) / vs.length;
+
+  /* mean reference line — dashed, labelled, hero tone */
+  VG.el(svg, 'line', { x1: x(mean), x2: x(mean), y1: M.t, y2: M.t + M.ih - 6,
+    stroke: VG.css('--hero'), 'stroke-width': 1, 'stroke-dasharray': '3 3' });
+  VG.txt(svg, VG.apply({ x: x(mean), y: M.H - 8, 'text-anchor': 'middle',
+    fill: VG.css('--hero') }, 'axis'), `mean ${mean.toFixed(1)}${unit}`);
+
+  data.forEach((d, i) => {
+    const y = M.t + i * pitch + pitch / 2;
+    const isHero = d.k === hero;
+    VG.el(svg, 'line', { x1: M.l, x2: x(d.v), y1: y, y2: y,
+      stroke: VG.css('--w6'), 'stroke-width': 1 });
+    const dot = VG.el(svg, 'circle', { cx: x(d.v), cy: y, r: isHero ? 6 : 4,
+      fill: VG.css(isHero ? '--hero' : '--w1'), class: 'vg-pop',
+      style: `animation-delay:${i * 60}ms` });
+    VG.tip(dot, `${d.k}: ${d.v}${unit}`);
+    VG.txt(svg, VG.apply({ x: M.l - 8, y: y + 4, 'text-anchor': 'end',
+      fill: VG.css('--txt') }, 'label'), d.k);
+    VG.txt(svg, VG.apply({ x: x(d.v) + 10, y: y + 4,
+      fill: VG.css(isHero ? '--hero' : '--mut'), class: 'vg-fade',
+      style: `animation-delay:${i * 60 + 250}ms` }, 'value'), d.v + unit);
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   DUMBBELL
+   Shape: ≤8 categories × exactly 2 values (before / after).
+   Two states, not a trend. Direction of travel is the finding.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.dumbbell = (svg, rows, { hero = null, unit = '', labels = ['before', 'after'] } = {}) => {
+  const all = rows.flatMap(d => [d.a, d.b]);
+  const lo = 0, hi = Math.max(...all) * 1.12;
+  const x = v => M.l + (v / (hi - lo)) * (M.iw - 34);
+  const pitch = M.ih / rows.length;
+
+  rows.forEach((d, i) => {
+    const y = M.t + i * pitch + pitch / 2;
+    const isHero = d.k === hero;
+    const late = VG.css(isHero ? '--hero' : '--w1');
+
+    VG.el(svg, 'line', { x1: x(d.a), x2: x(d.b), y1: y, y2: y,
+      stroke: VG.css('--w5'), 'stroke-width': 3, 'stroke-linecap': 'round',
+      class: 'vg-grow', style: `animation-delay:${i * 80}ms` });
+    VG.tip(VG.el(svg, 'circle', { cx: x(d.a), cy: y, r: 4.5, fill: VG.css('--w4'),
+      class: 'vg-pop', style: `animation-delay:${i * 80 + 150}ms` }),
+      `${d.k} ${labels[0]}: ${d.a}${unit}`);
+    VG.tip(VG.el(svg, 'circle', { cx: x(d.b), cy: y, r: isHero ? 6 : 4.5, fill: late,
+      class: 'vg-pop', style: `animation-delay:${i * 80 + 300}ms` }),
+      `${d.k} ${labels[1]}: ${d.b}${unit}`);
+
+    VG.txt(svg, VG.apply({ x: M.l - 8, y: y + 4, 'text-anchor': 'end',
+      fill: VG.css('--txt') }, 'label'), d.k);
+
+    /* Label the end value on the OUTSIDE of the pair. Placing it beside the
+       'after' dot puts it on top of the connector whenever the value fell. */
+    const fell = d.b < d.a;
+    VG.txt(svg, VG.apply({
+      x: fell ? x(d.b) - 10 : x(d.b) + 10, y: y + 4,
+      'text-anchor': fell ? 'end' : 'start',
+      fill: late, class: 'vg-fade',
+      style: `animation-delay:${i * 80 + 450}ms`,
+    }, 'value'), d.b + unit);
+  });
+
+  /* legend — direction, stated once */
+  VG.txt(svg, VG.apply({ x: M.l, y: M.H - 8, fill: VG.css('--mut') }, 'axis'),
+    `${labels[0]} ● ——— ● ${labels[1]}`);
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   SEGMENTED RING
+   Shape: ≤6 segments of a meaningful whole.
+   Never a pie — a ring reads its total; a pie asks for angle comparison.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.segmentedRing = (svg, rows, { hero = null, centreLabel = '' } = {}) => {
+  const cx = 150, cy = 140, r1 = 96, r0 = 62, gapDeg = 2.5;
+  const total = rows.reduce((s, d) => s + d.v, 0);
+  const pol = (r, deg) => [cx + r * Math.cos((deg - 90) * Math.PI / 180),
+                           cy + r * Math.sin((deg - 90) * Math.PI / 180)];
+  const arc = (a0, a1) => {
+    const big = a1 - a0 > 180 ? 1 : 0;
+    const [xa, ya] = pol(r1, a0), [xb, yb] = pol(r1, a1);
+    const [xc, yc] = pol(r0, a1), [xd, yd] = pol(r0, a0);
+    return `M${xa} ${ya}A${r1} ${r1} 0 ${big} 1 ${xb} ${yb}L${xc} ${yc}A${r0} ${r0} 0 ${big} 0 ${xd} ${yd}Z`;
+  };
+
+  let acc = 0;
+  rows.forEach((d, i) => {
+    const a0 = acc / total * 360, a1 = (acc + d.v) / total * 360;
+    acc += d.v;
+    const isHero = d.k === hero;
+    const seg = VG.el(svg, 'path', {
+      d: arc(a0 + gapDeg / 2, a1 - gapDeg / 2),
+      fill: VG.css(isHero ? '--hero' : `--w${Math.min(6, i + 1)}`),
+      class: 'vg-fade', style: `animation-delay:${i * 90}ms`,
+    });
+    VG.tip(seg, `${d.k}: ${(d.v / total * 100).toFixed(1)}%`);
+
+    /* direct labels — a near-monochrome palette demands them */
+    const y = 40 + i * 26;
+    VG.el(svg, 'rect', { x: 276, y: y - 8, width: 10, height: 10, rx: 3,
+      fill: VG.css(isHero ? '--hero' : `--w${Math.min(6, i + 1)}`) });
+    VG.txt(svg, VG.apply({ x: 292, y, fill: VG.css('--txt') }, 'label'), d.k);
+    VG.txt(svg, VG.apply({ x: 384, y, 'text-anchor': 'end',
+      fill: VG.css(isHero ? '--hero' : '--mut') }, 'value'),
+      `${(d.v / total * 100).toFixed(0)}%`);
+  });
+
+  if (centreLabel) {
+    VG.txt(svg, { x: cx, y: cy - 2, 'text-anchor': 'middle', 'font-size': 30,
+      'font-weight': 900, 'font-variant-numeric': 'tabular-nums',
+      fill: VG.css('--txt') }, centreLabel);
+    VG.txt(svg, VG.apply({ x: cx, y: cy + 18, 'text-anchor': 'middle',
+      fill: VG.css('--mut') }, 'axis'), 'TOTAL');
+  }
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   WAFFLE GRID
+   Shape: ≤5 categories read as "N in every 100".
+   The reader should be able to count. 10 × 10 cells, always.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.waffleGrid = (svg, rows, { hero = null, cell = 18, gap = 4 } = {}) => {
+  const total = rows.reduce((s, d) => s + d.v, 0);
+  const cells = [];
+  rows.forEach((d, i) => {
+    const n = Math.round(d.v / total * 100);
+    for (let c = 0; c < n; c++) cells.push({ k: d.k, i });
+  });
+  while (cells.length < 100) cells.push({ k: '—', i: 6 });
+
+  const x0 = 20, y0 = 12;
+  cells.slice(0, 100).forEach((c, idx) => {
+    const col = idx % 10, row = Math.floor(idx / 10);
+    const isHero = c.k === hero;
+    const mark = VG.el(svg, 'rect', {
+      x: x0 + col * (cell + gap), y: y0 + row * (cell + gap),
+      width: cell, height: cell, rx: 4,
+      fill: VG.css(isHero ? '--hero' : `--w${Math.min(6, c.i + 1)}`),
+      class: 'vg-pop', style: `animation-delay:${idx * 8}ms`,
+    });
+    VG.tip(mark, c.k);
+  });
+
+  rows.forEach((d, i) => {
+    const isHero = d.k === hero;
+    const y = 40 + i * 28;
+    VG.el(svg, 'rect', { x: 254, y: y - 8, width: 10, height: 10, rx: 3,
+      fill: VG.css(isHero ? '--hero' : `--w${Math.min(6, i + 1)}`) });
+    VG.txt(svg, VG.apply({ x: 270, y, fill: VG.css('--txt') }, 'label'), d.k);
+    VG.txt(svg, VG.apply({ x: 384, y, 'text-anchor': 'end',
+      fill: VG.css(isHero ? '--hero' : '--mut') }, 'value'),
+      Math.round(d.v / total * 100));
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   UNIT FIELD
+   Shape: ≤6 categories, one mark per real record.
+   Never fabricate records to fill the field — show only what the data supports.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.unitField = (svg, rows, { hero = null, r = 5, gap = 13, perRow = 12 } = {}) => {
+  let y = M.t + 14;
+  rows.forEach((d, i) => {
+    const isHero = d.k === hero;
+    const lines = Math.ceil(d.v / perRow);
+    VG.txt(svg, VG.apply({ x: M.l - 8, y: y + 4, 'text-anchor': 'end',
+      fill: VG.css('--txt') }, 'label'), d.k);
+    VG.txt(svg, VG.apply({ x: M.l - 8, y: y + 18, 'text-anchor': 'end',
+      fill: VG.css(isHero ? '--hero' : '--mut') }, 'value'), d.v);
+
+    for (let u = 0; u < d.v; u++) {
+      const col = u % perRow, row = Math.floor(u / perRow);
+      const dot = VG.el(svg, 'circle', {
+        cx: M.l + col * gap + r, cy: y + row * gap,
+        r, fill: VG.css(isHero ? '--hero' : '--w2'),
+        class: 'vg-pop', style: `animation-delay:${i * 90 + u * 12}ms`,
+      });
+      VG.tip(dot, `${d.k}: 1 of ${d.v}`);
+    }
+    y += lines * gap + 26;
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   STACKED BARS
+   Shape: ≤5 categories × ≤4 segments.
+   Use when composition AND total both vary. If the total is fixed, use a ring.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.stackedBars = (svg, rows, { keys, hero = null, unit = '' } = {}) => {
+  const totals = rows.map(d => keys.reduce((s, k) => s + d[k], 0));
+  const max = Math.max(...totals);
+  const pitch = M.ih / rows.length;
+  const h = Math.min(26, pitch - 14);
+
+  /* One clip path per row so the stack reads as a single capsule: only the
+     outer ends round, and the interior joins stay square. Rounding each
+     segment individually notches the seams. */
+  const defs = VG.el(svg, 'defs');
+
+  rows.forEach((d, i) => {
+    const y = M.t + i * pitch + (pitch - h) / 2;
+    const fullW = (totals[i] / max) * (M.iw - 46);
+    const clipId = `vg-stack-${i}`;
+    VG.el(VG.el(defs, 'clipPath', { id: clipId }), 'rect',
+      { x: M.l, y, width: Math.max(0, fullW), height: h, rx: 3 });
+
+    const row = VG.el(svg, 'g', { 'clip-path': `url(#${clipId})` });
+    let acc = 0;
+    keys.forEach((k, j) => {
+      const w = (d[k] / max) * (M.iw - 46);
+      const isHero = `${d.k}/${k}` === hero;
+      const seg = VG.el(row, 'rect', {
+        x: M.l + acc, y, width: Math.max(0, w), height: h,
+        fill: VG.css(isHero ? '--hero' : `--w${Math.min(6, j + 1)}`),
+        class: 'vg-grow', style: `animation-delay:${i * 90 + j * 70}ms`,
+      });
+      VG.tip(seg, `${d.k} · ${k}: ${VG.fmt(d[k])}${unit}`);
+      acc += w;
+    });
+    VG.txt(svg, VG.apply({ x: M.l - 8, y: y + h / 2 + 4, 'text-anchor': 'end',
+      fill: VG.css('--txt') }, 'label'), d.k);
+    VG.txt(svg, VG.apply({ x: M.l + acc + 8, y: y + h / 2 + 4, fill: VG.css('--txt'),
+      class: 'vg-fade', style: `animation-delay:${i * 90 + 400}ms` }, 'value'),
+      VG.fmt(totals[i]) + unit);
+  });
+
+  keys.forEach((k, j) => {
+    const x = M.l + j * 66;
+    VG.el(svg, 'rect', { x, y: M.H - 16, width: 10, height: 10, rx: 3,
+      fill: VG.css(`--w${Math.min(6, j + 1)}`) });
+    VG.txt(svg, VG.apply({ x: x + 15, y: M.H - 7, fill: VG.css('--mut') }, 'axis'), k);
+  });
+};
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   THREAD LINE
+   Shape: 1–3 series, 10–90 points on a continuous time axis.
+   The default for a trend. Markers only when the series is short enough to read.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.threadLine = (svg, series, { hero = null, xLabels = [], unit = '', yTicks = 4 } = {}) => {
+  const all = series.flatMap(s => s.v);
+  const ticks = VG.niceTicks(Math.max(...all) * 1.08, yTicks);
+  const hi = ticks[ticks.length - 1];
+  const n = series[0].v.length;
+  const x = VG.scale(0, n - 1, MX.l, MX.W - MX.r);
+  const y = VG.scale(0, hi, MX.H - MX.b, MX.t + 14);
+  VG.yAxis(svg, MX, y, ticks, VG.fmtShort);
+
+  series.forEach((s, si) => {
+    const pts = s.v.map((v, i) => [x(i), y(v)]);
+    VG.el(svg, 'path', {
+      d: VG.smooth(pts), fill: 'none',
+      stroke: VG.css(`--w${Math.min(6, si + 1)}`),
+      'stroke-width': si === 0 ? 2 : 1.5,
+      'stroke-linejoin': 'round', 'stroke-linecap': 'round',
+      pathLength: 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1,
+      class: 'vg-draw', style: `animation-delay:${si * 160}ms`,
+    });
+    /* Markers only when they can be told apart. */
+    if (n < 15) pts.forEach(([px, py], i) =>
+      VG.tip(VG.el(svg, 'circle', { cx: px, cy: py, r: 3,
+        fill: VG.css(`--w${Math.min(6, si + 1)}`), class: 'vg-pop',
+        style: `animation-delay:${600 + i * 25}ms` }), `${s.k}: ${s.v[i]}${unit}`));
+  });
+
+  /* Hero: one annotated point, with a leader line. */
+  if (hero) {
+    const s = series[0], i = hero.i, px = x(i), py = y(s.v[i]);
+    /* Label sits below the top edge, not on it — a baseline at MX.t clips the
+       ascenders against the viewBox. */
+    const ly = MX.t + 10;
+    VG.el(svg, 'line', { x1: px, x2: px, y1: py - 8, y2: ly + 4,
+      stroke: VG.css('--hero'), 'stroke-width': 1, 'stroke-dasharray': '2 3',
+      class: 'vg-fade', style: 'animation-delay:900ms' });
+    VG.el(svg, 'circle', { cx: px, cy: py, r: 5, fill: VG.css('--hero'),
+      class: 'vg-pop', style: 'animation-delay:950ms' });
+    VG.txt(svg, VG.apply({ x: px, y: ly,
+      'text-anchor': px > MX.W * .72 ? 'end' : px < MX.W * .28 ? 'start' : 'middle',
+      fill: VG.css('--hero'), class: 'vg-fade', style: 'animation-delay:1000ms' }, 'value'),
+      hero.label);
+  }
+
+  xLabels.forEach(({ i, t }) => VG.txt(svg, VG.apply({
+    x: x(i), y: MX.H - 10,
+    'text-anchor': i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle',
+    fill: VG.css('--mut') }, 'axis'), t));
+
+  if (series.length > 1) series.forEach((s, si) => {
+    const lx = MX.l + si * 84;
+    VG.el(svg, 'line', { x1: lx, x2: lx + 12, y1: MX.H - 22, y2: MX.H - 22,
+      stroke: VG.css(`--w${Math.min(6, si + 1)}`), 'stroke-width': 2 });
+    VG.txt(svg, VG.apply({ x: lx + 17, y: MX.H - 19, fill: VG.css('--mut') }, 'axis'), s.k);
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   THREAD AREA
+   Shape: 1 series, 30–120 points, with a meaningful zero.
+   The fill must reach a true zero baseline. If zero is out of range, use a line.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.threadArea = (svg, values, { xLabels = [], unit = '', yTicks = 4 } = {}) => {
+  const ticks = VG.niceTicks(Math.max(...values) * 1.08, yTicks);
+  const hi = ticks[ticks.length - 1];
+  const n = values.length;
+  const x = VG.scale(0, n - 1, MX.l, MX.W - MX.r);
+  const y = VG.scale(0, hi, MX.H - MX.b, MX.t);
+  VG.yAxis(svg, MX, y, ticks, VG.fmtShort);
+
+  const pts = values.map((v, i) => [x(i), y(v)]);
+  const base = y(0);
+  VG.el(svg, 'path', {
+    d: `${VG.smooth(pts)}L${x(n - 1).toFixed(1)} ${base}L${x(0).toFixed(1)} ${base}Z`,
+    fill: VG.css('--w5'), class: 'vg-fade',
+  });
+  VG.el(svg, 'path', {
+    d: VG.smooth(pts), fill: 'none', stroke: VG.css('--w1'), 'stroke-width': 2,
+    'stroke-linejoin': 'round', pathLength: 1,
+    'stroke-dasharray': 1, 'stroke-dashoffset': 1, class: 'vg-draw',
+  });
+  VG.el(svg, 'line', { x1: MX.l, x2: MX.W - MX.r, y1: base, y2: base,
+    stroke: VG.css('--w4'), 'stroke-width': 1.5 });
+
+  xLabels.forEach(({ i, t }) => VG.txt(svg, VG.apply({
+    x: x(i), y: MX.H - 10,
+    'text-anchor': i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle',
+    fill: VG.css('--mut') }, 'axis'), t));
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   SLOPE
+   Shape: ≤12 entities × exactly 2 time points.
+   Only start and end matter, and rank changed. Labels nudge apart, never overlap.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.slope = (svg, rows, { hero = null, unit = '', labels = ['before', 'after'] } = {}) => {
+  const xa = 128, xb = 296, top = 40, bot = 258;
+  const all = rows.flatMap(d => [d.a, d.b]);
+  const y = VG.scale(Math.min(...all) * 0.9, Math.max(...all) * 1.05, bot, top);
+
+  [[xa, labels[0]], [xb, labels[1]]].forEach(([x, t]) => {
+    VG.el(svg, 'line', { x1: x, x2: x, y1: top - 8, y2: bot + 8,
+      stroke: VG.css('--grid'), 'stroke-width': 1 });
+    VG.txt(svg, VG.apply({ x, y: top - 16, 'text-anchor': 'middle',
+      fill: VG.css('--mut') }, 'axis'), t);
+  });
+
+  /* Nudge labels so no two collide — 12 units minimum pitch, per side. */
+  const place = (side) => {
+    const sorted = [...rows].map((d, i) => ({ d, i, y: y(side === 'a' ? d.a : d.b) }))
+      .sort((p, q) => p.y - q.y);
+    for (let i = 1; i < sorted.length; i++)
+      if (sorted[i].y - sorted[i - 1].y < 12) sorted[i].y = sorted[i - 1].y + 12;
+    return new Map(sorted.map(s => [s.i, s.y]));
+  };
+  const la = place('a'), lb = place('b');
+
+  rows.forEach((d, i) => {
+    const isHero = d.k === hero;
+    const col = VG.css(isHero ? '--hero' : '--w3');
+    VG.el(svg, 'line', { x1: xa, x2: xb, y1: y(d.a), y2: y(d.b), stroke: col,
+      'stroke-width': isHero ? 2.5 : 1.5, 'stroke-linecap': 'round',
+      pathLength: 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1,
+      class: 'vg-draw', style: `animation-delay:${i * 70}ms` });
+    [[xa, y(d.a)], [xb, y(d.b)]].forEach(([cx, cy], j) =>
+      VG.tip(VG.el(svg, 'circle', { cx, cy, r: isHero ? 4.5 : 3.5, fill: col,
+        class: 'vg-pop', style: `animation-delay:${i * 70 + 300 + j * 60}ms` }),
+        `${d.k} ${labels[j]}: ${j ? d.b : d.a}${unit}`));
+
+    VG.txt(svg, VG.apply({ x: xa - 12, y: la.get(i) + 3, 'text-anchor': 'end',
+      fill: VG.css(isHero ? '--hero' : '--txt') }, 'label'), `${d.k}  ${d.a}${unit}`);
+    VG.txt(svg, VG.apply({ x: xb + 12, y: lb.get(i) + 3,
+      fill: VG.css(isHero ? '--hero' : '--txt') }, 'label'), `${d.b}${unit}  ${d.k}`);
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BINNED COLUMNS
+   Shape: 1 variable, 6–20 bins that carry business meaning.
+   The y axis is a count — always label it. Bins must mean something.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.binnedColumns = (svg, bins, { hero = null, gap = 2, yTicks = 4 } = {}) => {
+  const ticks = VG.niceTicks(Math.max(...bins.map(b => b.n)) * 1.1, yTicks);
+  const hi = ticks[ticks.length - 1];
+  const w = (MX.iw - gap * (bins.length - 1)) / bins.length;
+  const y = VG.scale(0, hi, MX.H - MX.b, MX.t);
+  VG.yAxis(svg, MX, y, ticks, VG.fmtShort);
+
+  bins.forEach((b, i) => {
+    const isHero = b.k === hero;
+    const x = MX.l + i * (w + gap);
+    const h = Math.max(1, (MX.H - MX.b) - y(b.n));
+    const bar = VG.el(svg, 'rect', { x, y: y(b.n), width: w, height: h,
+      rx: Math.min(w / 2, 4), fill: VG.css(isHero ? '--hero' : '--w2'),
+      class: 'vg-rise', style: `animation-delay:${i * 45}ms` });
+    VG.tip(bar, `${b.k}: ${b.n}`);
+    /* Bin edges under every second column, so labels never collide. */
+    if (i % 2 === 0) VG.txt(svg, VG.apply({ x: x + w / 2, y: MX.H - 12,
+      'text-anchor': 'middle', fill: VG.css('--mut') }, 'axis'), b.k);
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BOX PLOT
+   Shape: 2–8 groups, each summarisable to five numbers.
+   Comparing groups where outliers matter. Groups stack at a 56-unit pitch.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.boxPlot = (svg, groups, { hero = null, unit = '' } = {}) => {
+  const L = 84, R = MX.W - 20;
+  const all = groups.flatMap(g => g.v);
+  const x = VG.scale(Math.min(...all) * 0.9, Math.max(...all) * 1.05, L, R);
+  const pitch = Math.min(56, (MX.H - MX.t - 26) / groups.length);
+  const bh = Math.min(28, pitch - 20);
+
+  groups.forEach((g, i) => {
+    const s = [...g.v].sort((a, b) => a - b);
+    const q1 = VG.quantile(s, .25), med = VG.quantile(s, .5), q3 = VG.quantile(s, .75);
+    const iqr = q3 - q1, loF = q1 - 1.5 * iqr, hiF = q3 + 1.5 * iqr;
+    const inl = s.filter(v => v >= loF && v <= hiF);
+    const wLo = Math.min(...inl), wHi = Math.max(...inl);
+    const cy = MX.t + 14 + i * pitch + pitch / 2;
+    const isHero = g.k === hero;
+    const col = VG.css(isHero ? '--hero' : '--w2');
+
+    VG.el(svg, 'line', { x1: x(wLo), x2: x(wHi), y1: cy, y2: cy,
+      stroke: col, 'stroke-width': 1, class: 'vg-fade',
+      style: `animation-delay:${i * 90}ms` });
+    [wLo, wHi].forEach(v => VG.el(svg, 'line', { x1: x(v), x2: x(v),
+      y1: cy - 6, y2: cy + 6, stroke: col, 'stroke-width': 1,
+      class: 'vg-fade', style: `animation-delay:${i * 90}ms` }));
+
+    const box = VG.el(svg, 'rect', { x: x(q1), y: cy - bh / 2,
+      width: Math.max(1, x(q3) - x(q1)), height: bh, rx: 3,
+      fill: VG.css('--w5'), stroke: col, 'stroke-width': 1,
+      class: 'vg-grow', style: `animation-delay:${i * 90 + 60}ms` });
+    VG.tip(box, `${g.k} — median ${med.toFixed(1)}${unit}, IQR ${q1.toFixed(1)}–${q3.toFixed(1)}${unit}, n ${s.length}`);
+
+    VG.el(svg, 'line', { x1: x(med), x2: x(med), y1: cy - bh / 2, y2: cy + bh / 2,
+      stroke: VG.css(isHero ? '--hero' : '--w1'), 'stroke-width': 2,
+      class: 'vg-fade', style: `animation-delay:${i * 90 + 220}ms` });
+
+    s.filter(v => v < loF || v > hiF).forEach((v, j) =>
+      VG.tip(VG.el(svg, 'circle', { cx: x(v), cy, r: 2.5, fill: VG.css('--w3'),
+        class: 'vg-pop', style: `animation-delay:${i * 90 + 300 + j * 30}ms` }),
+        `${g.k} outlier: ${v.toFixed(1)}${unit}`));
+
+    VG.txt(svg, VG.apply({ x: L - 10, y: cy + 4, 'text-anchor': 'end',
+      fill: VG.css('--txt') }, 'label'), g.k);
+    VG.txt(svg, VG.apply({ x: R, y: MX.H - 10, 'text-anchor': 'end',
+      fill: VG.css('--mut') }, 'axis'), `median line · box = IQR · dots = outliers`);
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BEESWARM
+   Shape: 40–180 records of one variable, every record visible.
+   Above 180 records the swarm stops being readable — use Binned Columns.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.beeswarm = (svg, values, { heroIndex = null, unit = '', r = 3 } = {}) => {
+  const x = VG.scale(Math.min(...values) * 0.95, Math.max(...values) * 1.05,
+                     MX.l + 6, MX.W - MX.r);
+  const midY = MX.t + (MX.ih - 20) / 2;
+  const placed = [];
+
+  [...values].sort((a, b) => a - b).forEach(v => {
+    const cx = x(v);
+    let cy = midY, step = 0, dir = 1;
+    while (placed.some(p => Math.hypot(p.cx - cx, p.cy - cy) < r * 2 + 1)) {
+      step += dir > 0 ? 1 : 0;
+      cy = midY + dir * step * (r + 0.5);
+      dir *= -1;
+    }
+    placed.push({ cx, cy, v });
+  });
+
+  const mean = values.reduce((a, b) => a + b, 0) / values.length;
+  VG.el(svg, 'line', { x1: x(mean), x2: x(mean), y1: MX.t, y2: MX.H - MX.b,
+    stroke: VG.css('--hero'), 'stroke-width': 1, 'stroke-dasharray': '3 3' });
+  VG.txt(svg, VG.apply({ x: x(mean), y: MX.H - 12, 'text-anchor': 'middle',
+    fill: VG.css('--hero') }, 'axis'), `mean ${mean.toFixed(1)}${unit}`);
+
+  /* Hero is chosen by position in the sorted swarm, so exactly one mark can ever
+     be the hero — matching on value would light up every tied record. */
+  placed.forEach((p, i) => {
+    const isHero = heroIndex != null &&
+      i === (heroIndex < 0 ? placed.length + heroIndex : heroIndex);
+    VG.tip(VG.el(svg, 'circle', { cx: p.cx, cy: p.cy, r: isHero ? 4.5 : r,
+      fill: VG.css(isHero ? '--hero' : '--w2'), class: 'vg-pop',
+      style: `animation-delay:${i * 12}ms` }), `${p.v.toFixed(1)}${unit}`);
+  });
+
+  VG.txt(svg, VG.apply({ x: MX.l, y: MX.H - 12, fill: VG.css('--mut') }, 'axis'),
+    `n = ${values.length} · one dot = one record`);
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   FLOW RIBBON  (wide — narrow variant required)
+   Shape: 2–5 series over continuous time, stacked.
+   Composition shifts AND the total moves. Narrow variant re-lays as stacked bars.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.flowRibbon = (svg, series, { xLabels = [], unit = '' } = {}) => {
+  const n = series[0].v.length;
+  const totals = Array.from({ length: n }, (_, i) =>
+    series.reduce((s, se) => s + se.v[i], 0));
+  const ticks = VG.niceTicks(Math.max(...totals) * 1.06, 4);
+  const hi = ticks[ticks.length - 1];
+  const x = VG.scale(0, n - 1, MW.l, MW.W - MW.r);
+  const y = VG.scale(0, hi, MW.H - MW.b, MW.t);
+  VG.yAxis(svg, MW, y, ticks, VG.fmtShort);
+
+  const acc = new Array(n).fill(0);
+  series.forEach((s, si) => {
+    const lower = acc.map((v, i) => [x(i), y(v)]);
+    s.v.forEach((v, i) => { acc[i] += v; });
+    const upper = acc.map((v, i) => [x(i), y(v)]);
+    VG.el(svg, 'path', {
+      d: `${VG.smooth(upper)}L${VG.smooth([...lower].reverse()).slice(1)}Z`,
+      fill: VG.css(`--w${Math.min(6, si + 1)}`),
+      class: 'vg-fade', style: `animation-delay:${si * 110}ms`,
+    });
+    const lx = MW.l + si * 108;
+    VG.el(svg, 'rect', { x: lx, y: MW.H - 20, width: 10, height: 10, rx: 3,
+      fill: VG.css(`--w${Math.min(6, si + 1)}`) });
+    VG.txt(svg, VG.apply({ x: lx + 15, y: MW.H - 11, fill: VG.css('--mut') }, 'axis'), s.k);
+  });
+
+  xLabels.forEach(({ i, t }) => VG.txt(svg, VG.apply({
+    x: x(i), y: MW.t - 2,
+    'text-anchor': i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle',
+    fill: VG.css('--mut') }, 'axis'), t));
+};
+
+/* Narrow variant of Flow Ribbon — six time buckets as stacked bars. */
+VG.flowRibbonNarrow = (svg, series, { buckets = 6, unit = '' } = {}) => {
+  const n = series[0].v.length, size = Math.ceil(n / buckets);
+  const rows = Array.from({ length: buckets }, (_, b) => {
+    const row = { k: `P${b + 1}` };
+    series.forEach(s => {
+      row[s.k] = Math.round(s.v.slice(b * size, (b + 1) * size)
+        .reduce((a, v) => a + v, 0) / Math.max(1, s.v.slice(b * size, (b + 1) * size).length));
+    });
+    return row;
+  });
+  VG.stackedBars(svg, rows, { keys: series.map(s => s.k), unit });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   RIDGELINE  (wide — narrow variant required)
+   Shape: 3–8 groups of continuous values, compared by distribution SHAPE.
+   Curves overlap by 60%; each is filled so it still reads where they cross.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.ridgeline = (svg, groups, { hero = null, unit = '', bw = 1.1, res = 72 } = {}) => {
+  const all = groups.flatMap(g => g.v);
+  const lo = Math.min(...all), hi = Math.max(...all);
+  const x = VG.scale(lo, hi, MW.l + 90, MW.W - MW.r);
+  const xs = Array.from({ length: res }, (_, i) => lo + (hi - lo) * i / (res - 1));
+  const dens = groups.map(g => VG.kde(g.v, xs, bw));
+  const peak = Math.max(...dens.flat());
+  /* Fix the curve height first, then space the baselines so the tallest curve
+     still clears the top edge. Deriving amp from pitch (amp = pitch / (1 - overlap))
+     overshoots badly — at 5 groups it puts the first curve off the viewBox. */
+  const amp = 64;
+  const top = MW.t + 18, bottom = MW.H - MW.b - 12;
+  const pitch = (bottom - top - amp) / Math.max(1, groups.length - 1);
+
+  /* Draw back to front so nearer curves sit on top of the ones behind. */
+  groups.map((g, i) => ({ g, i })).reverse().forEach(({ g, i }) => {
+    const base = top + amp + i * pitch;
+    const isHero = g.k === hero;
+    const pts = dens[i].map((d, j) => [x(xs[j]), base - (d / peak) * amp]);
+    VG.el(svg, 'path', {
+      d: `${VG.smooth(pts)}L${x(hi).toFixed(1)} ${base}L${x(lo).toFixed(1)} ${base}Z`,
+      fill: VG.css('--bg-alt'),
+      stroke: VG.css(isHero ? '--hero' : '--w1'), 'stroke-width': 1.5,
+      'stroke-linejoin': 'round',
+      class: 'vg-fade', style: `animation-delay:${(groups.length - i) * 90}ms`,
+    });
+    VG.txt(svg, VG.apply({ x: MW.l + 78, y: base - 4, 'text-anchor': 'end',
+      fill: VG.css(isHero ? '--hero' : '--txt') }, 'label'), g.k);
+  });
+
+  VG.txt(svg, VG.apply({ x: MW.W - MW.r, y: MW.H - 8, 'text-anchor': 'end',
+    fill: VG.css('--mut') }, 'axis'),
+    `${lo.toFixed(0)}${unit} — ${hi.toFixed(0)}${unit} · area = share of runs`);
+};
+
+/* Narrow variant of Ridgeline — the same groups as a box plot. */
+VG.ridgelineNarrow = (svg, groups, opts = {}) => VG.boxPlot(svg, groups, opts);
+
+
+/* Warm-ramp fill by normalised value. t=0 → lightest (w6), t=1 → heaviest (w1).
+   Ordinal encoding always uses the warm ramp — the jolt ramp is locked (§3). */
+VG.rampVar = t => `--w${Math.max(1, Math.min(6, 6 - Math.round(t * 5)))}`;
+/* Cell text must flip to the card ground once the fill goes dark. */
+VG.onRamp = t => (t > 0.62 ? '--bg-alt' : '--txt');
+
+/* ════════════════════════════════════════════════════════════════════════════
+   SCATTER
+   Shape: ≤60 records × 2 continuous variables.
+   Never draw a trend line without stating n and the correlation in the subtitle.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.scatter = (svg, pts, { heroIndex = null, xLabel = '', yLabel = '', trend = false } = {}) => {
+  const g = { l: 46, r: 18, t: 16, b: 34, W: 400, H: 300 };
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  const xt = VG.niceTicks(Math.max(...xs) * 1.08, 4), yt = VG.niceTicks(Math.max(...ys) * 1.08, 4);
+  const x = VG.scale(0, xt[xt.length - 1], g.l, g.W - g.r);
+  const y = VG.scale(0, yt[yt.length - 1], g.H - g.b, g.t);
+  VG.yAxis(svg, g, y, yt, VG.fmtShort);
+
+  xt.forEach(t => VG.txt(svg, VG.apply({ x: x(t), y: g.H - 18, 'text-anchor': 'middle',
+    fill: VG.css('--mut') }, 'axis'), VG.fmtShort(t)));
+
+  if (trend) {
+    const n = pts.length;
+    const mx = xs.reduce((a, b) => a + b, 0) / n, my = ys.reduce((a, b) => a + b, 0) / n;
+    const num = pts.reduce((a, p) => a + (p.x - mx) * (p.y - my), 0);
+    const den = pts.reduce((a, p) => a + (p.x - mx) ** 2, 0) || 1;
+    const m = num / den, c = my - m * mx;
+    const x0 = xt[0], x1 = xt[xt.length - 1];
+    VG.el(svg, 'line', { x1: x(x0), x2: x(x1), y1: y(m * x0 + c), y2: y(m * x1 + c),
+      stroke: VG.css('--hero'), 'stroke-width': 1, 'stroke-dasharray': '4 3' });
+  }
+
+  pts.forEach((p, i) => {
+    const isHero = i === heroIndex;
+    VG.tip(VG.el(svg, 'circle', { cx: x(p.x), cy: y(p.y), r: isHero ? 6 : 4,
+      fill: VG.css(isHero ? '--hero' : '--w2'), class: 'vg-pop',
+      style: `animation-delay:${i * 16}ms` }), `${p.k || ''} ${p.x} / ${p.y}`.trim());
+    if (isHero && p.k) VG.txt(svg, VG.apply({ x: x(p.x) + 10, y: y(p.y) + 4,
+      fill: VG.css('--hero'), class: 'vg-fade', style: 'animation-delay:900ms' }, 'value'), p.k);
+  });
+
+  VG.txt(svg, VG.apply({ x: g.W - g.r, y: g.H - 4, 'text-anchor': 'end',
+    fill: VG.css('--mut') }, 'axis'), xLabel);
+  VG.txt(svg, VG.apply({ x: g.l - 34, y: g.t - 5, fill: VG.css('--mut') }, 'axis'), yLabel);
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   PARALLEL COORDINATES  (wide · desktop-only)
+   Shape: ≤20 entities × 3–6 continuous variables, one line per entity.
+   Each axis is scaled independently and labelled at both ends.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.parallelCoords = (svg, rows, { dims, hero = null } = {}) => {
+  const top = MW.t + 30, bot = MW.H - MW.b - 16;
+  const span = dims.map(d => {
+    const vs = rows.map(r => r.v[d]);
+    return { d, lo: Math.min(...vs), hi: Math.max(...vs) };
+  });
+  const ax = i => MW.l + 40 + i * ((MW.W - MW.r - MW.l - 80) / (dims.length - 1));
+  const pos = (i, v) => {
+    const s = span[i];
+    return bot - ((v - s.lo) / ((s.hi - s.lo) || 1)) * (bot - top);
+  };
+
+  span.forEach((s, i) => {
+    VG.el(svg, 'line', { x1: ax(i), x2: ax(i), y1: top, y2: bot,
+      stroke: VG.css('--grid'), 'stroke-width': 1 });
+    VG.txt(svg, VG.apply({ x: ax(i), y: top - 14, 'text-anchor': 'middle',
+      fill: VG.css('--txt') }, 'label'), s.d);
+    VG.txt(svg, VG.apply({ x: ax(i), y: top - 3, 'text-anchor': 'middle',
+      fill: VG.css('--mut') }, 'axis'), VG.fmtShort(+s.hi.toFixed(1)));
+    VG.txt(svg, VG.apply({ x: ax(i), y: bot + 12, 'text-anchor': 'middle',
+      fill: VG.css('--mut') }, 'axis'), VG.fmtShort(+s.lo.toFixed(1)));
+  });
+
+  rows.forEach((r, ri) => {
+    const isHero = r.k === hero;
+    const pts = dims.map((d, i) => [ax(i), pos(i, r.v[d])]);
+    VG.tip(VG.el(svg, 'path', {
+      d: VG.line(pts), fill: 'none',
+      stroke: VG.css(isHero ? '--w1' : '--w4'),
+      'stroke-width': isHero ? 2.5 : 1.5, 'stroke-linejoin': 'round',
+      pathLength: 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1,
+      class: 'vg-draw', style: `animation-delay:${ri * 45}ms`,
+    }), `${r.k}: ` + dims.map(d => `${d} ${r.v[d]}`).join(' · '));
+    if (isHero) VG.txt(svg, VG.apply({ x: ax(dims.length - 1) + 8,
+      y: pos(dims.length - 1, r.v[dims[dims.length - 1]]) + 4,
+      fill: VG.css('--w1'), class: 'vg-fade', style: 'animation-delay:900ms' }, 'value'), r.k);
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   HEAT MATRIX
+   Shape: ≤10 × ≤10 cells, one value each.
+   Intensity is the WARM ramp — the jolt ramp never encodes magnitude (§3).
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.heatMatrix = (svg, { rows, cols, values }, { unit = '', gutter = 2 } = {}) => {
+  const g = { l: 74, r: 14, t: 30, b: 16 };
+  const cw = (400 - g.l - g.r - gutter * (cols.length - 1)) / cols.length;
+  const ch = Math.min(cw, (300 - g.t - g.b - gutter * (rows.length - 1)) / rows.length);
+  const flat = values.flat();
+  const hi = Math.max(...flat), lo = Math.min(...flat);
+
+  cols.forEach((c, j) => VG.txt(svg, VG.apply({
+    x: g.l + j * (cw + gutter) + cw / 2, y: g.t - 8, 'text-anchor': 'middle',
+    fill: VG.css('--mut') }, 'axis'), c));
+
+  rows.forEach((r, i) => {
+    VG.txt(svg, VG.apply({ x: g.l - 8, y: g.t + i * (ch + gutter) + ch / 2 + 3,
+      'text-anchor': 'end', fill: VG.css('--mut') }, 'axis'), r);
+    cols.forEach((c, j) => {
+      const v = values[i][j];
+      const t = (v - lo) / ((hi - lo) || 1);
+      const cell = VG.el(svg, 'rect', {
+        x: g.l + j * (cw + gutter), y: g.t + i * (ch + gutter),
+        width: cw, height: ch, rx: 3, fill: VG.css(VG.rampVar(t)),
+        class: 'vg-pop', style: `animation-delay:${(i * cols.length + j) * 14}ms`,
+      });
+      VG.tip(cell, `${r} · ${c}: ${v}${unit}`);
+      VG.txt(svg, VG.apply({ x: g.l + j * (cw + gutter) + cw / 2,
+        y: g.t + i * (ch + gutter) + ch / 2 + 3, 'text-anchor': 'middle',
+        fill: VG.css(VG.onRamp(t)), class: 'vg-fade',
+        style: `animation-delay:${(i * cols.length + j) * 14 + 200}ms` }, 'axis'), v);
+    });
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   CALENDAR HEAT  (wide · desktop-only)
+   Shape: a full year of daily values — 53 columns × 7 days.
+   Weekly rhythm is the point; a phone cannot hold 53 columns honestly.
+   ════════════════════════════════════════════════════════════════════════════ */
+/* Height is set by the form, not by the card: 53 columns of 7 days is inherently
+   short and wide, so this one declares a 840x200 viewBox rather than padding a
+   300-unit card with empty space. */
+VG.calendarHeat = (svg, days, { unit = '', cell = 12, gutter = 2, startDow = 0, H = 200 } = {}) => {
+  const g = { l: 34, t: 40 };
+  const hi = Math.max(...days.map(d => d.n));
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dow = ['Mon','','Wed','','Fri','',''];
+  let lastMonth = -1;
+
+  dow.forEach((d, i) => d && VG.txt(svg, VG.apply({ x: g.l - 6,
+    y: g.t + i * (cell + gutter) + cell - 2, 'text-anchor': 'end',
+    fill: VG.css('--mut') }, 'axis'), d));
+
+  days.forEach((d, idx) => {
+    const col = Math.floor((idx + startDow) / 7), row = (idx + startDow) % 7;
+    const t = d.n / (hi || 1);
+    const x = g.l + col * (cell + gutter), y = g.t + row * (cell + gutter);
+    VG.tip(VG.el(svg, 'rect', { x, y, width: cell, height: cell, rx: 2,
+      fill: VG.css(d.n === 0 ? '--w6' : VG.rampVar(t)),
+      class: 'vg-pop', style: `animation-delay:${col * 9}ms` }),
+      `${d.d}: ${d.n}${unit}`);
+    if (d.m !== lastMonth && row <= 1) {
+      lastMonth = d.m;
+      VG.txt(svg, VG.apply({ x, y: g.t - 8, fill: VG.css('--mut') }, 'axis'), months[d.m]);
+    }
+  });
+
+  /* Legend — the ramp itself, so the reader can decode intensity. */
+  const lx = MW.W - MW.r - 5 * (cell + gutter) - 44;
+  VG.txt(svg, VG.apply({ x: lx - 6, y: H - 22, 'text-anchor': 'end',
+    fill: VG.css('--mut') }, 'axis'), 'less');
+  [0, .25, .5, .75, 1].forEach((t, i) =>
+    VG.el(svg, 'rect', { x: lx + i * (cell + gutter), y: H - 32,
+      width: cell, height: cell, rx: 2, fill: VG.css(VG.rampVar(t)) }));
+  VG.txt(svg, VG.apply({ x: lx + 5 * (cell + gutter) + 2, y: H - 22,
+    fill: VG.css('--mut') }, 'axis'), 'more');
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   PUNCH CARD  (wide — narrow variant required)
+   Shape: 7 weekdays × 24 hours. Radius scales as √value, never the raw value.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.punchCard = (svg, grid, { hero = null, maxR = 9, cols = 24, labels = null } = {}) => {
+  const dow = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const g = { l: 52, t: 34 };
+  const pitch = (MW.W - MW.r - g.l) / cols;
+  const rowH = (MW.H - MW.b - g.t) / 7;
+  const hi = Math.max(...grid.flat());
+
+  for (let j = 0; j < cols; j += (cols > 12 ? 3 : 1))
+    VG.txt(svg, VG.apply({ x: g.l + j * pitch + pitch / 2, y: g.t - 10,
+      'text-anchor': 'middle', fill: VG.css('--mut') }, 'axis'),
+      labels ? labels[j] : String(j).padStart(2, '0'));
+
+  grid.forEach((row, i) => {
+    VG.txt(svg, VG.apply({ x: g.l - 10, y: g.t + i * rowH + rowH / 2 + 3,
+      'text-anchor': 'end', fill: VG.css('--mut') }, 'axis'), dow[i]);
+    row.forEach((v, j) => {
+      if (!v) return;
+      /* Area encodes the value, so the radius is the square root of it. */
+      const r = Math.sqrt(v / (hi || 1)) * maxR;
+      const isHero = hero && hero[0] === i && hero[1] === j;
+      VG.tip(VG.el(svg, 'circle', {
+        cx: g.l + j * pitch + pitch / 2, cy: g.t + i * rowH + rowH / 2, r,
+        fill: VG.css(isHero ? '--hero' : '--w2'), class: 'vg-pop',
+        style: `animation-delay:${(i * cols + j) * 5}ms` }),
+        `${dow[i]} ${labels ? labels[j] : j + ':00'} — ${v}`);
+    });
+  });
+};
+
+/* Narrow variant of Punch Card — 7 × 4 six-hour buckets. */
+VG.punchCardNarrow = (svg, grid, { hero = null } = {}) => {
+  const bucket = grid.map(row => [0, 1, 2, 3].map(b =>
+    row.slice(b * 6, b * 6 + 6).reduce((a, v) => a + v, 0)));
+  const dow = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const labels = ['00–06', '06–12', '12–18', '18–24'];
+  const g = { l: 52, t: 34 };
+  const pitch = (400 - 18 - g.l) / 4, rowH = (300 - 30 - g.t) / 7;
+  const hi = Math.max(...bucket.flat());
+  labels.forEach((t, j) => VG.txt(svg, VG.apply({ x: g.l + j * pitch + pitch / 2,
+    y: g.t - 10, 'text-anchor': 'middle', fill: VG.css('--mut') }, 'axis'), t));
+  bucket.forEach((row, i) => {
+    VG.txt(svg, VG.apply({ x: g.l - 10, y: g.t + i * rowH + rowH / 2 + 3,
+      'text-anchor': 'end', fill: VG.css('--mut') }, 'axis'), dow[i]);
+    row.forEach((v, j) => {
+      const r = Math.sqrt(v / (hi || 1)) * 13;
+      const isHero = hero && hero[0] === i && Math.floor(hero[1] / 6) === j;
+      VG.tip(VG.el(svg, 'circle', { cx: g.l + j * pitch + pitch / 2,
+        cy: g.t + i * rowH + rowH / 2, r, fill: VG.css(isHero ? '--hero' : '--w2'),
+        class: 'vg-pop', style: `animation-delay:${(i * 4 + j) * 25}ms` }),
+        `${dow[i]} ${labels[j]} — ${v}`);
+    });
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BIG STAT   (HTML, not SVG — the container is a <div>)
+   Shape: one figure that IS the section. Never draw a one-bar bar chart.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.bigStat = (node, { label, value, delta = null, insight = '' }) => {
+  const dir = delta == null ? null : delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
+  /* Arrow AND sign — never colour alone (DESIGN.md §7). */
+  const glyph = { up: '▲', down: '▼', flat: '–' }[dir];
+  const col = { up: '--hero', down: '--mut', flat: '--w4' }[dir];
+  node.innerHTML = `
+    <div class="vg-stat">
+      <div class="vg-stat-label">${label}</div>
+      <div class="vg-stat-value">${value}</div>
+      ${dir ? `<div class="vg-stat-delta" style="color:var(${col})">
+        ${glyph} ${delta > 0 ? '+' : ''}${delta}%</div>` : ''}
+      ${insight ? `<div class="vg-stat-insight">${insight}</div>` : ''}
+    </div>`;
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   PROGRESS ARC
+   Shape: one value against a known target. Distance to the goal is the point.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.progressArc = (svg, { value, target, pace = null, unit = '', label = '' }) => {
+  const cx = 200, cy = 168, r = 96, sw = 18, sweep = 240, start = 150;
+  const pol = (rad, deg) => [cx + rad * Math.cos(deg * Math.PI / 180),
+                             cy + rad * Math.sin(deg * Math.PI / 180)];
+  const arc = (a0, a1) => {
+    const [xa, ya] = pol(r, a0), [xb, yb] = pol(r, a1);
+    return `M${xa.toFixed(1)} ${ya.toFixed(1)}A${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${xb.toFixed(1)} ${yb.toFixed(1)}`;
+  };
+  const frac = Math.max(0, Math.min(1, value / target));
+
+  VG.el(svg, 'path', { d: arc(start, start + sweep), fill: 'none',
+    stroke: VG.css('--w6'), 'stroke-width': sw, 'stroke-linecap': 'round' });
+  VG.el(svg, 'path', { d: arc(start, start + sweep * frac), fill: 'none',
+    stroke: VG.css('--hero'), 'stroke-width': sw, 'stroke-linecap': 'round',
+    pathLength: 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1, class: 'vg-draw' });
+
+  /* Optional pace marker — where progress SHOULD be by now. The end of the arc
+     is already the target, so a tick there would encode nothing. */
+  if (pace != null) {
+    const a = start + sweep * Math.max(0, Math.min(1, pace / target));
+    const [tx0, ty0] = pol(r - sw / 2 - 3, a), [tx1, ty1] = pol(r + sw / 2 + 3, a);
+    VG.el(svg, 'line', { x1: tx0, y1: ty0, x2: tx1, y2: ty1,
+      stroke: VG.css('--w1'), 'stroke-width': 2, 'stroke-linecap': 'round' });
+    const [lx, ly] = pol(r + sw / 2 + 14, a);
+    VG.txt(svg, VG.apply({ x: lx, y: ly, 'text-anchor': 'middle',
+      fill: VG.css('--mut') }, 'axis'), 'on pace');
+  }
+
+  VG.txt(svg, { x: cx, y: cy + 6, 'text-anchor': 'middle', 'font-size': 34,
+    'font-weight': 900, 'font-variant-numeric': 'tabular-nums',
+    fill: VG.css('--txt'), class: 'vg-fade', style: 'animation-delay:500ms' },
+    `${Math.round(frac * 100)}%`);
+  VG.txt(svg, VG.apply({ x: cx, y: cy + 26, 'text-anchor': 'middle',
+    fill: VG.css('--mut') }, 'axis'), `${VG.fmtShort(value)} of ${VG.fmtShort(target)}${unit}`);
+  if (label) VG.txt(svg, VG.apply({ x: cx, y: cy + 74, 'text-anchor': 'middle',
+    fill: VG.css('--mut') }, 'axis'), label);
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BULLET
+   Shape: value + target + qualitative bands.
+   Performance against a target AND against a range, in one row.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.bullet = (svg, rows, { unit = '', max = null } = {}) => {
+  const L = 108, R = 400 - 46, th = 30, bh = 12;
+  const hi = max || Math.max(...rows.flatMap(r => [...r.bands, r.value, r.target])) * 1.05;
+  const x = VG.scale(0, hi, L, R);
+  const pitch = Math.min(60, (300 - 40) / rows.length);
+
+  rows.forEach((r, i) => {
+    const cy = 26 + i * pitch + pitch / 2;
+    let prev = 0;
+    r.bands.forEach((b, j) => {
+      VG.el(svg, 'rect', { x: x(prev), y: cy - th / 2, width: x(b) - x(prev),
+        height: th, rx: j === 0 ? 3 : 0, fill: VG.css(`--w${6 - j}`) });
+      prev = b;
+    });
+    VG.tip(VG.el(svg, 'rect', { x: L, y: cy - bh / 2, width: Math.max(1, x(r.value) - L),
+      height: bh, rx: bh / 2, fill: VG.css('--w1'), class: 'vg-grow',
+      style: `animation-delay:${i * 90}ms` }),
+      `${r.k}: ${r.value}${unit} against ${r.target}${unit}`);
+    VG.el(svg, 'line', { x1: x(r.target), x2: x(r.target), y1: cy - th / 2 - 3,
+      y2: cy + th / 2 + 3, stroke: VG.css('--hero'), 'stroke-width': 3,
+      'stroke-linecap': 'round', class: 'vg-fade',
+      style: `animation-delay:${i * 90 + 350}ms` });
+
+    VG.txt(svg, VG.apply({ x: L - 10, y: cy + 4, 'text-anchor': 'end',
+      fill: VG.css('--txt') }, 'label'), r.k);
+    VG.txt(svg, VG.apply({ x: R + 8, y: cy + 4, fill: VG.css('--txt') }, 'value'),
+      r.value + unit);
+  });
+
+  VG.txt(svg, VG.apply({ x: L, y: 300 - 8, fill: VG.css('--mut') }, 'axis'),
+    'bar = actual · rule = target · bands = poor / fair / good');
+};
+
+
+/* ════════════════════════════════════════════════════════════════════════════
+   WATERFALL
+   Shape: ≤8 signed steps from an opening balance to a closing one.
+   Explains how a total got from A to B. Connectors tie each step to the next.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.waterfall = (svg, steps, { unit = '', yTicks = 4 } = {}) => {
+  const g = { l: 46, r: 14, t: 26, b: 46, W: 400, H: 300 };
+  let run = 0;
+  const bars = steps.map(st => {
+    if (st.total) { const b = { ...st, from: 0, to: st.v }; run = st.v; return b; }
+    const b = { ...st, from: run, to: run + st.v }; run += st.v; return b;
+  });
+  const hi = Math.max(...bars.flatMap(b => [b.from, b.to]));
+  const ticks = VG.niceTicks(hi * 1.08, yTicks);
+  const y = VG.scale(0, ticks[ticks.length - 1], g.H - g.b, g.t);
+  VG.yAxis(svg, g, y, ticks, VG.fmtShort);
+
+  const pitch = (g.W - g.l - g.r) / bars.length;
+  const bw = Math.min(28, pitch - 8);
+
+  bars.forEach((b, i) => {
+    const x = g.l + i * pitch + (pitch - bw) / 2;
+    const top = Math.min(y(b.from), y(b.to)), h = Math.max(2, Math.abs(y(b.to) - y(b.from)));
+    const fill = b.total ? '--w1' : b.v >= 0 ? '--w2' : '--w4';
+    VG.tip(VG.el(svg, 'rect', { x, y: top, width: bw, height: h, rx: 3,
+      fill: VG.css(fill), class: 'vg-rise',
+      style: `animation-delay:${i * 80}ms` }),
+      `${b.k}: ${b.total ? '' : b.v >= 0 ? '+' : ''}${b.v}${unit}`);
+
+    /* Connector to the next step's baseline — the thread that makes it a
+       waterfall rather than a row of unrelated columns. */
+    if (i < bars.length - 1 && !bars[i + 1].total)
+      VG.el(svg, 'line', { x1: x + bw, x2: g.l + (i + 1) * pitch + (pitch - bw) / 2,
+        y1: y(b.to), y2: y(b.to), stroke: VG.css('--grid'), 'stroke-width': 1,
+        class: 'vg-fade', style: `animation-delay:${i * 80 + 200}ms` });
+
+    VG.txt(svg, VG.apply({ x: x + bw / 2, y: top - 5, 'text-anchor': 'middle',
+      fill: VG.css(b.total ? '--txt' : '--mut'), class: 'vg-fade',
+      style: `animation-delay:${i * 80 + 260}ms` }, 'axis'),
+      b.total ? VG.fmtShort(b.v) : `${b.v >= 0 ? '+' : ''}${b.v}`);
+    VG.txt(svg, VG.apply({ x: x + bw / 2, y: g.H - 26, 'text-anchor': 'middle',
+      fill: VG.css('--mut') }, 'axis'), b.k);
+  });
+
+  VG.txt(svg, VG.apply({ x: g.l, y: g.H - 8, fill: VG.css('--mut') }, 'axis'),
+    'dark = opening / closing · mid = increase · light = decrease');
+};
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ECharts bridge. Only Sankey, Treemap and Network use it — every other form in
+   the catalogue is hand-drawn SVG. A report emits the ECharts <script> tag ONLY
+   when it contains one of those three (WRITEREPORT.md Step 5).
+
+   Two things this must get right:
+   · SVG renderer, not canvas — canvas prints as a bitmap and blurs in a PDF.
+   · A visible fallback when the CDN is blocked, rather than a silent empty box.
+   ───────────────────────────────────────────────────────────────────────────── */
+VG.echart = (id, buildOption) => {
+  const draw = (node) => {
+    if (typeof echarts === 'undefined') {
+      node.innerHTML = '<div class="vg-ech-fallback">This chart needs the ECharts '
+        + 'library, which could not be loaded. Check the network connection.</div>';
+      return;
+    }
+    const inst = echarts.init(node, null, { renderer: 'svg' });
+    inst.setOption(buildOption(VG.css));
+    window.addEventListener('resize', () => inst.resize());
+  };
+  VG.reveal(id, draw);
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   SANKEY  (ECharts · wide · desktop-only)
+   Shape: 2–3 stages, ≤20 flows, non-negative.
+   Where volume goes as it passes through stages. Every default colour overridden.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.sankeyOption = (data, css) => ({
+  backgroundColor: 'transparent',
+  textStyle: { fontFamily: 'Satoshi, "Noto Sans SC", system-ui, sans-serif' },
+  tooltip: { trigger: 'item', triggerOn: 'mousemove',
+    backgroundColor: css('--txt'), borderWidth: 0,
+    textStyle: { color: css('--bg-alt'), fontSize: 12 } },
+  series: [{
+    type: 'sankey', left: 8, right: 96, top: 12, bottom: 12,
+    nodeWidth: 18, nodeGap: 12, emphasis: { focus: 'adjacency' },
+    data: data.nodes.map(n => ({ name: n,
+      itemStyle: { color: css('--w1'), borderWidth: 0 } })),
+    links: data.links,
+    label: { color: css('--txt'), fontSize: 11, fontWeight: 500 },
+    lineStyle: { color: css('--w3'), opacity: 0.45, curveness: 0.5 },
+  }],
+});
+
+/* ════════════════════════════════════════════════════════════════════════════
+   TREEMAP  (ECharts)
+   Shape: two levels, non-negative weights. Area = value.
+   Labels only where the tile can hold them; everything smaller moves to hover.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.treemapOption = (data, css) => ({
+  backgroundColor: 'transparent',
+  textStyle: { fontFamily: 'Satoshi, "Noto Sans SC", system-ui, sans-serif' },
+  tooltip: { backgroundColor: css('--txt'), borderWidth: 0,
+    textStyle: { color: css('--bg-alt'), fontSize: 12 } },
+  series: [{
+    type: 'treemap', roam: false, nodeClick: false, breadcrumb: { show: false },
+    left: 0, right: 0, top: 0, bottom: 0,
+    /* Fill by depth down the warm ramp, so nesting reads as lightness. */
+    levels: [
+      { itemStyle: { borderWidth: 3, borderColor: css('--bg-alt'), gapWidth: 3 } },
+      { colorSaturation: [.9, 1],
+        itemStyle: { borderWidth: 1, borderColor: css('--bg-alt'), gapWidth: 1 } },
+    ],
+    color: [css('--w1'), css('--w2'), css('--w3'), css('--w4'), css('--w5')],
+    label: { color: css('--bg-alt'), fontSize: 11, fontWeight: 700,
+             overflow: 'truncate', formatter: '{b}' },
+    upperLabel: { show: false },
+    data,
+  }],
+});
+
+/* ════════════════════════════════════════════════════════════════════════════
+   NETWORK  (ECharts · wide · desktop-only)
+   Shape: ≤60 nodes where the connections ARE the subject.
+   Node radius scales as √degree — area encodes degree, never the raw count.
+   ════════════════════════════════════════════════════════════════════════════ */
+VG.networkOption = (data, css, hero = null) => {
+  const deg = {};
+  data.links.forEach(l => { deg[l.source] = (deg[l.source] || 0) + 1;
+                            deg[l.target] = (deg[l.target] || 0) + 1; });
+  const maxDeg = Math.max(...Object.values(deg), 1);
+  return {
+    backgroundColor: 'transparent',
+    textStyle: { fontFamily: 'Satoshi, "Noto Sans SC", system-ui, sans-serif' },
+    tooltip: { backgroundColor: css('--txt'), borderWidth: 0,
+      textStyle: { color: css('--bg-alt'), fontSize: 12 } },
+    series: [{
+      type: 'graph', layout: 'force', roam: false, draggable: true,
+      force: { repulsion: 320, edgeLength: [60, 150], gravity: 0.06 },
+      emphasis: { focus: 'adjacency', label: { show: true } },
+      data: data.nodes.map(n => ({
+        name: n,
+        symbolSize: 5 + Math.sqrt((deg[n] || 1) / maxDeg) * 9,
+        itemStyle: { color: css(n === hero ? '--hero' : '--w2') },
+        label: { show: (deg[n] || 0) > maxDeg * 0.5 },
+      })),
+      links: data.links.map(l => ({ ...l, lineStyle: { width: 1 } })),
+      lineStyle: { color: css('--w5'), opacity: 0.6, curveness: 0.08 },
+      label: { color: css('--txt'), fontSize: 10, position: 'right' },
+    }],
+  };
+};
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Demo bindings. Replace the data, keep the calls.
+   ───────────────────────────────────────────────────────────────────────────── */
+VG.reveal('c-rankedbars', s => VG.rankedBars(s, [
+  { k: 'Billing',    v: 412 }, { k: 'Onboarding', v: 388 },
+  { k: 'Integrations', v: 194 }, { k: 'Mobile',   v: 141 },
+  { k: 'Exports',    v: 96 },  { k: 'API',        v: 63 },
+], { hero: 'Onboarding' }));
+
+VG.reveal('c-countedrows', s => VG.countedRows(s, [
+  { k: 'Platform', v: 14 }, { k: 'Growth',  v: 11 }, { k: 'Mobile', v: 9 },
+  { k: 'Data',     v: 7 },  { k: 'Billing', v: 5 },  { k: 'Docs',   v: 3 },
+], { hero: 'Mobile' }));
+
+VG.reveal('c-dotplot', s => VG.dotPlot(s, [
+  { k: 'Enterprise', v: 1.4 }, { k: 'Business', v: 2.1 }, { k: 'Team', v: 2.6 },
+  { k: 'Pro',        v: 3.2 }, { k: 'Starter',  v: 3.9 }, { k: 'Free', v: 5.1 },
+], { hero: 'Free', unit: 'h' }));
+
+VG.reveal('c-dumbbell', s => VG.dumbbell(s, [
+  { k: 'Enterprise', a: 21, b: 12 }, { k: 'Business', a: 17, b: 9 },
+  { k: 'Team',       a: 14, b: 8 },  { k: 'Pro',      a: 11, b: 7 },
+  { k: 'Starter',    a: 9,  b: 6 },
+], { hero: 'Enterprise', unit: 'd', labels: ['Q1', 'Q3'] }));
+
+VG.reveal('c-ring', s => VG.segmentedRing(s, [
+  { k: 'Direct', v: 412 }, { k: 'Search', v: 268 }, { k: 'Referral', v: 154 },
+  { k: 'Social', v: 96 },  { k: 'Email',  v: 61 },
+], { hero: 'Direct', centreLabel: '991' }));
+
+VG.reveal('c-waffle', s => VG.waffleGrid(s, [
+  { k: 'Converted', v: 61 }, { k: 'Lapsed', v: 24 }, { k: 'Still trialling', v: 15 },
+], { hero: 'Converted' }));
+
+VG.reveal('c-unitfield', s => VG.unitField(s, [
+  { k: 'Deploy',     v: 19 }, { k: 'Dependency', v: 13 },
+  { k: 'Capacity',   v: 9 },  { k: 'External',   v: 7 },
+], { hero: 'Deploy' }));
+
+VG.reveal('c-stacked', s => VG.stackedBars(s, [
+  { k: 'Enterprise', New: 210, Expansion: 340, Renewal: 720 },
+  { k: 'Business',   New: 280, Expansion: 190, Renewal: 310 },
+  { k: 'Team',       New: 240, Expansion: 110, Renewal: 160 },
+  { k: 'Starter',    New: 190, Expansion: 40,  Renewal: 70  },
+], { keys: ['New', 'Expansion', 'Renewal'], hero: 'Enterprise/Renewal', unit: 'k' }));
+
+/* ── Batch 2 · time and distribution ──────────────────────────────────────── */
+VG.reveal('c-threadline', s => VG.threadLine(s, [
+  { k: 'Web',    v: Array.from({ length: 30 }, (_, i) =>
+      Math.round(120 + i * 4.2 + VG.gauss(i, 3, 0, 14) + (i > 17 ? 46 : 0))) },
+  { k: 'Mobile', v: Array.from({ length: 30 }, (_, i) =>
+      Math.round(64 + i * 1.6 + VG.gauss(i, 9, 0, 9))) },
+], { hero: { i: 17, label: 'rebuild ships' },
+     xLabels: [{ i: 0, t: 'Mar 1' }, { i: 17, t: 'Mar 18' }, { i: 29, t: 'Mar 30' }] }));
+
+VG.reveal('c-threadarea', s => VG.threadArea(s,
+  Array.from({ length: 60 }, (_, i) =>
+    Math.round(2400 + 620 * Math.sin(i / 7) + i * 12 + VG.gauss(i, 5, 0, 130))),
+  { xLabels: [{ i: 0, t: 'Jul 1' }, { i: 30, t: 'Jul 31' }, { i: 59, t: 'Aug 29' }] }));
+
+VG.reveal('c-slope', s => VG.slope(s, [
+  { k: 'Enterprise', a: 31, b: 38 }, { k: 'Business', a: 26, b: 24 },
+  { k: 'Team',       a: 18, b: 16 }, { k: 'Pro',      a: 13, b: 12 },
+  { k: 'Starter',    a: 12, b: 10 },
+], { hero: 'Enterprise', unit: '%', labels: ['Q1', 'Q3'] }));
+
+VG.reveal('c-binned', s => VG.binnedColumns(s, [
+  { k: '0–1h', n: 142 }, { k: '1–2h', n: 198 }, { k: '2–3h', n: 231 },
+  { k: '3–4h', n: 186 }, { k: '4–6h', n: 154 }, { k: '6–8h', n: 97 },
+  { k: '8–12h', n: 61 }, { k: '12–24h', n: 38 }, { k: '1–2d', n: 22 },
+  { k: '2–4d', n: 11 },  { k: '4–7d', n: 6 },   { k: '7d+', n: 3 },
+], { hero: '2–3h' }));
+
+const planSamples = (seed, mean, sd) =>
+  Array.from({ length: 90 }, (_, i) => Math.max(0.2, VG.gauss(i, seed, mean, sd)));
+VG.reveal('c-box', s => VG.boxPlot(s, [
+  { k: 'Enterprise', v: planSamples(2, 1.4, 0.5) },
+  { k: 'Business',   v: planSamples(4, 2.1, 0.8) },
+  { k: 'Team',       v: planSamples(6, 2.8, 1.1) },
+  { k: 'Pro',        v: planSamples(8, 3.4, 1.5) },
+  { k: 'Free',       v: planSamples(10, 4.6, 2.6) },
+], { hero: 'Free', unit: 'h' }));
+
+VG.reveal('c-beeswarm', s => {
+  const deals = Array.from({ length: 120 }, (_, i) =>
+    Math.max(2, VG.gauss(i, 7, 26, 13)));
+  VG.beeswarm(s, deals, { heroIndex: -1, unit: 'k' });   /* -1 = largest deal */
+});
+
+const flowSeries = [
+  { k: 'Studio',  v: Array.from({ length: 36 }, (_, i) => 40 + Math.round(18 * Math.sin(i / 5) + i * 0.9)) },
+  { k: 'Mobile',  v: Array.from({ length: 36 }, (_, i) => 26 + Math.round(11 * Math.sin(i / 4 + 2) + i * 0.5)) },
+  { k: 'API',     v: Array.from({ length: 36 }, (_, i) => 15 + Math.round(7 * Math.sin(i / 6 + 1))) },
+];
+VG.revealResponsive('c-flow', {
+  wide:   s => VG.flowRibbon(s, flowSeries, {
+            xLabels: [{ i: 0, t: 'W1' }, { i: 17, t: 'W18' }, { i: 35, t: 'W36' }] }),
+  narrow: s => VG.flowRibbonNarrow(s, flowSeries),
+});
+
+const pipelines = [
+  { k: 'web-build',    v: Array.from({ length: 140 }, (_, i) => Math.max(1, VG.gauss(i, 11, 6.5, 1.4))) },
+  { k: 'api-test',     v: Array.from({ length: 140 }, (_, i) => Math.max(1, VG.gauss(i, 13, 9.2, 2.1))) },
+  { k: 'mobile-build', v: Array.from({ length: 140 }, (_, i) => Math.max(1, VG.gauss(i, 15, 13.4, 3.3))) },
+  { k: 'e2e',          v: Array.from({ length: 140 }, (_, i) => Math.max(1, VG.gauss(i, 17, 18.1, 4.8))) },
+  { k: 'release',      v: Array.from({ length: 140 }, (_, i) => Math.max(1, VG.gauss(i, 19, 24.6, 3.0))) },
+];
+VG.revealResponsive('c-ridge', {
+  wide:   s => VG.ridgeline(s, pipelines, { hero: 'e2e', unit: 'm' }),
+  narrow: s => VG.ridgelineNarrow(s, pipelines, { hero: 'e2e', unit: 'm' }),
+});
+
+/* ── Batch 3 · correlation, two dimensions, single value ──────────────────── */
+VG.reveal('c-scatter', s => VG.scatter(s,
+  Array.from({ length: 48 }, (_, i) => {
+    const price = 12 + VG.rnd(i, 21) * 68;
+    return { k: i === 0 ? '' : '', x: Math.round(price),
+             y: Math.round(Math.max(38, 92 - price * 0.42 + VG.gauss(i, 23, 0, 7))) };
+  }).map((p, i, a) => (i === a.length - 1 ? { ...p, k: 'Outlier' } : p)),
+  { heroIndex: 47, xLabel: 'price / mo ($)', yLabel: 'CSAT', trend: true }));
+
+VG.reveal('c-heat', s => VG.heatMatrix(s, {
+  rows: ['Editor', 'Timeline', 'Export', 'Presets', 'Sharing', 'API'],
+  cols: ['v6.0', 'v6.1', 'v6.2', 'v6.3', 'v6.4', 'v6.5'],
+  values: [
+    [18, 26, 34, 41, 52, 61], [12, 19, 24, 33, 39, 44],
+    [31, 33, 36, 38, 44, 47], [ 6, 11, 17, 22, 29, 36],
+    [ 9, 14, 16, 21, 27, 30], [ 4,  6,  9, 13, 18, 25],
+  ],
+}, { unit: '%' }));
+
+VG.reveal('c-arc', s => VG.progressArc(s,
+  { value: 8420, target: 12000, pace: 9000, unit: 'k',
+    label: 'FY26 ANNUAL RECURRING REVENUE' }));
+
+VG.reveal('c-bullet', s => VG.bullet(s, [
+  { k: 'Platform', value: 142, target: 120, bands: [80, 120, 170] },
+  { k: 'Growth',   value: 118, target: 110, bands: [70, 110, 160] },
+  { k: 'Mobile',   value: 96,  target: 100, bands: [60, 100, 150] },
+  { k: 'Data',     value: 88,  target: 80,  bands: [50, 80, 130] },
+  { k: 'Billing',  value: 54,  target: 75,  bands: [45, 75, 120] },
+], { unit: 'pt' }));
+
+VG.reveal('c-bigstat', n => VG.bigStat(n, {
+  label: 'Net revenue retention',
+  value: '114%',
+  delta: 6,
+  insight: 'Existing accounts grew faster than they churned. Six points of the gain came from seat expansion on Enterprise.',
+}));
+
+const punchGrid = Array.from({ length: 7 }, (_, d) =>
+  Array.from({ length: 24 }, (_, h) => {
+    const work = d < 5 ? 1 : 0.25;
+    const peak = Math.exp(-((h - 14) ** 2) / 26);
+    return Math.round(work * peak * 42 * (0.75 + VG.rnd(d * 24 + h, 29) * 0.5));
+  }));
+punchGrid[1][14] = 61;   /* Tuesday afternoon spike — the hero cell */
+VG.revealResponsive('c-punch', {
+  wide:   s => VG.punchCard(s, punchGrid, { hero: [1, 14] }),
+  narrow: s => VG.punchCardNarrow(s, punchGrid, { hero: [1, 14] }),
+});
+
+VG.reveal('c-cal', s => {
+  const perMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+  const days = []; let dayOfYear = 0;
+  perMonth.forEach((len, m) => {
+    for (let d = 1; d <= len; d++, dayOfYear++) {
+      const dow = (dayOfYear + 3) % 7;              /* deterministic weekday */
+      const weekend = dow >= 5;
+      const base = weekend ? 0.12 : 1;
+      days.push({ m, d: `${m + 1}/${d}`,
+        n: Math.round(base * (2 + VG.rnd(dayOfYear, 31) * 9)) });
+    }
+  });
+  VG.calendarHeat(s, days, { startDow: 3 });
+});
+
+VG.reveal('c-parcoord', s => VG.parallelCoords(s,
+  ['Studio','Timeline','Export','Presets','Sharing','API','Mobile','Desktop',
+   'Captions','Effects','Templates','Search'].map((k, i) => ({
+    k,
+    v: {
+      'Weekly users': Math.round(2 + VG.rnd(i, 41) * 46),
+      'Retention %': Math.round(38 + VG.rnd(i, 43) * 52),
+      'Support load': Math.round(4 + VG.rnd(i, 47) * 58),
+      'Revenue $k': Math.round(30 + VG.rnd(i, 53) * 520),
+    },
+  })),
+  { dims: ['Weekly users', 'Retention %', 'Support load', 'Revenue $k'], hero: 'Studio' }));
+
+/* ── Batch 4 · flow and hierarchy ─────────────────────────────────────────── */
+VG.reveal('c-waterfall', s => VG.waterfall(s, [
+  { k: 'Gross',    v: 1840, total: true },
+  { k: 'Discounts', v: -210 },
+  { k: 'Churn',     v: -164 },
+  { k: 'Expansion', v: 296 },
+  { k: 'New',       v: 388 },
+  { k: 'Refunds',   v: -74 },
+  { k: 'Net',       v: 2076, total: true },
+], { unit: 'k' }));
+
+VG.echart('c-treemap', css => VG.treemapOption([
+  { name: 'Platform', children: [
+    { name: 'Rendering', value: 38 }, { name: 'Storage', value: 21 },
+    { name: 'Auth', value: 12 }, { name: 'Queue', value: 9 } ] },
+  { name: 'Product', children: [
+    { name: 'Editor', value: 31 }, { name: 'Timeline', value: 18 },
+    { name: 'Export', value: 14 }, { name: 'Presets', value: 7 } ] },
+  { name: 'Growth', children: [
+    { name: 'Onboarding', value: 16 }, { name: 'Billing', value: 11 },
+    { name: 'Referrals', value: 5 } ] },
+  { name: 'Infra', children: [
+    { name: 'CI', value: 13 }, { name: 'Observability', value: 8 },
+    { name: 'Cost', value: 4 } ] },
+], css));
+
+VG.echart('c-sankey', css => VG.sankeyOption({
+  nodes: ['Search', 'Referral', 'Direct', 'Social',
+          'Free trial', 'Guided demo',
+          'Starter', 'Team', 'Enterprise'],
+  links: [
+    { source: 'Search',   target: 'Free trial',  value: 320 },
+    { source: 'Search',   target: 'Guided demo', value: 90 },
+    { source: 'Referral', target: 'Free trial',  value: 140 },
+    { source: 'Referral', target: 'Guided demo', value: 180 },
+    { source: 'Direct',   target: 'Free trial',  value: 210 },
+    { source: 'Direct',   target: 'Guided demo', value: 150 },
+    { source: 'Social',   target: 'Free trial',  value: 130 },
+    { source: 'Social',   target: 'Guided demo', value: 30 },
+    { source: 'Free trial',  target: 'Starter',    value: 430 },
+    { source: 'Free trial',  target: 'Team',       value: 280 },
+    { source: 'Free trial',  target: 'Enterprise', value: 90 },
+    { source: 'Guided demo', target: 'Starter',    value: 70 },
+    { source: 'Guided demo', target: 'Team',       value: 160 },
+    { source: 'Guided demo', target: 'Enterprise', value: 220 },
+  ],
+}, css));
+
+VG.echart('c-network', css => {
+  const nodes = ['core-api', 'auth', 'billing', 'render', 'storage', 'queue',
+    'webhooks', 'search', 'notify', 'analytics', 'cdn', 'admin',
+    'mobile-bff', 'web-bff', 'exports', 'presets', 'captions', 'scheduler'];
+  const links = [
+    ['web-bff','core-api'], ['mobile-bff','core-api'], ['admin','core-api'],
+    ['core-api','auth'], ['core-api','billing'], ['core-api','storage'],
+    ['core-api','queue'], ['core-api','search'], ['core-api','notify'],
+    ['render','queue'], ['render','storage'], ['render','cdn'],
+    ['exports','render'], ['exports','storage'], ['captions','render'],
+    ['presets','storage'], ['scheduler','queue'], ['webhooks','queue'],
+    ['analytics','core-api'], ['notify','webhooks'], ['billing','auth'],
+    ['search','storage'], ['cdn','storage'], ['mobile-bff','auth'],
+    ['web-bff','auth'], ['captions','queue'], ['exports','queue'],
+  ].map(([source, target]) => ({ source, target }));
+  return VG.networkOption({ nodes, links }, css, 'core-api');
+});
+</script>
+</body>
+</html>

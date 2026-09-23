@@ -33,7 +33,7 @@ drafting**: repo-wide surface mapping, multiple independent routes or commands, 
 inspection, schema and journey diffs, or a multi-section LORE.md draft. Keep single-file lookups,
 small deterministic searches, and tiny copy edits in the primary agent.
 
-When model-selectable subagents are available, **Claude Code prefers Sonnet 5** and other coding
+When model-selectable subagents are available, **Claude Code prefers the `sonnet` model alias** and other coding
 agents choose the closest available equivalent with strong code-search and writing ability. Do not
 prompt the user to choose a model, and do not reflexively choose the cheapest model if it would
 weaken factual reliability or prose.
@@ -78,7 +78,8 @@ Match `FOCUS` loosely: substring match against journey titles, route segments, a
 
 ## Phase 1 -- Silent Discovery
 
-Do all of this silently -- no user interaction yet. Use affordable explore subagents for meaningful
+Gather all of this before asking the user anything -- a one-line note on what you are reading is fine;
+questions wait for Phase 2. Use affordable explore subagents for meaningful
 independent batches under the policy above; otherwise use direct tool calls.
 
 ### Step 1: Identify the Product
@@ -125,7 +126,7 @@ proposal until the primary agent checks it.
 ### Step 3: Live Browser Inspection (web apps only)
 
 1. Check for a running dev server: `lsof -i :3000,5173,8080,4321,3001,8000` (or scan for vite/next/webpack output).
-2. If a dev server is detected, navigate to it using your browser tool (Claude Code: Chrome MCP `mcp__claude-in-chrome__navigate`). If you have no browser tool, skip this step and note you have no visual context.
+2. If a dev server is detected, navigate to it using your browser tool (Claude Code: the Chrome MCP browser tools). If you have no browser tool, skip this step and note you have no visual context.
 3. Screenshot each route relevant to a journey (landing, signup, core workflow, dashboard, settings, pricing).
 4. Note visual state -- modals, empty states, conditional UI, animations -- that source code alone hides.
 5. If no dev server is running, skip silently.
@@ -175,7 +176,7 @@ You are an interviewer, not an auditor. Ask only what the code cannot tell you. 
 
 ### Step 5: Round 1 (always)
 
-Ask 2-4 questions targeting gaps that block a good codex. Skip any question discovery already answered.
+Ask a small batch of questions targeting the gaps that block a good codex. Skip any question discovery already answered.
 
 | Category | Example question |
 |---|---|
@@ -184,7 +185,7 @@ Ask 2-4 questions targeting gaps that block a good codex. Skip any question disc
 | **Anti-goals** | "What is this product deliberately NOT trying to be?" with options like "Not a project manager", "Not a chat app", "Not for enterprise" |
 | **Stage** | "Is this in early prototype, active development, or shipped to users?" |
 
-In ITERATE mode, also ask focused questions about the change set. Always use the journey's title in user-facing prose -- never `J3`, `J7`, or any internal numeric ID:
+In ITERATE mode, also ask focused questions about the change set, referring to each journey by its title:
 
 - For each `CANDIDATE-NEW` flow: "I see [file/route]. Is this a new journey, part of an existing one, or scaffolding I should ignore?"
 - For each `MAYBE-REMOVED`: "The journey 'Invite teammate via SMS' looks gone -- I can't find code that supports it anymore. Remove it, mark it `(stale)`, or did it move somewhere I missed?"
@@ -192,7 +193,7 @@ In ITERATE mode, also ask focused questions about the change set. Always use the
 
 ### Step 6: Round 2 (only if Round 1 surfaced major ambiguity)
 
-Trigger a second batch ONLY when README is absent or unhelpful and Round 1 answers conflict with code signals, the user said "I'm not sure" twice or more, or multiple candidate journeys remain ambiguous. Otherwise, proceed to Phase 3 -- and respect "enough" if the user says move on.
+Trigger a second batch only when README is absent or unhelpful and Round 1 answers conflict with code signals, the user said "I'm not sure" twice or more, or multiple candidate journeys remain ambiguous. Otherwise, proceed to Phase 3 -- and respect "enough" if the user says move on.
 
 ---
 
@@ -213,7 +214,7 @@ stub, one-journey edit, or mechanical migration stays in the primary agent.
 
 ### Step 7a: BASELINE-EMPTY mode
 
-Write a stub `LORE.md` with section headers and short prompts inside each one explaining what to fill in later. Do NOT invent content. Tell the user: "Project is too early for journeys -- I left a stub. Run `/lore` again once you have routes or commands."
+Write a stub `LORE.md` with section headers and short prompts inside each one explaining what to fill in later. Don't invent content; the stub exists so a later run has a shape to fill. Tell the user: "Project is too early for journeys -- I left a stub. Run `/lore` again once you have routes or commands."
 
 ### Step 7b: BASELINE-DERIVE mode
 
@@ -260,12 +261,12 @@ Then ask the user to approve/reject each change (use your structured-question to
 
 Always at the project root: `LORE.md`.
 
-- **ITERATE mode:** use the Edit tool. Never use Write -- it would clobber any unrelated content (manual edits, comments).
-- **BASELINE-DERIVE / BASELINE-EMPTY mode:** check absence one final time, then use the Write tool. If the file exists at this point, abort and switch to ITERATE.
+- **ITERATE mode:** make targeted in-place edits. Do not rewrite the whole file -- that would clobber unrelated content (manual edits, comments).
+- **BASELINE-DERIVE / BASELINE-EMPTY mode:** check absence one final time, then write the new file. If the file exists at this point, abort and switch to ITERATE.
 
 ### Step 9: Verify
 
-1. Fetch today's date (`date +%Y-%m-%d` via Bash, or use the conversation's "Today's date" context). This goes into the front matter as the `Last updated:` value before writing in Step 8 -- never write the literal string `YYYY-MM-DD`.
+1. Set the front matter's `Last updated:` to today's date (from the conversation's date context, or `date +%Y-%m-%d`) before writing in Step 8.
 2. Read the file back.
 3. Confirm the front matter (`Last updated:` is today's date, `Journeys:` count matches the number of journey headings).
 4. **Sequential numbering.** After any add / remove / reorder, renumber the journey headings as `### 1. Title`, `### 2. Title`, ... in document order. No gaps, no duplicates.

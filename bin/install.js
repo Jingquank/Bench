@@ -115,6 +115,10 @@ const skills = [
     files: [
       { src: "WRITEREPORT.md", dest: "SKILL.md" },
       { src: "docs/DESIGN.md", dest: "DESIGN.md" },
+      { src: "docs/CHARTS.md", dest: "CHARTS.md" },
+      // Working reference implementations the skill copies charts out of.
+      // SKILL.md Step 3 reads this by name — it is not optional.
+      { src: "docs/charts/gallery.html", dest: "charts/gallery.html" },
       { src: "reference/demo.md", dest: "DEMO.md" },
       // Bundled font (binary; copied verbatim). Optional so the pack installs
       // even before the font is added (the skill degrades when it is missing).
@@ -122,24 +126,8 @@ const skills = [
     ],
     implicitInvocation: false,
   },
-  { name: "xray", files: [{ src: "XRAY.md", dest: "SKILL.md" }], implicitInvocation: false },
   { name: "drill", files: [{ src: "DRILL.md", dest: "SKILL.md" }], implicitInvocation: false },
   { name: "lore", files: [{ src: "LORE.md", dest: "SKILL.md" }], implicitInvocation: true },
-  {
-    name: "grid",
-    files: [
-      { src: "GRID.md", dest: "SKILL.md" },
-      { src: "grid/references/method.md", dest: "references/method.md" },
-      { src: "grid/references/overlay-api.md", dest: "references/overlay-api.md" },
-      { src: "grid/assets/grid.css", dest: "assets/grid.css" },
-      { src: "grid/assets/grid-overlay.js", dest: "assets/grid-overlay.js" },
-      { src: "grid/assets/grid-debug.js", dest: "assets/grid-debug.js" },
-      { src: "grid/assets/GridOverlay.jsx", dest: "assets/GridOverlay.jsx" },
-      { src: "grid/assets/grid-optical.js", dest: "assets/grid-optical.js" },
-      { src: "grid/assets/verify-grid.js", dest: "assets/verify-grid.js" },
-    ],
-    implicitInvocation: false,
-  },
   { name: "huh", files: [{ src: "HUH.md", dest: "SKILL.md" }], implicitInvocation: false },
 ];
 
