@@ -1,6 +1,6 @@
 {
   "name": "bench",
-  "version": "1.13.0",
+  "version": "2.0.0",
   "description": "Editorial reports with a 28-form chart catalogue, plan drilling, product lore, and plain-language explanations — a skill pack for Cursor, Claude Code, and Codex.",
   "bin": {
     "bench": "bin/install.js"

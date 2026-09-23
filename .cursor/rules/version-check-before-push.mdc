@@ -12,7 +12,7 @@ Before running `git push` (or any command that pushes commits to a remote), you 
 
 1. Read the current version from `package.json` (`"version"` field).
 2. Ask the user to confirm the version is correct using the AskQuestion tool:
-   - Show the current version (e.g. "The current pack version is **1.13.0**.")
+   - Show the current version (e.g. "The current pack version is **2.0.0**.")
    - Offer options: "Looks good — push", "I want to change the version first"
 3. Only proceed with the push if the user confirms.
 
